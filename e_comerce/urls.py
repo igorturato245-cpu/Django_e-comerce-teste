@@ -1,8 +1,8 @@
 from django.urls import path
-from e_comerce import views
+from e_comerce.views import view_principal
 
 app_name='Produtos'
 
 urlpatterns = [
-    path('',views.index,name='index')
+    path('',view_principal.index,name='index')
 ]
