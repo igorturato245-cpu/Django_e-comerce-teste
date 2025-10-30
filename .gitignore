@@ -1,4 +1,6 @@
-venv/
+static/
+media/
 *.pyc
 db.sqlite3
 __pycache__/
+venv/
