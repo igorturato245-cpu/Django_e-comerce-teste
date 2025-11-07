@@ -1,3 +1,3 @@
 from views import view_principal
-from views import view_cadastro
-from views import view_compras
+from e_comerce.views import view_carrinho
+from views import view_produto
