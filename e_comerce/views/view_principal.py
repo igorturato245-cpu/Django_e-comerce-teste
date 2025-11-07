@@ -3,7 +3,7 @@ from django.core.paginator import Paginator
 from e_comerce.models import Produto
 
 def index(request):
-    produtos=Produto.objects.filter(show=True).order_by('-id')
+    produtos=Produto.objects.order_by('-id')
 
     paginador=Paginator(produtos,20)
     page_number=request.GET.get('page')
@@ -15,7 +15,7 @@ def index(request):
 
     return render(
         request,
-        'e_comerce/templates/index.html',
+        'e_comerce/index.html',
         context,
     )
 
@@ -29,6 +29,6 @@ def produto(request,produto_id):
 
     render(
         request,
-        'e_comerce/templates/produto.html',
+        'e_comerce/produto.html',
         context,
     )
