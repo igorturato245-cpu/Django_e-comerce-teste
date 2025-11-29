@@ -10,25 +10,11 @@ def index(request):
     page_obj=paginador.get_page(page_number)
 
     context={
-        'page_obj':page_obj
+        'page_obj':page_obj,
     }
 
     return render(
         request,
         'e_comerce/index.html',
-        context,
-    )
-
-
-def produto(request,produto_id):
-    sigle_product=get_list_or_404(Produto,pk=produto_id,show=True)
-
-    context={
-        'produto':sigle_product,
-    }
-
-    render(
-        request,
-        'e_comerce/produto.html',
         context,
     )

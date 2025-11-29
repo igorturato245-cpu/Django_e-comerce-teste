@@ -27,7 +27,7 @@ class Produto(models.Model):
 
     class Meta:
         verbose_name='Produto'
-        verbose_name_plural='Categories'
+        verbose_name_plural='Produtos'
         ordering=['-criado']
 
     def __str__(self):

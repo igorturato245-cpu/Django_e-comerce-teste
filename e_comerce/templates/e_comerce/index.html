@@ -1,5 +1,14 @@
-{% extends "base_templates/global/base.html" %}
+{% extends "global/base.html" %}
 
 {%block content%}
-
+{% if page_obj %}
+    <div>
+        <table>
+            <caption>
+                E-Commerce
+            </caption>
+            
+        </table>
+    </div>
+{% endif %}
 {%endblock content%}
