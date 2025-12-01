@@ -1,35 +1,43 @@
-<header>
-    <h1>
-        <a>
-            E-Commerce
+{% load static %}
+<header class="header">
+
+    <div class="header-container">
+
+        <!-- Logo + título -->
+        <a href="/" class="header-logo">
+            <img src="static/global/img/OIP.jpeg" alt="Logo" style="height:40px;">
         </a>
-    </h1>
 
-    <nav>
-        <ul>
-            <li>
-                <a>
-                    Ofertas do dia.
-                </a>
-            </li>
+        <!-- Menu -->
+        <nav class="header-nav">
+            <ul class="header-menu">
 
-            <li>
-                <a>
-                    Perfumes.
-                </a>
-            </li>
+                <li class="header-item">
+                    <a href="#">Ofertas do dia</a>
+                </li>
 
-            <li>
-                <a>
-                    Sabonetes.
-                </a>
-            </li>
+                <li class="header-item">
+                    <a href="#">Perfumes</a>
+                </li>
 
-            <li>
-                <a>
-                    Produtos de limpeza.
-                </a>
-            </li>
-        </ul>
-    </nav>
+                <li class="header-item">
+                    <a href="#">Sabonetes</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="#">Produtos de limpeza</a>
+                </li>
+
+            </ul>
+        </nav>
+
+        <!-- Hambúrguer (mobile) -->
+        <div class="hamburger" onclick="document.querySelector('.header-menu').classList.toggle('active')">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+    </div>
+
 </header>

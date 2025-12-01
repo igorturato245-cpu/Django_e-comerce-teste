@@ -1,0 +1,150 @@
+/* ================================
+   RESET BÁSICO
+==================================*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+
+/* ================================
+   HEADER
+==================================*/
+.header {
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Container centralizado com largura máxima */
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px 40px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* ================================
+   LOGO + TÍTULO
+==================================*/
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo img {
+    height: 40px;
+}
+
+.header-title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+
+/* ================================
+   MENU DESKTOP
+==================================*/
+.header-nav {
+    display: flex;
+    align-items: center;
+}
+
+.header-menu {
+    display: flex;
+    gap: 25px;
+}
+
+.header-item {
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.header-item:hover {
+    color: #0077ff;
+}
+
+
+/* ================================
+   HAMBÚRGUER (mobile)
+==================================*/
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #333;
+    transition: 0.3s;
+}
+
+
+/* ================================
+   MOBILE
+==================================*/
+@media (max-width: 768px) {
+
+    .header-container {
+        padding: 15px 20px;
+    }
+
+    /* Ocultar menu no mobile */
+    .header-menu {
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 200px;
+        background: white;
+
+        flex-direction: column;
+        gap: 15px;
+
+        padding: 20px;
+        border-left: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+
+        transition: all 0.3s ease;
+    }
+
+    /* Mostrar menu quando ativo */
+    .header-menu.active {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    /* Mostrar o botão hambúrguer */
+    .hamburger {
+        display: flex;
+    }
+
+    /* Ocultar menu desktop */
+    .header-nav {
+        position: relative;
+    }
+}
