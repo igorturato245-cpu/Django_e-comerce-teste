@@ -1,150 +1,231 @@
 /* ================================
+   VARIÁVEIS GLOBAIS
+==================================*/
+:root{
+    --primary-color: #0077ff;
+    --primary-hover: #005fcc;
+    --max-width: 1200px;
+    --container-padding: 40px;
+    --header-height: 72px; /* ajuste conforme sua header real */
+    --bg: #fff;
+    --text-color: #333;
+}
+
+/* ================================
    RESET BÁSICO
 ==================================*/
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-ul {
-    list-style: none;
-}
-
+a{ text-decoration: none; color: inherit; }
+ul{ list-style: none; }
 
 /* ================================
-   HEADER
+   HEADER (fixo)
+   - usamos position: fixed para manter no topo
+   - main ganha margin-top para não ficar escondido
 ==================================*/
-.header {
+.header{
     width: 100%;
-    background-color: #fff;
+    background-color: var(--bg);
     border-bottom: 1px solid #ddd;
     font-family: Arial, Helvetica, sans-serif;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+
+/* compensar o header fixo em todo o site */
+main {
+    margin-top: var(--header-height);
 }
 
 /* Container centralizado com largura máxima */
-.header-container {
-    max-width: 1200px;
+.header-container{
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 15px 40px;
-
+    padding: 0 var(--container-padding);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
 }
-
 
 /* ================================
    LOGO + TÍTULO
 ==================================*/
-.header-logo {
+.header-logo{
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-right: 12px
 }
-
-.header-logo img {
-    height: 40px;
-}
-
-.header-title {
-    font-size: 24px;
-    font-weight: bold;
-}
-
+.header-logo img { height: 40px; }
+.header-title { font-size: 24px; font-weight: bold; }
 
 /* ================================
    MENU DESKTOP
 ==================================*/
-.header-nav {
-    display: flex;
-    align-items: center;
+.header-nav{ display: flex; align-items: center;margin-left:500px; }
+.header-menu{ display: flex; gap: 25px; align-items: center; margin-left: auto;}
+.header-item{
+    font-size: 16px; cursor: pointer; transition: color .2s ease;
 }
-
-.header-menu {
-    display: flex;
-    gap: 25px;
-}
-
-.header-item {
-    font-size: 16px;
-    cursor: pointer;
-    transition: color 0.2s ease;
-}
-
-.header-item:hover {
-    color: #0077ff;
-}
-
+.header-item:hover{ color: var(--primary-color); }
 
 /* ================================
    HAMBÚRGUER (mobile)
 ==================================*/
-.hamburger {
+.hamburger{
     display: none;
     flex-direction: column;
     gap: 5px;
     cursor: pointer;
 }
-
-.hamburger span {
-    width: 25px;
-    height: 3px;
-    background: #333;
-    transition: 0.3s;
+.hamburger span{
+    width: 25px; height: 3px; background: #333; transition: 0.3s;
 }
 
-
 /* ================================
-   MOBILE
+   MOBILE (menu responsivo)
 ==================================*/
 @media (max-width: 768px) {
+    :root { --header-height: 64px; } /* header menor em mobile */
 
-    .header-container {
-        padding: 15px 20px;
+    .header-container{
+        padding: 0 20px;
     }
 
-    /* Ocultar menu no mobile */
-    .header-menu {
+    /* Menu drop-down em mobile (inicial oculto) */
+    .header-menu{
         position: absolute;
-        top: 70px;
+        top: var(--header-height);
         right: 0;
-        width: 200px;
-        background: white;
+        width: 220px;
+        background: var(--bg);
 
         flex-direction: column;
         gap: 15px;
 
-        padding: 20px;
+        padding: 18px;
         border-left: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
 
         opacity: 0;
         visibility: hidden;
         transform: translateY(-10px);
-
         transition: all 0.3s ease;
     }
 
-    /* Mostrar menu quando ativo */
-    .header-menu.active {
+    .header-menu.active{
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
     }
 
-    /* Mostrar o botão hambúrguer */
-    .hamburger {
-        display: flex;
-    }
-
-    /* Ocultar menu desktop */
-    .header-nav {
-        position: relative;
-    }
+    .hamburger{ display: flex; }
+    .header-nav{ position: relative; }
 }
+
+/* ================================
+   HERO / SEÇÃO PRINCIPAL
+   - divide em duas metades: texto (esquerda) e imagem (direita)
+   - inclui padding top para não ficar escondido pelo header
+==================================*/
+.hero{
+    padding-top: calc(var(--header-height) + 32px); /* garante espaçamento abaixo do header */
+    padding-bottom: 80px;
+    background: var(--bg);
+    color: var(--text-color);
+}
+
+.hero .hero-inner{
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 0 20px;
+}
+
+/* Cada metade ocupa 50% horizontalmente */
+.hero-left, .hero-right{
+    flex: 1 1 50%;
+}
+
+/* Conteúdo da esquerda (texto + botão) */
+.hero-left .main-content{
+    padding: 40px; /* padding top/bottom interno */
+}
+
+.hero-left .main-content h2{
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.hero-left .main-content .descricao{
+    margin-bottom: 24px;
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+/* Estilização simples do botão */
+.hero-left .main-content button{
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color .2s ease;
+}
+.hero-left .main-content button:hover{
+    background-color: var(--primary-hover);
+}
+
+/* Imagem direita ocupa a metade e cobre todo o bloco */
+.hero-right .hero-image{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.hero-right .hero-image img{
+    width: 100%;
+    height: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+/* ================================
+   UTILITÁRIOS / RESPONSIVO
+==================================*/
+@media (max-width: 1024px){
+    .hero-left .main-content{ padding: 28px; }
+}
+
+@media (max-width: 768px){
+    .hero .hero-inner{
+        flex-direction: column;
+        gap: 24px;
+    }
+    .hero-left .main-content{ padding: 24px; }
+    .hero-right .hero-image img{ max-height: 360px; width: 100%; height: auto; }
+}
+
+/* ================================
+   PEQUENAS MELHORIAS VISUAIS
+==================================*/
+button{ font-family: inherit; }
+img{ display: block; max-width: 100%; height: auto; }

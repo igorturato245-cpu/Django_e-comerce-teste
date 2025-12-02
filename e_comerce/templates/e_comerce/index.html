@@ -1,31 +1,56 @@
 {% extends "global/base.html" %}
 
 {%block content%}
-<!--{% if page_obj %}-->
-
-<section>
-    <div para limitar o conteudo dentro da section a 1200 px>
-        <div armazena o conteudo da parte inicial da pagina/metade da pagina(horizontal)>
-            <div div de texto sobre a empresa>
-                <h2 sobretitulo>
+<!--{% if produtos %}-->
+{% load static %}
+<section class="hero">
+    <div class="hero-inner ">
+        <div class="hero-left">
+            <div class="main-content">
+                <h2 class="sobretitulo">
                     Titulo Generico
                 </h2>
-                <div texto de apresentação da empresa>
+                <div class="descricao">
                     A Shopify é muito mais do que um criador de sites: ela ajuda você a vender seus produtos,
                     reduzir os custos e poupar tempo. Comece sem pagar nada e depois aproveite 3 meses por US$
                     1/mês.
                 </div>
                 <div>
-                    <button>
+                    <button type="button">
                         Se cadastre e começe a comprar.
                     </button>
                 </div>
             </div>
         </div>
-        <div div para colocar foto na primeira parte do site/metade da pagina(horizontal)>
-            <img>
-            <h2>foto generica e bonitos de produtos relacionados ao site</h2>
+        <div class="hero-right">
+            <div class="hero-image">
+                <img src="{% static 'global/img/perfumes.jpeg' %}" alt="Produtos em destaque">
+            </div>
         </div>
+    </div>
+</section>
+
+<section>
+    <div>
+        <!--{% for produto in produtos %}-->
+            <div>
+                <div>
+                    <picture>
+
+                    </picture>
+                </div>
+                <div>
+                    <div>
+                        <h2>
+
+                        </h2>
+                        <div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
     </div>
 </section>
 

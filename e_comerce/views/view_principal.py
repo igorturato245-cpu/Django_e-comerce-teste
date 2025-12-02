@@ -1,16 +1,11 @@
 from django.shortcuts import render,get_list_or_404,redirect
-from django.core.paginator import Paginator
 from e_comerce.models import Produto
 
 def index(request):
     produtos=Produto.objects.order_by('-id')
 
-    paginador=Paginator(produtos,20)
-    page_number=request.GET.get('page')
-    page_obj=paginador.get_page(page_number)
-
     context={
-        'page_obj':page_obj,
+        'produtos':produtos
     }
 
     return render(
