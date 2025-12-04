@@ -1,7 +1,6 @@
 {% extends "global/base.html" %}
 
 {%block content%}
-<!--{% if produtos %}-->
 {% load static %}
 <section class="hero">
     <div class="hero-inner ">
@@ -30,29 +29,29 @@
     </div>
 </section>
 
-<section>
-    <div>
-        <!--{% for produto in produtos %}-->
-            <div>
-                <div>
-                    <picture>
+<section class="ofertas">
+    <div class="ofertas-container">
+        {% for produto in ofertas_do_dia %}
+        {% if produtos %}
+        <div class="oferta-card">
 
-                    </picture>
-                </div>
-                <div>
-                    <div>
-                        <h2>
+            <picture class="oferta-img">
+                <img src="" alt="{{produto.nome}}">
+            </picture>
 
-                        </h2>
-                        <div>
-                            
-                        </div>
-                    </div>
+
+            <div class="oferta-info">
+                <h2 class="oferta-nome">
+                    <a href="#">{{produto.nome}}</a>
+                </h2>
+                <div class="oferta-preco">
+                    <a href="#">R$ {{ produto.preco }}</a>
                 </div>
             </div>
+
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 </section>
-
-<!--{% endif %}-->
 {%endblock content%}

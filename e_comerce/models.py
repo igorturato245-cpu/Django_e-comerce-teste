@@ -5,7 +5,7 @@ class Category(models.Model):
     name=models.CharField( 'Nome',max_length=200,unique=True)
     slug=models.SlugField('Slug',max_length=200,unique=True)
 
-    class Mete:
+    class Meta:
         verbose_name='Categoria'
         verbose_name_plural ='Categorias'
         ordering=['name']
@@ -16,12 +16,13 @@ class Category(models.Model):
 class Produto(models.Model):
     category=models.ForeignKey(Category,related_name='produtos',on_delete=models.CASCADE)
     name=models.CharField('Nome',max_length=200)
-    slug=models.SlugField('Slug',max_length=200,unique=True)
+    slug = models.SlugField('Slug', max_length=200, unique=True)
     descricao=models.TextField('Descrição',blank=True)
     preco=models.DecimalField('Preço',max_digits=10,decimal_places=2)
     estoque=models.PositiveIntegerField('Estoque',default=0)
     disponivel=models.BooleanField('Disponível',default=True)
-    imagem=models.ImageField('Imagem',upload_to='produtos/%/%m/%d',blank=True,null=True)
+    ofertas_do_dia=models.BooleanField('Ofertas do dia', default=False)
+    imagem=models.ImageField('Imagem',upload_to='produtos/%/%/%d',blank=True,null=True)
     criado=models.DateTimeField('Criado em' ,auto_now_add=True)
     atualizado=models.DateTimeField('Atualizado em' ,auto_now=True)
 

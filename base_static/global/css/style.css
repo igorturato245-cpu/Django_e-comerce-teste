@@ -24,15 +24,34 @@ a{ text-decoration: none; color: inherit; }
 ul{ list-style: none; }
 
 /* ================================
+   LAYOUT BASE (para footer "grudar" no fim)
+==================================*/
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* garante que o main preencha espaço disponível */
+main {
+    flex: 1 0 auto;
+    margin-top: var(--header-height); /* compensar header fixo */
+}
+
+/* ================================
    HEADER (fixo)
-   - usamos position: fixed para manter no topo
-   - main ganha margin-top para não ficar escondido
 ==================================*/
 .header{
     width: 100%;
     background-color: var(--bg);
     border-bottom: 1px solid #ddd;
-    font-family: Arial, Helvetica, sans-serif;
 
     position: fixed;
     top: 0;
@@ -43,11 +62,6 @@ ul{ list-style: none; }
     display: flex;
     align-items: center;
     box-shadow: 0 1px 6px rgba(0,0,0,0.05);
-}
-
-/* compensar o header fixo em todo o site */
-main {
-    margin-top: var(--header-height);
 }
 
 /* Container centralizado com largura máxima */
@@ -61,31 +75,35 @@ main {
     height: 100%;
 }
 
-/* ================================
-   LOGO + TÍTULO
-==================================*/
+/* LOGO + TÍTULO */
 .header-logo{
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-right: 12px
+    margin-right: 12px;
 }
 .header-logo img { height: 40px; }
 .header-title { font-size: 24px; font-weight: bold; }
 
-/* ================================
-   MENU DESKTOP
-==================================*/
-.header-nav{ display: flex; align-items: center;margin-left:500px; }
-.header-menu{ display: flex; gap: 25px; align-items: center; margin-left: auto;}
+/* MENU DESKTOP: menu empurra para direita com margin-left: auto */
+.header-nav{
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* empurra para a direita */
+}
+.header-menu{
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
 .header-item{
-    font-size: 16px; cursor: pointer; transition: color .2s ease;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color .2s ease;
 }
 .header-item:hover{ color: var(--primary-color); }
 
-/* ================================
-   HAMBÚRGUER (mobile)
-==================================*/
+/* HAMBÚRGUER (mobile) */
 .hamburger{
     display: none;
     flex-direction: column;
@@ -93,7 +111,10 @@ main {
     cursor: pointer;
 }
 .hamburger span{
-    width: 25px; height: 3px; background: #333; transition: 0.3s;
+    width: 25px;
+    height: 3px;
+    background: #333;
+    transition: 0.3s;
 }
 
 /* ================================
@@ -134,13 +155,11 @@ main {
     }
 
     .hamburger{ display: flex; }
-    .header-nav{ position: relative; }
+    .header-nav{ position: relative; margin-left: 0; }
 }
 
 /* ================================
    HERO / SEÇÃO PRINCIPAL
-   - divide em duas metades: texto (esquerda) e imagem (direita)
-   - inclui padding top para não ficar escondido pelo header
 ==================================*/
 .hero{
     padding-top: calc(var(--header-height) + 32px); /* garante espaçamento abaixo do header */
@@ -229,3 +248,104 @@ main {
 ==================================*/
 button{ font-family: inherit; }
 img{ display: block; max-width: 100%; height: auto; }
+
+/* ================================
+   FOOTER (OPÇÃO RECOMENDADA)
+   - footer sempre no fim sem sobrepor conteúdo
+==================================*/
+/* footer em bloco escuro, texto claro, centralizado */
+footer {
+    background: #1f2937; /* tom escuro */
+    color: #f8fafc;      /* texto claro */
+    padding: 28px 20px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.12);
+    flex-shrink: 0; /* não encolhe quando body usa flex */
+}
+
+/* conteúdo centralizado e largura controlada */
+footer > div {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+/* links no footer (se houver) */
+footer a {
+    color: #e6eefb;
+    text-decoration: none;
+}
+footer a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* ================================
+   OFERTAS DO DIA
+==================================*/
+.ofertas {
+    padding: 60px 20px;
+    background: #000; /* FUNDO PRETO */
+}
+
+.ofertas-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+}
+
+/* CARD DO PRODUTO */
+.oferta-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.08); /* sombra leve branca */
+    transition: transform .25s ease, box-shadow .25s ease;
+    cursor: pointer;
+}
+
+.oferta-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.12);
+}
+
+/* IMAGEM */
+.oferta-img {
+    width: 100%;
+    height: 190px;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #222;
+}
+
+.oferta-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* INFO */
+.oferta-info {
+    margin-top: 15px;
+}
+
+.oferta-nome {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #111; /* título escuro */
+}
+
+.oferta-preco {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
