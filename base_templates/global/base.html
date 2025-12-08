@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% include "global/partials/_head.html" %}
 </head>
+
 <body>
     {% include "global/partials/_header.html"%}
     {%include "global/partials/_propaganda.html"%}
@@ -10,5 +12,40 @@
         {% block content %}{% endblock content %}
         {% include "global/partials/_footer.html"%}
     </main>
+    <script>
+        let lastScroll = 0;
+        const header = document.querySelector('.header');
+
+        window.addEventListener('scroll', () => {
+            const current = window.pageYOffset;
+
+            if (current > lastScroll && current > 80) {
+                // Descendo → esconder header
+                header.classList.add('hide');
+            } else {
+                // Subindo → mostrar header
+                header.classList.remove('hide');
+            }
+
+            lastScroll = current;
+        });
+    </script>
+    <script>
+        const carrossel = document.getElementById("carrosselPerfumes");
+        const btnPrev = document.getElementById("btnPrev");
+        const btnNext = document.getElementById("btnNext");
+
+        btnNext.addEventListener("click", () => {
+            carrossel.scrollBy({ left: 260, behavior: "smooth" });
+        });
+
+        btnPrev.addEventListener("click", () => {
+            carrossel.scrollBy({ left: -260, behavior: "smooth" });
+        });
+    </script>
+
+
+
 </body>
+
 </html>

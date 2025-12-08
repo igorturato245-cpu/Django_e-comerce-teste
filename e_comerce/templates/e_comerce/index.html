@@ -30,28 +30,84 @@
 </section>
 
 <section class="ofertas">
+
+    <h2 class="ofertas-titulo">
+        Ofertas do Dia
+    </h2>
+
+    {% if ofertas_do_dia %}
     <div class="ofertas-container">
         {% for produto in ofertas_do_dia %}
-        {% if produtos %}
         <div class="oferta-card">
 
             <picture class="oferta-img">
-                <img src="" alt="{{produto.nome}}">
+                <img  alt="{{ produto.name }}">
             </picture>
-
 
             <div class="oferta-info">
                 <h2 class="oferta-nome">
-                    <a href="#">{{produto.nome}}</a>
+                    <a href="#">{{ produto.name }}</a>
                 </h2>
                 <div class="oferta-preco">
                     <a href="#">R$ {{ produto.preco }}</a>
                 </div>
+                <div class="oferta-descricao">
+                    <a href="#">{{ produto.descricao }}</a>
+                </div>
             </div>
 
         </div>
-        {% endif %}
         {% endfor %}
     </div>
+
+    {% else %}
+    <div class="sem-ofertas">
+        <p>Nenhuma oferta disponível hoje.</p>
+    </div>
+    {% endif %}
+
 </section>
+
+<section class="secao-perfumes">
+
+    <div class="perfumes-container">
+        
+        <h2 class="perfumes-titulo">Perfumes</h2>
+
+        <button class="seta seta-esquerda" id="btnPrev">‹</button>
+        <button class="seta seta-direita" id="btnNext">›</button>
+
+        <ul class="perfumes-lista" id="carrosselPerfumes">
+
+            {% for produto in perfumes %}
+            <li class="perfume-item">
+
+                <div class="perfume-img">
+                    <img src="{{ produto.imagem.url }}" alt="{{ produto.name }}">
+                </div>
+
+                <h3 class="perfume-nome">
+                    <a href="#">{{ produto.name }}</a>
+                </h3>
+
+                <div class="perfume-info">
+                    <div class="perfume-preco">
+                        <a href="#">R$ {{ produto.preco }}</a>
+                    </div>
+                    <div class="perfume-desc">
+                        <a href="#">{{ produto.descricao }}</a>
+                    </div>
+                </div>
+
+            </li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</section>
+
+
+
 {%endblock content%}

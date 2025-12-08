@@ -52,7 +52,7 @@ main {
     width: 100%;
     background-color: var(--bg);
     border-bottom: 1px solid #ddd;
-
+    transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
     position: fixed;
     top: 0;
     left: 0;
@@ -62,6 +62,10 @@ main {
     display: flex;
     align-items: center;
     box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+
+.header.hide {
+    transform: translateY(-100%);
 }
 
 /* Container centralizado com largura máxima */
@@ -286,26 +290,51 @@ footer a:hover {
    OFERTAS DO DIA
 ==================================*/
 .ofertas {
-    padding: 60px 20px;
-    background: #000; /* FUNDO PRETO */
+    height: 100vh;                 /* ocupa a tela toda */
+    background: #000;
+    padding: 40px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;              /* esconde scroll vertical */
 }
 
-.ofertas-container {
-    max-width: var(--max-width);
-    margin: 0 auto;
+.ofertas-titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
 
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    margin-bottom: 10px; /* empurra os produtos para baixo */
+    margin-top: 10px; /* dá um respiro abaixo do header */
+    width: 45%;
+}
+/* CONTAINER EM MODO CARROSSEL */
+.ofertas-container {
+    display: flex;
     gap: 28px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 20px;
+    max-width: 100%;
+    width: 100%;
+}
+
+.ofertas-container::-webkit-scrollbar {
+    display: none;
 }
 
 /* CARD DO PRODUTO */
 .oferta-card {
+    min-width: 450px;
+    max-width: 450px;
+    min-height: 370px;
     background: #fff;
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(255,255,255,0.08); /* sombra leve branca */
+    box-shadow: 0 4px 12px rgba(255,255,255,0.08);
     transition: transform .25s ease, box-shadow .25s ease;
+    scroll-snap-align: start;
     cursor: pointer;
 }
 
@@ -341,11 +370,248 @@ footer a:hover {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
-    color: #111; /* título escuro */
+    color: #111;
 }
 
 .oferta-preco {
     font-size: 20px;
     font-weight: bold;
-    color: var(--primary-color);
+    color: #000000;
+}
+
+.oferta-descricao {
+    margin-top: 10px;
+}
+
+.oferta-descricao a {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.4;
+    display: block;
+    text-decoration: none;
+    opacity: 0.85;
+}
+
+.oferta-descricao a:hover {
+    opacity: 1;
+}
+
+/* ================================
+   FALLBACK SEM OFERTAS
+==================================*/
+.sem-ofertas {
+    color: white;
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    opacity: .6;
+}
+
+/* ================================
+   MEDIA QUERIES
+==================================*/
+
+/* Tablets */
+@media (max-width: 900px) {
+    .ofertas {
+        padding: 20px 0;
+    }
+
+    .oferta-card {
+        min-width: 220px;
+    }
+
+    .oferta-img {
+        height: 160px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+    .ofertas {
+        padding: 10px 0;
+    }
+
+    .oferta-card {
+        min-width: 200px;
+    }
+
+    .oferta-img {
+        height: 140px;
+    }
+
+    .oferta-preco {
+        font-size: 18px;
+    }
+}
+
+/* Tablets */
+@media (max-width: 900px) {
+    .oferta-descricao a {
+        font-size: 13px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 600px) {
+    .oferta-descricao a {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+}
+
+@media (max-width: 768px) {
+    .ofertas-titulo {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ofertas-titulo {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+}
+
+
+/* ========================== 
+    SEÇÃO PERFUMES 
+==========================*/
+.secao-perfumes {
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px 0;
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+}
+
+/* CONTAINER CENTRAL */
+.perfumes-container {
+    width: 100%;
+    max-width: 1200px;
+    position: relative;
+    padding: 0 20px; /* REDUZIDO – antes esmagava o layout */
+}
+
+/* TÍTULO */
+.perfumes-titulo {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+/* ========================== 
+    LISTA 
+==========================*/
+.perfumes-lista {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 10px 0 20px;
+    scrollbar-width: none;
+}
+.perfumes-lista::-webkit-scrollbar { display: none; }
+
+/* ITEM */
+.perfume-item {
+    flex: 0 0 220px;  /* 👍 LARGURA FIXA – fica perfeito */
+    background: white;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    scroll-snap-align: start;
+    transition: transform .25s;
+}
+.perfume-item:hover {
+    transform: translateY(-6px);
+}
+
+/* IMAGEM */
+.perfume-img {
+    width: 100%;
+    height: 180px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #eee;
+}
+.perfume-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* NOME */
+.perfume-nome {
+    font-size: 18px;
+    margin-top: 12px;
+}
+.perfume-nome a {
+    text-decoration: none;
+    color: #111;
+}
+
+/* PREÇO + DESC */
+.perfume-info {
+    margin-top: 8px;
+}
+.perfume-preco {
+    display: block;
+    font-size: 20px;
+    color: #d12d2d;
+    font-weight: bold;
+}
+.perfume-desc {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 14px;
+}
+
+/* ========================== 
+    SETAS 
+==========================*/
+.seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 10;
+}
+.seta:hover {
+    background: #e9e9e9;
+}
+
+.seta-esquerda { left: -10px; }
+.seta-direita  { right: -10px; }
+
+/* ==========================
+    MEDIA QUERIES
+==========================*/
+@media (max-width: 1024px) {
+    .perfume-item {
+        flex: 0 0 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .perfume-item {
+        flex: 0 0 60%;
+    }
+}
+
+@media (max-width: 480px) {
+    .perfume-item {
+        flex: 0 0 85%;
+    }
 }
