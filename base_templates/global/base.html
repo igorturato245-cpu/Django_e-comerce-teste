@@ -12,6 +12,8 @@
         {% block content %}{% endblock content %}
         {% include "global/partials/_footer.html"%}
     </main>
+
+
     <script>
         let lastScroll = 0;
         const header = document.querySelector('.header');
@@ -30,22 +32,172 @@
             lastScroll = current;
         });
     </script>
+
+
     <script>
-        const carrossel = document.getElementById("carrosselPerfumes");
-        const btnPrev = document.getElementById("btnPrev");
-        const btnNext = document.getElementById("btnNext");
+        // =========================
+        // CARROSSEL PERFUMES
+        // =========================
+        const carrosselPerf = document.getElementById("carrosselPerfumes");
+        const setaPrevPerf = document.getElementById("btnPrev");
+        const setaNextPerf = document.getElementById("btnNext");
 
-        btnNext.addEventListener("click", () => {
-            carrossel.scrollBy({ left: 260, behavior: "smooth" });
+        // calcula o tamanho de um card para rolagem precisa
+        function getScrollAmountPerf() {
+            const item = carrosselPerf.querySelector(".perfume-item");
+            return item ? item.offsetWidth + 22 : 300; // 22 = gap entre os cards
+        }
+
+        // botão → direita
+        setaNextPerf.addEventListener("click", () => {
+            carrosselPerf.scrollBy({
+                left: getScrollAmountPerf(),
+                behavior: "smooth"
+            });
+            updateSetasPerf();
         });
 
-        btnPrev.addEventListener("click", () => {
-            carrossel.scrollBy({ left: -260, behavior: "smooth" });
+        // botão ← esquerda
+        setaPrevPerf.addEventListener("click", () => {
+            carrosselPerf.scrollBy({
+                left: -getScrollAmountPerf(),
+                behavior: "smooth"
+            });
+            updateSetasPerf();
         });
+
+        // controla quando mostrar/esconder as setas
+        function updateSetasPerf() {
+            const maxScroll = carrosselPerf.scrollWidth - carrosselPerf.clientWidth;
+
+            if (carrosselPerf.scrollLeft <= 5) {
+                setaPrevPerf.classList.add("hidden");
+            } else {
+                setaPrevPerf.classList.remove("hidden");
+            }
+
+            if (carrosselPerf.scrollLeft >= maxScroll - 5) {
+                setaNextPerf.classList.add("hidden");
+            } else {
+                setaNextPerf.classList.remove("hidden");
+            }
+        }
+
+        // atualiza setas ao rolar manualmente
+        carrosselPerf.addEventListener("scroll", updateSetasPerf);
+
+        // inicia corretamente
+        updateSetasPerf();
+
     </script>
 
 
+    <script>
+        // =========================
+        // CARROSSEL SABONETES
+        // =========================
+        const carrosselSab = document.getElementById("carrosselsabonetes");
+        const setaPrevSab = document.getElementById("btnPrevSab");
+        const setaNextSab = document.getElementById("btnNextSab");
 
+        // largura base para rolar (um card)
+        function getScrollAmountSab() {
+            const item = carrosselSab.querySelector(".sabonete-item");
+            return item ? item.offsetWidth + 20 : 300; // 20 = gap
+        }
+
+        // botão → direita
+        setaNextSab.addEventListener("click", () => {
+            carrosselSab.scrollBy({
+                left: getScrollAmountSab(),
+                behavior: "smooth"
+            });
+            updateSetasSab();
+        });
+
+        // botão ← esquerda
+        setaPrevSab.addEventListener("click", () => {
+            carrosselSab.scrollBy({
+                left: -getScrollAmountSab(),
+                behavior: "smooth"
+            });
+            updateSetasSab();
+        });
+
+        // controlar visibilidade das setas
+        function updateSetasSab() {
+            const maxScroll = carrosselSab.scrollWidth - carrosselSab.clientWidth;
+
+            if (carrosselSab.scrollLeft <= 5) {
+                setaPrevSab.classList.add("hidden");
+            } else {
+                setaPrevSab.classList.remove("hidden");
+            }
+
+            if (carrosselSab.scrollLeft >= maxScroll - 5) {
+                setaNextSab.classList.add("hidden");
+            } else {
+                setaNextSab.classList.remove("hidden");
+            }
+        }
+
+        carrosselSab.addEventListener("scroll", updateSetasSab);
+
+        updateSetasSab();
+
+    </script>
+
+
+    <script>
+        // =========================
+        // CARROSSEL PRODUTOS DE LIMPEZA
+        // =========================
+        const carLim = document.getElementById("carrosselprodutosdelimpeza");
+        const setaPrevLim = document.getElementById("btnPrevLim");
+        const setaNextLim = document.getElementById("btnNextLim");
+
+        function getScrollAmountLim() {
+            const item = carLim.querySelector(".produto-de-limpeza-item");
+            return item ? item.offsetWidth + 22 : 300;
+        }
+
+        setaNextLim.addEventListener("click", () => {
+            carLim.scrollBy({
+                left: getScrollAmountLim(),
+                behavior: "smooth"
+            });
+            updateSetasLim();
+        });
+
+        setaPrevLim.addEventListener("click", () => {
+            carLim.scrollBy({
+                left: -getScrollAmountLim(),
+                behavior: "smooth"
+            });
+            updateSetasLim();
+        });
+
+        function updateSetasLim() {
+            const maxScroll = carLim.scrollWidth - carLim.clientWidth;
+
+            if (carLim.scrollLeft <= 5) {
+                setaPrevLim.classList.add("hidden");
+            } else {
+                setaPrevLim.classList.remove("hidden");
+            }
+
+            if (carLim.scrollLeft >= maxScroll - 5) {
+                setaNextLim.classList.add("hidden");
+            } else {
+                setaNextLim.classList.remove("hidden");
+            }
+        }
+
+        carLim.addEventListener("scroll", updateSetasLim);
+
+        updateSetasLim();
+
+    </script>
 </body>
 
 </html>

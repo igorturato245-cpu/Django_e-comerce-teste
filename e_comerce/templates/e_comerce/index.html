@@ -29,7 +29,7 @@
     </div>
 </section>
 
-<section class="ofertas">
+<section id="ofertas-do-dia" class="ofertas">
 
     <h2 class="ofertas-titulo">
         Ofertas do Dia
@@ -68,7 +68,7 @@
 
 </section>
 
-<section class="secao-perfumes">
+<section id="perfumes" class="secao-perfumes">
 
     <div class="perfumes-container">
         
@@ -83,14 +83,13 @@
             <li class="perfume-item">
 
                 <div class="perfume-img">
-                    <img src="{{ produto.imagem.url }}" alt="{{ produto.name }}">
+                    <img  alt="{{ produto.name }}">
                 </div>
 
-                <h3 class="perfume-nome">
-                    <a href="#">{{ produto.name }}</a>
-                </h3>
-
                 <div class="perfume-info">
+                    <h3 class="perfume-nome">
+                        <a href="#">{{ produto.name }}</a>
+                    </h3>
                     <div class="perfume-preco">
                         <a href="#">R$ {{ produto.preco }}</a>
                     </div>
@@ -108,6 +107,83 @@
 
 </section>
 
+<section id="sabonetes" class="secao-sabonetes">
 
+    <div class="sabonetes-container">
+        
+        <h2 class="sabonetes-titulo">Sabonetes</h2>
+
+        <button class="seta seta-esquerda" id="btnPrevSab">‹</button>
+        <button class="seta seta-direita" id="btnNextSab">›</button>
+
+        <ul class="sabonetes-lista" id="carrosselsabonetes">
+
+            {% for produto in sabonetes %}
+            <li class="sabonete-item">
+
+                <div class="sabonete-img">
+                    <img  alt="{{ produto.name }}">
+                </div>
+
+                <div class="sabonete-info">
+                    <h3 class="sabonete-nome">
+                        <a href="#">{{ produto.name }}</a>
+                    </h3>
+                    <div class="sabonete-preco">
+                        <a href="#">R$ {{ produto.preco }}</a>
+                    </div>
+                    <div class="sabonete-desc">
+                        <a href="#">{{ produto.descricao }}</a>
+                    </div>
+                </div>
+
+            </li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</section>
+
+
+<section id="produtos-de-limpeza" class="secao-produtos-de-limpeza">
+
+    <div class="prdutos-de-limpeza-container">
+        
+        <h2 class="produtos-de-limpeza-titulo">Produtos de Limpeza</h2>
+
+        <button class="seta seta-esquerda" id="btnPrevLim">‹</button>
+        <button class="seta seta-direita" id="btnNextLim">›</button>
+
+        <ul class="produtos-de-limpeza-lista" id="carrosselprodutosdelimpeza">
+
+            {% for produto in produto_de_limpeza %}
+            <li class="produto-de-limpeza-item">
+
+                <div class="produto-de-limpeza-img">
+                    <img  alt="{{ produto.name }}">
+                </div>
+
+                <div class="produto-de-limpeza-info">
+                    <h3 class="produto-de-limpeza-nome">
+                        <a href="#">{{ produto.name }}</a>
+                    </h3>
+                    <div class="produto-de-limpeza-preco">
+                        <a href="#">R$ {{ produto.preco }}</a>
+                    </div>
+                    <div class="produto-de-limpeza-desc">
+                        <a href="#">{{ produto.descricao }}</a>
+                    </div>
+                </div>
+
+            </li>
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</section>
 
 {%endblock content%}
