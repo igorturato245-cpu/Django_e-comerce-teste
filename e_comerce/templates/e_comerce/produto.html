@@ -1,5 +1,102 @@
 {% extends "global/base.html" %}
+{% load static %}
+{% block content %}
 
-{%block content%}
+<!-- ============================== -->
+<!-- SEÇÃO PRODUTO -->
+<!-- ============================== -->
+<section class="produto-section">
 
-{%endblock content%}
+    <div class="produto-card">
+
+        <!-- FOTO -->
+        <div class="produto-foto-box">
+            <img class="produto-foto" alt="{{ produto.name }}">
+        </div>
+
+        <!-- INFO PRINCIPAL -->
+        <div class="produto-info">
+            
+            <div class="produto-nome-box card-box">
+                <h1 class="produto-nome">{{ produto.name }}</h1>
+            </div>
+
+            <div class="produto-descricao-box card-box">
+                <p class="produto-descricao">{{ produto.descricao }}</p>
+            </div>
+
+            <div class="produto-preco-box card-box">
+                <span class="produto-preco">R$ {{ produto.preco }}</span>
+            </div>
+
+            <!-- QUANTIDADE -->
+            <div class="produto-quantidade-box card-box">
+                <span>Quantidade</span>
+                <div class="quantidade-controle">
+                    <button class="quantidade-btn">-</button>
+                    <span class="quantidade-num">1</span>
+                    <button class="quantidade-btn">+</button>
+                </div>
+            </div>
+
+            <!-- BOTÃO COMPRAR -->
+            <div class="produto-comprar-box card-box">
+                <button class="botao-comprar">
+                    <a href="#">Comprar</a>
+                </button>
+            </div>
+
+        </div>
+
+        <span class="produto-aviso">
+            Produto não é entregue pela nossa loja.
+        </span>
+
+    </div>
+</section>
+
+<section class="produto-ofertas">
+
+    <h2 class="produto-ofertas-titulo">Ofertas do Dia</h2>
+
+    {% if ofertas_do_dia %}
+    <div class="produto-ofertas-container">
+
+        {% for produto in ofertas_do_dia %}
+        <div class="produto-ofertas-card">
+
+            <picture class="produto-ofertas-img">
+                <a href="{% url 'produtos:produto' produto.id %}">
+                    <img  alt="{{ produto.name }}">
+                </a>
+            </picture>
+
+            <div class="produto-ofertas-info">
+                <h2 class="produto-ofertas-nome">
+                    <a href="{% url 'produtos:produto' produto.id %}">
+                        {{ produto.name }}
+                    </a>
+                </h2>
+
+                <div class="produto-ofertas-preco">
+                    R$ {{ produto.preco }}
+                </div>
+
+                <div class="produto-ofertas-descricao">
+                    <a>{{ produto.descricao }}</a>
+                </div>
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+        <p class="produto-sem-ofertas">Nenhuma oferta disponível hoje.</p>
+    {% endif %}
+
+</section>
+
+
+{% endblock content %}

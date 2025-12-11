@@ -198,6 +198,37 @@
         updateSetasLim();
 
     </script>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const btns = document.querySelectorAll(".quantidade-btn");
+            const numEl = document.querySelector(".quantidade-num");
+
+            if (!btns || !numEl) return;
+
+            let quantidade = parseInt(numEl.textContent);
+
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tipo = btn.textContent.trim();
+
+                    if (tipo === "+" && quantidade < 99) {
+                        quantidade++;
+                    }
+
+                    if (tipo === "-" && quantidade > 1) {
+                        quantidade--;
+                    }
+
+                    numEl.textContent = quantidade;
+                });
+            });
+
+        });
+
+    </script>
 </body>
 
 </html>

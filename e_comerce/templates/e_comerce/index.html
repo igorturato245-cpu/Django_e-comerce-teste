@@ -41,12 +41,12 @@
         <div class="oferta-card">
 
             <picture class="oferta-img">
-                <img  alt="{{ produto.name }}">
+                <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
             </picture>
 
             <div class="oferta-info">
                 <h2 class="oferta-nome">
-                    <a href="#">{{ produto.name }}</a>
+                    <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                 </h2>
                 <div class="oferta-preco">
                     <a href="#">R$ {{ produto.preco }}</a>
@@ -83,12 +83,12 @@
             <li class="perfume-item">
 
                 <div class="perfume-img">
-                    <img  alt="{{ produto.name }}">
+                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
                 </div>
 
                 <div class="perfume-info">
                     <h3 class="perfume-nome">
-                        <a href="#">{{ produto.name }}</a>
+                        <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                     </h3>
                     <div class="perfume-preco">
                         <a href="#">R$ {{ produto.preco }}</a>
@@ -122,12 +122,12 @@
             <li class="sabonete-item">
 
                 <div class="sabonete-img">
-                    <img  alt="{{ produto.name }}">
+                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
                 </div>
 
                 <div class="sabonete-info">
                     <h3 class="sabonete-nome">
-                        <a href="#">{{ produto.name }}</a>
+                        <a href='{% url "produtos:produto" produto.id %}'>{{ produto.name }}</a>
                     </h3>
                     <div class="sabonete-preco">
                         <a href="#">R$ {{ produto.preco }}</a>
@@ -162,12 +162,12 @@
             <li class="produto-de-limpeza-item">
 
                 <div class="produto-de-limpeza-img">
-                    <img  alt="{{ produto.name }}">
+                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
                 </div>
 
                 <div class="produto-de-limpeza-info">
                     <h3 class="produto-de-limpeza-nome">
-                        <a href="#">{{ produto.name }}</a>
+                        <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                     </h3>
                     <div class="produto-de-limpeza-preco">
                         <a href="#">R$ {{ produto.preco }}</a>

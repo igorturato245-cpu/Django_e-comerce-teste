@@ -1015,3 +1015,280 @@ footer a:hover {
 
     .seta { display: none; }
 }
+
+
+/* ================================
+     SEÇÃO PRODUTO
+================================ */
+.produto-section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 10px;
+    background: #f3f3f3;
+}
+
+.produto-card {
+    width: 100%;
+    max-width: 1200px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* FOTO DO PRODUTO */
+.produto-foto-box {
+    width: 100%;
+    height: 380px;
+    background: #eee;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.produto-foto {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* GRID INTERNA */
+.produto-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* BOXES INTERNOS */
+.card-box {
+    background: #fafafa;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+/* Texto */
+.produto-nome {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.produto-descricao {
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.produto-preco {
+    font-size: 26px;
+    font-weight: bold;
+    color: #008000;
+}
+
+/* QUANTIDADE */
+.quantidade-controle {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.quantidade-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: none;
+    background: #ddd;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.quantidade-num {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* BOTÃO COMPRAR */
+.botao-comprar {
+    width: 100%;
+    padding: 14px 0;
+    background: #111;
+    color: white;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+.botao-comprar:hover {
+    background: #333;
+}
+
+/* AVISO */
+.produto-aviso {
+    color: #555;
+    font-size: 14px;
+}
+
+
+
+/* ================================
+      RESPONSIVIDADE PRODUTO
+================================ */
+@media (max-width: 900px) {
+    .produto-info {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .produto-card {
+        padding: 20px;
+    }
+
+    .produto-foto-box {
+        height: 260px;
+    }
+
+    .produto-nome {
+        font-size: 22px;
+    }
+
+    .produto-preco {
+        font-size: 22px;
+    }
+}
+
+
+/* ======================================
+      OFERTAS DO DIA — PÁGINA PRODUTO
+=======================================*/
+.produto-ofertas {
+    background: #000;
+    height: 100vh;
+    padding: 40px 35px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* TÍTULO */
+.produto-ofertas-titulo {
+    position: absolute;
+    top: 25px;
+    left: 35px;
+    color: #fff;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+/* CONTAINER CARROSSEL */
+.produto-ofertas-container {
+    display: flex;
+    gap: 26px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-top: 90px;
+    padding-bottom: 20px;
+}
+
+.produto-ofertas-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* CARD */
+.produto-ofertas-card {
+    min-width: 430px;
+    max-width: 430px;
+    min-height: 360px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 18px;
+    scroll-snap-align: start;
+    box-shadow: 0 4px 12px rgba(255,255,255,0.10);
+}
+
+/* IMG */
+.produto-ofertas-img {
+    width: 100%;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #222;
+}
+
+.produto-ofertas-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* INFO */
+.produto-ofertas-info {
+    margin-top: 12px;
+}
+
+.produto-ofertas-nome {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.produto-ofertas-preco {
+    margin-top: 6px;
+    font-size: 20px;
+    font-weight: bold;
+    color: black;
+}
+
+.produto-ofertas-descricao a {
+    margin-top: 8px;
+    display: block;
+    font-size: 14px;
+    color: #444;
+}
+
+/* TEXTO QUANDO NÃO TEM OFERTAS */
+.produto-sem-ofertas {
+    color: white;
+    font-size: 22px;
+    opacity: .6;
+    margin-top: 120px;
+    padding-left: 20px;
+}
+
+/* ======================================
+      RESPONSIVIDADE
+=======================================*/
+
+@media (max-width: 768px) {
+    .produto-ofertas-card {
+        min-width: 280px;
+    }
+
+    .produto-ofertas-img {
+        height: 160px;
+    }
+
+    .produto-ofertas-titulo {
+        font-size: 26px;
+    }
+}
+
+@media (max-width: 480px) {
+    .produto-ofertas-card {
+        min-width: 230px;
+    }
+
+    .produto-ofertas-titulo {
+        font-size: 20px;
+        left: 20px;
+    }
+}
+

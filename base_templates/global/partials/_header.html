@@ -1,4 +1,5 @@
 {% load static %}
+{% if index.html%}
 <header class="header">
 
     <div class="header-container">
@@ -41,3 +42,12 @@
     </div>
 
 </header>
+{% else %}
+<header class="header">
+    <div class="header-container">
+        <a class="header-logo">
+            <img src="{% static 'global/img/OIP.jpeg' %}"alt="Logo" style="height:40px;">
+        </a>
+    </div>
+</header>
+{% endif %}
