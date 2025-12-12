@@ -10,6 +10,7 @@ def index(request):
     ofertas_do_dia=Produto.objects.filter(ofertas_do_dia=True,disponivel=True)[:5]
 
     context={
+        'is_index':True,
         'perfumes':perfumes,
         'sabonetes':sabonetes,
         'produto_de_limpeza':produto_de_limpeza,

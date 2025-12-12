@@ -55,45 +55,41 @@
     </div>
 </section>
 
-<section class="produto-ofertas">
+<section id="ofertas-do-dia" class="ofertas">
 
-    <h2 class="produto-ofertas-titulo">Ofertas do Dia</h2>
+    <h2 class="ofertas-titulo">
+        Ofertas do Dia
+    </h2>
 
     {% if ofertas_do_dia %}
-    <div class="produto-ofertas-container">
-
+    <div class="ofertas-container">
         {% for produto in ofertas_do_dia %}
-        <div class="produto-ofertas-card">
+        <div class="oferta-card">
 
-            <picture class="produto-ofertas-img">
-                <a href="{% url 'produtos:produto' produto.id %}">
-                    <img  alt="{{ produto.name }}">
-                </a>
+            <picture class="oferta-img">
+                <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
             </picture>
 
-            <div class="produto-ofertas-info">
-                <h2 class="produto-ofertas-nome">
-                    <a href="{% url 'produtos:produto' produto.id %}">
-                        {{ produto.name }}
-                    </a>
+            <div class="oferta-info">
+                <h2 class="oferta-nome">
+                    <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                 </h2>
-
-                <div class="produto-ofertas-preco">
-                    R$ {{ produto.preco }}
+                <div class="oferta-preco">
+                    <a href="#">R$ {{ produto.preco }}</a>
                 </div>
-
-                <div class="produto-ofertas-descricao">
-                    <a>{{ produto.descricao }}</a>
+                <div class="oferta-descricao">
+                    <a href="#">{{ produto.descricao }}</a>
                 </div>
             </div>
 
         </div>
         {% endfor %}
-
     </div>
 
     {% else %}
-        <p class="produto-sem-ofertas">Nenhuma oferta disponível hoje.</p>
+    <div class="sem-ofertas">
+        <p>Nenhuma oferta disponível hoje.</p>
+    </div>
     {% endif %}
 
 </section>

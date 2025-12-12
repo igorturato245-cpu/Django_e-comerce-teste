@@ -82,9 +82,9 @@ main {
 /* LOGO + TÍTULO */
 .header-logo{
     display: flex;
-    align-items: center;
+    align-items: right;
     gap: 10px;
-    margin-right: 12px;
+    margin-right: 260px;
 }
 .header-logo img { height: 40px; }
 .header-title { font-size: 24px; font-weight: bold; }
@@ -97,7 +97,7 @@ main {
 }
 .header-menu{
     display: flex;
-    gap: 25px;
+    gap: 30px;
     align-items: center;
 }
 .header-item{
@@ -1167,101 +1167,6 @@ footer a:hover {
     }
 }
 
-
-/* ======================================
-      OFERTAS DO DIA — PÁGINA PRODUTO
-=======================================*/
-.produto-ofertas {
-    background: #000;
-    height: 100vh;
-    padding: 40px 35px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* TÍTULO */
-.produto-ofertas-titulo {
-    position: absolute;
-    top: 25px;
-    left: 35px;
-    color: #fff;
-    font-size: 34px;
-    font-weight: 700;
-}
-
-/* CONTAINER CARROSSEL */
-.produto-ofertas-container {
-    display: flex;
-    gap: 26px;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding-top: 90px;
-    padding-bottom: 20px;
-}
-
-.produto-ofertas-container::-webkit-scrollbar {
-    display: none;
-}
-
-/* CARD */
-.produto-ofertas-card {
-    min-width: 430px;
-    max-width: 430px;
-    min-height: 360px;
-    background: #fff;
-    border-radius: 18px;
-    padding: 18px;
-    scroll-snap-align: start;
-    box-shadow: 0 4px 12px rgba(255,255,255,0.10);
-}
-
-/* IMG */
-.produto-ofertas-img {
-    width: 100%;
-    height: 200px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #222;
-}
-
-.produto-ofertas-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* INFO */
-.produto-ofertas-info {
-    margin-top: 12px;
-}
-
-.produto-ofertas-nome {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.produto-ofertas-preco {
-    margin-top: 6px;
-    font-size: 20px;
-    font-weight: bold;
-    color: black;
-}
-
-.produto-ofertas-descricao a {
-    margin-top: 8px;
-    display: block;
-    font-size: 14px;
-    color: #444;
-}
-
-/* TEXTO QUANDO NÃO TEM OFERTAS */
-.produto-sem-ofertas {
-    color: white;
-    font-size: 22px;
-    opacity: .6;
-    margin-top: 120px;
-    padding-left: 20px;
-}
 
 /* ======================================
       RESPONSIVIDADE

@@ -1,5 +1,5 @@
 {% load static %}
-{% if index.html%}
+{% if is_index%}
 <header class="header">
 
     <div class="header-container">
@@ -28,6 +28,14 @@
                 <li class="header-item">
                     <a href="#produtos-de-limpeza">Produtos de limpeza</a>
                 </li>
+               
+                <li class="header-item">
+                    <a href="{% url 'carrinho:carrinho' %}">Carrinho</a>
+                </li>
+                
+                <li class="header-item">
+                    <a href="#">Faça seu login ou se cadastre</a>
+                </li>
 
             </ul>
         </nav>
@@ -45,7 +53,7 @@
 {% else %}
 <header class="header">
     <div class="header-container">
-        <a class="header-logo">
+        <a>
             <img src="{% static 'global/img/OIP.jpeg' %}"alt="Logo" style="height:40px;">
         </a>
     </div>

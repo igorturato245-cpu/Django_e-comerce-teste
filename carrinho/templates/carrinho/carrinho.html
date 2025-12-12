@@ -1,0 +1,13 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  {% if itens %}
+    <section>
+      <div>Pau grande</div>
+    </section>
+  {% else %}
+    <section>
+      <div>Seu carrinho está vazio</div>
+    </section>
+  {% endif %}
+{% endblock %}

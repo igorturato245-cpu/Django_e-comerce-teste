@@ -6,6 +6,7 @@ def produto(request,produto_id):
     ofertas_do_dia=Produto.objects.filter(ofertas_do_dia=True,disponivel=True)
 
     context={
+        'is_index':False,
         'produto':sigle_product,
         'ofertas_do_dia':ofertas_do_dia,
     }
