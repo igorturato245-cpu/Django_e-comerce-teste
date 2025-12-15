@@ -1,98 +1,88 @@
-{% extends "global/base.html" %}
+{% extends 'global/base.html' %}
 {% load static %}
 {% block content %}
-
-<!-- ============================== -->
-<!-- SEÇÃO PRODUTO -->
-<!-- ============================== -->
-<section class="produto-section">
-
+  <!-- ============================== -->
+  <!-- SEÇÃO PRODUTO -->
+  <!-- ============================== -->
+  <section class="produto-section">
     <div class="produto-card">
+      <!-- FOTO -->
+      <div class="produto-foto-box">
+        <img class="produto-foto" alt="{{ produto.name }}" />
+      </div>
 
-        <!-- FOTO -->
-        <div class="produto-foto-box">
-            <img class="produto-foto" alt="{{ produto.name }}">
+      <!-- INFO PRINCIPAL -->
+      <div class="produto-info">
+        <div class="produto-nome-box card-box">
+          <h1 class="produto-nome">{{ produto.name }}</h1>
         </div>
 
-        <!-- INFO PRINCIPAL -->
-        <div class="produto-info">
-            
-            <div class="produto-nome-box card-box">
-                <h1 class="produto-nome">{{ produto.name }}</h1>
-            </div>
-
-            <div class="produto-descricao-box card-box">
-                <p class="produto-descricao">{{ produto.descricao }}</p>
-            </div>
-
-            <div class="produto-preco-box card-box">
-                <span class="produto-preco">R$ {{ produto.preco }}</span>
-            </div>
-
-            <!-- QUANTIDADE -->
-            <div class="produto-quantidade-box card-box">
-                <span>Quantidade</span>
-                <div class="quantidade-controle">
-                    <button class="quantidade-btn">-</button>
-                    <span class="quantidade-num">1</span>
-                    <button class="quantidade-btn">+</button>
-                </div>
-            </div>
-
-            <!-- BOTÃO COMPRAR -->
-            <div class="produto-comprar-box card-box">
-                <button class="botao-comprar">
-                    <a href="#">Comprar</a>
-                </button>
-            </div>
-
+        <div class="produto-descricao-box card-box">
+          <p class="produto-descricao">{{ produto.descricao }}</p>
         </div>
 
-        <span class="produto-aviso">
-            Produto não é entregue pela nossa loja.
-        </span>
+        <div class="produto-preco-box card-box">
+          <span class="produto-preco">R$ {{ produto.preco }}</span>
+        </div>
 
+        <!-- QUANTIDADE -->
+        <div class="produto-quantidade-box card-box">
+          <span>Quantidade</span>
+          <div class="quantidade-controle">
+            <button class="quantidade-btn">-</button>
+            <span class="quantidade-num">1</span>
+            <button class="quantidade-btn">+</button>
+          </div>
+        </div>
+
+        <div class="produto-comprar-box card-box">
+          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="comprar" />
+            <button type="submit" class="botao-comprar">Comprar</button>
+          </form>
+        </div>
+
+        <div class="produto-comprar-box card-box">
+          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="continuar" />
+            <button type="submit" class="botao-comprar">Adicionar ao carrinho</button>
+          </form>
+        </div>
+      </div>
+
+      <span class="produto-aviso">Produto não é entregue pela nossa loja.</span>
     </div>
-</section>
+  </section>
 
-<section id="ofertas-do-dia" class="ofertas">
-
-    <h2 class="ofertas-titulo">
-        Ofertas do Dia
-    </h2>
+  <section id="ofertas-do-dia" class="ofertas">
+    <h2 class="ofertas-titulo">Ofertas do Dia</h2>
 
     {% if ofertas_do_dia %}
-    <div class="ofertas-container">
+      <div class="ofertas-container">
         {% for produto in ofertas_do_dia %}
-        <div class="oferta-card">
-
+          <div class="oferta-card">
             <picture class="oferta-img">
-                <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
+              <a href="{% url 'produtos:produto' produto.id %}"><img alt="{{ produto.name }}" /></a>
             </picture>
 
             <div class="oferta-info">
-                <h2 class="oferta-nome">
-                    <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
-                </h2>
-                <div class="oferta-preco">
-                    <a href="#">R$ {{ produto.preco }}</a>
-                </div>
-                <div class="oferta-descricao">
-                    <a href="#">{{ produto.descricao }}</a>
-                </div>
+              <h2 class="oferta-nome"><a href="{% url 'produtos:produto' produto.id %}">{{ produto.name }}</a></h2>
+              <div class="oferta-preco">
+                <a href="#">R$ {{ produto.preco }}</a>
+              </div>
+              <div class="oferta-descricao">
+                <a href="#">{{ produto.descricao }}</a>
+              </div>
             </div>
-
-        </div>
+          </div>
         {% endfor %}
-    </div>
-
+      </div>
     {% else %}
-    <div class="sem-ofertas">
+      <div class="sem-ofertas">
         <p>Nenhuma oferta disponível hoje.</p>
-    </div>
+      </div>
     {% endif %}
-
-</section>
-
-
-{% endblock content %}
+  </section>
+{% endblock %}

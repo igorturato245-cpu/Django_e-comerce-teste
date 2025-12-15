@@ -1,11 +1,17 @@
 from django.shortcuts import render
-from e_comerce.models import Produto
+from carrinho.models import ItemCarrinho
 
 def carrinho(request):
-    itens=Produto.objects.all()
+    itens=ItemCarrinho.objects.all()
+
+    subtotal = sum(
+        item.produto.preco * item.quantidade
+        for item in itens
+    )
     
     context = {
         'is_index': False,
-        'itens':itens,
+        'ItemCarrinho':itens,
+        'subtotal':subtotal,
     }
     return render(request, 'carrinho/carrinho.html', context)

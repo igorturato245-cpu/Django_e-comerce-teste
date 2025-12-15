@@ -1,13 +1,103 @@
 {% extends 'global/base.html' %}
 
 {% block content %}
-  {% if itens %}
-    <section>
-      <div>Pau grande</div>
+  {% if ItemCarrinho %}
+    <section class="carrinho">
+      <h2 class="carrinho-titulo">Seu Carrinho</h2>
+
+      <div class="carrinho-container">
+        <table class="carrinho-tabela">
+          <div>
+            <thead class="carrinho-thead">
+              <tr>
+                <th>Produto</th>
+                <th>Descrição</th>
+                <th>Quantidade</th>
+                <th>Preço</th>
+                <th></th>
+              </tr>
+            </thead>
+          </div>
+
+          <div>
+            <tbody class="carrinho-tbody">
+              {% for item in ItemCarrinho %}
+                <tr class="carrinho-item">
+                  <td class="item-imagem">
+                    <img />
+                  </td>
+
+                  <td class="item-info">
+                    {{ item.produto.name }}
+                    <small><span class="item-vendedor">Produto entregue por</span></small>
+                  </td>
+
+                  <td>
+                    <div class="quantidade-box card-box">
+                      <span class="qtd-label">Quantidade</span>
+                      <div class="qtd-controle" data-item-id="{{ item.id }}">
+                        <button class="qtd-btn">-</button>
+                        <span class="qtd-num">{{ item.quantidade }}</span>
+                        <button class="qtd-btn">+</button>
+                      </div>
+                    </div>
+                  </td>
+
+                  <td class="item-preco">R$ {{ item.produto.preco }}</td>
+
+                  <td class="item-remover">
+                    <button class="btn-remover" data-item-id="{{ item.id }}">Remover</button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </div>
+
+          <div class="carrinho-entrega">
+            <div class="entrega-box">
+              <h2>Entrega</h2>
+              <div class="entrega-form">
+                <span>Cálculo de frete e prazo de entrega</span>
+                <input type="text" placeholder="Digite seu cep" />
+                <button>Calcular</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="carrinho-resumo">
+            <h2>Resumo do pedido</h2>
+            <div>
+              <table class="resumo-tabela">
+                <tbody>
+                  <tr>
+                    <td>Subtotal</td>
+                    <td class="resumo-total">R$ {{ subtotal }}</td>
+                  </tr>
+                  <tr>
+                    <td>Frete</td>
+                    <td>R$ 0,00</td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td>Total</td>
+                    <td class="resumo-total">R$ {{ subtotal }}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </table>
+      </div>
     </section>
   {% else %}
-    <section>
-      <div>Seu carrinho está vazio</div>
+    <!-- 🛒 CARRINHO VAZIO -->
+    <section class="carrinho-vazio">
+      <div class="carrinho-vazio-box">
+        <h2>Seu carrinho está vazio</h2>
+        <p>Adicione produtos para continuar sua compra</p>
+        <a href="/" class="btn-voltar">Voltar para a loja</a>
+      </div>
     </section>
   {% endif %}
 {% endblock %}

@@ -1026,6 +1026,7 @@ footer a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     padding: 30px 10px;
     background: #f3f3f3;
 }
@@ -1065,6 +1066,7 @@ footer a:hover {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+    text-align: center;
 }
 
 /* BOXES INTERNOS */
@@ -1089,7 +1091,7 @@ footer a:hover {
 .produto-preco {
     font-size: 26px;
     font-weight: bold;
-    color: #008000;
+    color: #000;
 }
 
 /* QUANTIDADE */
@@ -1098,6 +1100,7 @@ footer a:hover {
     display: flex;
     gap: 15px;
     align-items: center;
+    justify-content: center;
 }
 
 .quantidade-btn {
@@ -1110,6 +1113,10 @@ footer a:hover {
     cursor: pointer;
 }
 
+.quantidade-btn:hover{
+    background: #ccc;
+}
+
 .quantidade-num {
     font-size: 20px;
     font-weight: bold;
@@ -1117,19 +1124,21 @@ footer a:hover {
 
 /* BOTÃO COMPRAR */
 .botao-comprar {
+    display: block;
     width: 100%;
     padding: 14px 0;
-    background: #111;
-    color: white;
+    background: #fafafa;
+    color: black;
     border-radius: 12px;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
     border: none;
+    text-decoration: none;
 }
 
 .botao-comprar:hover {
-    background: #333;
+    background: #dbd3d3;
 }
 
 /* AVISO */
@@ -1197,3 +1206,307 @@ footer a:hover {
     }
 }
 
+
+/* ===== CARRINHO ===== */
+.carrinho {
+  padding: 40px 20px;
+  min-height: 90vb;
+}
+
+.carrinho-titulo {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+.carrinho-container {
+  display: flex;
+  gap: 30px;
+}
+
+.carrinho-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.carrinho-thead th {
+  text-align: left;
+  padding: 15px;
+  border-bottom: 2px solid #ddd;
+}
+
+.carrinho-item td {
+  padding: 20px 15px;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+/* ===== ITEM ===== */
+.item-imagem img {
+  width: 80px;
+  height: auto;
+  border-radius: 8px;
+}
+
+.item-info {
+  font-weight: 500;
+}
+
+.item-vendedor {
+  font-size: 12px;
+  color: #777;
+}
+
+.item-preco {
+  font-weight: bold;
+}
+
+.item-remover a {
+  color: #c00;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* ===== QUANTIDADE ===== */
+.quantidade-box {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  width: fit-content;
+}
+
+.qtd-label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.qtd-controle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qtd-btn {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.qtd-num {
+  font-weight: bold;
+}
+
+/* ===== ENTREGA ===== */
+.carrinho-entrega {
+  margin-top: 30px;
+}
+
+.entrega-box {
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+}
+
+.entrega-form {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.entrega-form input {
+  flex: 1;
+  padding: 8px;
+}
+
+.entrega-form button {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+/* ===== RESUMO ===== */
+.carrinho-resumo {
+  margin-top: 30px;
+}
+
+.resumo-tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.resumo-tabela td {
+  padding: 10px 0;
+}
+
+.resumo-total {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* ===== CARRINHO VAZIO ===== */
+.carrinho-vazio {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px;
+  min-height: 90vb;
+}
+
+.carrinho-vazio-box {
+  text-align: center;
+  border: 1px solid #eee;
+  padding: 40px;
+  border-radius: 12px;
+}
+
+.carrinho-vazio-box h2 {
+  margin-bottom: 10px;
+}
+
+.carrinho-vazio-box p {
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.btn-voltar {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+}
+
+/* =========================
+   TABLET (até 1024px)
+========================= */
+@media (max-width: 1024px) {
+
+  .carrinho-container {
+    flex-direction: column;
+  }
+
+  .carrinho-titulo {
+    font-size: 24px;
+  }
+
+  .produto-quantidade-box {
+    width: 100%;
+  }
+
+  .entrega-form {
+    flex-direction: column;
+  }
+
+  .entrega-form input,
+  .entrega-form button {
+    width: 100%;
+  }
+
+  .resumo-tabela td {
+    font-size: 14px;
+  }
+}
+
+
+/* =========================
+   MOBILE (até 768px)
+========================= */
+@media (max-width: 768px) {
+
+  .carrinho {
+    padding: 20px 10px;
+  }
+
+  .carrinho-titulo {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .carrinho-tabela,
+  .carrinho-thead,
+  .carrinho-tbody,
+  .carrinho-item,
+  .carrinho-item tr,
+  .carrinho-item td {
+    display: block;
+    width: 100%;
+  }
+
+  .carrinho-thead {
+    display: none;
+  }
+
+  .carrinho-item {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+
+  .item-imagem {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .item-imagem img {
+    width: 100px;
+  }
+
+  .item-info {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .produto-quantidade-box {
+    margin: 0 auto 15px auto;
+  }
+
+  .item-preco {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .item-remover {
+    text-align: center;
+  }
+
+  .entrega-box,
+  .carrinho-resumo {
+    margin-top: 20px;
+  }
+
+  .carrinho-vazio-box {
+    width: 100%;
+    padding: 30px 20px;
+  }
+}
+
+
+/* =========================
+   MOBILE PEQUENO (até 480px)
+========================= */
+@media (max-width: 480px) {
+
+  .quantidade-controle {
+    gap: 5px;
+  }
+
+  .quantidade-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+  }
+
+  .quantidade-num {
+    font-size: 14px;
+  }
+
+  .btn-voltar {
+    width: 100%;
+    text-align: center;
+  }
+}

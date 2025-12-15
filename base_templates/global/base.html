@@ -229,6 +229,85 @@
         });
 
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".qtd-controle").forEach(controle => {
+
+                const btns = controle.querySelectorAll(".qtd-btn");
+                const numEl = controle.querySelector(".qtd-num");
+                const itemId = controle.dataset.itemId;
+
+                btns.forEach(btn => {
+                    btn.addEventListener("click", () => {
+
+                        let quantidade = parseInt(numEl.textContent);
+                        const tipo = btn.textContent.trim();
+
+                        if (tipo === "+" && quantidade < 99) quantidade++;
+                        if (tipo === "-" && quantidade > 1) quantidade--;
+
+                        fetch("{% url 'carrinho:atualizar_quantidade' %}", {
+                            method: "POST",
+                            headers: {
+                                "X-CSRFToken": "{{ csrf_token }}",
+                                "Content-Type": "application/x-www-form-urlencoded"
+                            },
+                            body: `item_id=${itemId}&quantidade=${quantidade}`
+                        })
+                            .then(res => res.json())
+                            .then(data => {
+                                numEl.textContent = data.quantidade;
+                                document.querySelectorAll(".resumo-total, .resumo-subtotal")
+                                    .forEach(el => el.textContent = `R$ ${data.subtotal}`);
+                            });
+                    });
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".btn-remover").forEach(btn => {
+
+                btn.addEventListener("click", function () {
+                    const itemId = btn.dataset.itemId;
+                    const linha = btn.closest(".carrinho-item");
+
+                    fetch(`/carrinho/remover/${itemId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+
+                            if (data.success) {
+                                linha.remove();
+
+                                // Atualiza subtotal e total
+                                document.querySelectorAll(".resumo-subtotal, .resumo-total")
+                                    .forEach(el => el.textContent = `R$ ${data.subtotal}`);
+
+                                // Se não sobrar itens → recarrega para mostrar carrinho vazio
+                                if (data.itens_restantes === 0) {
+                                    location.reload();
+                                }
+                            }
+                        });
+                });
+
+            });
+
+        });
+    </script>
+
+
 </body>
 
 </html>
