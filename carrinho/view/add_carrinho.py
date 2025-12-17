@@ -5,23 +5,27 @@ from e_comerce.models import Produto
 def adicionar_ao_carrinho(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
 
-    # 🔹 Por enquanto: 1 carrinho global (depois pode virar por usuário/session)
+    # 🔹 Carrinho único (por enquanto)
     carrinho, created = Carrinho.objects.get_or_create(id=1)
+
+    # 🔹 quantidade vinda do produto
+    quantidade = int(request.POST.get("quantidade", 1))
+    quantidade = max(1, quantidade)
 
     item, created = ItemCarrinho.objects.get_or_create(
         carrinho=carrinho,
         produto=produto,
-        defaults={'quantidade': 1}
+        defaults={'quantidade': quantidade}
     )
 
     if not created:
-        item.quantidade += 1
+        item.quantidade += quantidade
         item.save()
 
     # 🔹 Decide para onde vai depois
     acao = request.POST.get('acao')
 
     if acao == 'comprar':
-        return redirect('carrinho:carrinho')
+        return redirect('carrinho:carrinho')  # ou ver_carrinho
 
-    return redirect('produtos:index')  # página principal
+    return redirect('produtos:index')

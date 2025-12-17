@@ -11,7 +11,7 @@ def carrinho(request):
     
     context = {
         'is_index': False,
-        'ItemCarrinho':itens,
+        'Items':itens,
         'subtotal':subtotal,
     }
     return render(request, 'carrinho/carrinho.html', context)

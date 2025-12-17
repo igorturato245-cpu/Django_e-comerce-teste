@@ -33,6 +33,62 @@
         });
     </script>
 
+    <script>
+        // =========================
+        // CARROSSEL OFERTAS DO DIA
+        // =========================
+        const carrosselOferta = document.getElementById("carrosselOfertas");
+        const setaPrevOferta = document.getElementById("btnoferta");
+        const setaNextOferta = document.getElementById("btnnextoferta");
+
+        // calcula o tamanho de um card para rolagem precisa
+        function getScrollAmountOferta() {
+            const item = carrosselOferta.querySelector(".oferta-card");
+            return item ? item.offsetWidth + 22 : 300; // 22 = gap entre os cards
+        }
+
+        // botão → direita
+        setaNextOferta.addEventListener("click", () => {
+            carrosselOferta.scrollBy({
+                left: getScrollAmountOferta(),
+                behavior: "smooth"
+            });
+            updateSetasOferta();
+        });
+
+        // botão ← esquerda
+        setaPrevOferta.addEventListener("click", () => {
+            carrosselOferta.scrollBy({
+                left: -getScrollAmountOferta(),
+                behavior: "smooth"
+            });
+            updateSetasOferta();
+        });
+
+        // controla quando mostrar/esconder as setas
+        function updateSetasOferta() {
+            const maxScroll = carrosselOferta.scrollWidth - carrosselOferta.clientWidth;
+
+            if (carrosselOferta.scrollLeft <= 5) {
+                setaPrevOferta.classList.add("hidden");
+            } else {
+                setaPrevOferta.classList.remove("hidden");
+            }
+
+            if (carrosselOferta.scrollLeft >= maxScroll - 5) {
+                setaNextOferta.classList.add("hidden");
+            } else {
+                setaNextOferta.classList.remove("hidden");
+            }
+        }
+
+        // atualiza setas ao rolar manualmente
+        carrosselOferta.addEventListener("scroll", updateSetasOferta);
+
+        // inicia corretamente
+        updateSetasOferta();
+    </script>
+
 
     <script>
         // =========================
@@ -200,35 +256,36 @@
     </script>
 
 
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
-            const btns = document.querySelectorAll(".quantidade-btn");
             const numEl = document.querySelector(".quantidade-num");
+            const inputQtds = document.querySelectorAll("#quantidade-input");
+            const btns = document.querySelectorAll(".quantidade-btn");
 
-            if (!btns || !numEl) return;
-
-            let quantidade = parseInt(numEl.textContent);
+            let quantidade = 1;
 
             btns.forEach(btn => {
                 btn.addEventListener("click", () => {
-                    const tipo = btn.textContent.trim();
+                    const acao = btn.dataset.acao;
 
-                    if (tipo === "+" && quantidade < 99) {
-                        quantidade++;
-                    }
-
-                    if (tipo === "-" && quantidade > 1) {
-                        quantidade--;
-                    }
+                    if (acao === "mais" && quantidade < 99) quantidade++;
+                    if (acao === "menos" && quantidade > 1) quantidade--;
 
                     numEl.textContent = quantidade;
+
+                    inputQtds.forEach(input => {
+                        input.value = quantidade;
+                    });
                 });
             });
 
         });
-
     </script>
+
+
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

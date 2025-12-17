@@ -28,16 +28,21 @@
         <!-- QUANTIDADE -->
         <div class="produto-quantidade-box card-box">
           <span>Quantidade</span>
+
           <div class="quantidade-controle">
-            <button class="quantidade-btn">-</button>
+            <button type="button" class="quantidade-btn" data-acao="menos">-</button>
             <span class="quantidade-num">1</span>
-            <button class="quantidade-btn">+</button>
+            <button type="button" class="quantidade-btn" data-acao="mais">+</button>
           </div>
+
+          <!-- quantidade real enviada -->
+          <input type="hidden" id="quantidade-input" value="1" />
         </div>
 
         <div class="produto-comprar-box card-box">
           <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
             {% csrf_token %}
+            <input type="hidden" name="quantidade" id="quantidade-input" value="1">
             <input type="hidden" name="acao" value="comprar" />
             <button type="submit" class="botao-comprar">Comprar</button>
           </form>
@@ -46,6 +51,7 @@
         <div class="produto-comprar-box card-box">
           <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
             {% csrf_token %}
+            <input type="hidden" name="quantidade" id="quantidade-input" value="1">
             <input type="hidden" name="acao" value="continuar" />
             <button type="submit" class="botao-comprar">Adicionar ao carrinho</button>
           </form>

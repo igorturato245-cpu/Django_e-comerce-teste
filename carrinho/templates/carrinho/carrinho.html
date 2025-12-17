@@ -1,93 +1,90 @@
 {% extends 'global/base.html' %}
 
 {% block content %}
-  {% if ItemCarrinho %}
+  {% load static %}
+
+  {% if Items %}
     <section class="carrinho">
       <h2 class="carrinho-titulo">Seu Carrinho</h2>
 
       <div class="carrinho-container">
-        <table class="carrinho-tabela">
-          <div>
-            <thead class="carrinho-thead">
-              <tr>
-                <th>Produto</th>
-                <th>Descrição</th>
-                <th>Quantidade</th>
-                <th>Preço</th>
-                <th></th>
-              </tr>
-            </thead>
+        <!-- PRODUTOS -->
+        <div class="carrinho-card">
+          <div class="carrinho-header">
+            <span></span>
+            <span>Produto</span>
+            <span>Descrição</span>
+            <span>Quantidade</span>
+            <span>Preço</span>
+            <span></span>
           </div>
 
-          <div>
-            <tbody class="carrinho-tbody">
-              {% for item in ItemCarrinho %}
-                <tr class="carrinho-item">
-                  <td class="item-imagem">
-                    <img />
-                  </td>
+          {% for item in Items %}
+            <div class="carrinho-item">
+              <div class="item-imagem">
+                <img src="{% static 'global/img/OIP.jpeg' %}" alt="Logo" style="height:40px;" />
+              </div>
 
-                  <td class="item-info">
-                    {{ item.produto.name }}
-                    <small><span class="item-vendedor">Produto entregue por</span></small>
-                  </td>
+              <div class="item-nome">{{ item.produto.name }}</div>
 
-                  <td>
-                    <div class="quantidade-box card-box">
-                      <span class="qtd-label">Quantidade</span>
-                      <div class="qtd-controle" data-item-id="{{ item.id }}">
-                        <button class="qtd-btn">-</button>
-                        <span class="qtd-num">{{ item.quantidade }}</span>
-                        <button class="qtd-btn">+</button>
-                      </div>
-                    </div>
-                  </td>
+              <div class="item-info">{{ item.produto.descricao }}</div>
 
-                  <td class="item-preco">R$ {{ item.produto.preco }}</td>
+              <div class="quantidade-box">
+                <span class="qtd-label">Quantidade</span>
+                <div class="qtd-controle" data-item-id="{{ item.id }}">
+                  <button class="qtd-btn">-</button>
+                  <span class="qtd-num">{{ item.quantidade }}</span>
+                  <button class="qtd-btn">+</button>
+                </div>
+              </div>
 
-                  <td class="item-remover">
-                    <button class="btn-remover" data-item-id="{{ item.id }}">Remover</button>
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </div>
+              <div class="item-preco">R$ {{ item.produto.preco }}</div>
 
-          <div class="carrinho-entrega">
-            <div class="entrega-box">
-              <h2>Entrega</h2>
-              <div class="entrega-form">
-                <span>Cálculo de frete e prazo de entrega</span>
-                <input type="text" placeholder="Digite seu cep" />
-                <button>Calcular</button>
+              <div class="item-remover">
+                <button class="btn-remover" data-item-id="{{ item.id }}">Remover</button>
               </div>
             </div>
-          </div>
+          {% endfor %}
+        </div>
 
-          <div class="carrinho-resumo">
-            <h2>Resumo do pedido</h2>
-            <div>
-              <table class="resumo-tabela">
-                <tbody>
-                  <tr>
-                    <td>Subtotal</td>
-                    <td class="resumo-total">R$ {{ subtotal }}</td>
-                  </tr>
-                  <tr>
-                    <td>Frete</td>
-                    <td>R$ 0,00</td>
-                  </tr>
-                </tbody>
-                <tfoot>
-                  <tr>
-                    <td>Total</td>
-                    <td class="resumo-total">R$ {{ subtotal }}</td>
-                  </tr>
-                </tfoot>
-              </table>
+        <!-- LATERAL -->
+        <div class="carrinho-lateral">
+          <div class="carrinho-entrega carrinho-card">
+            <h2>Entrega</h2>
+            <span>Cálculo de frete e prazo de entrega</span>
+
+            <div class="entrega-form">
+              <input type="text" placeholder="Digite seu cep" />
+              <button>Calcular</button>
             </div>
           </div>
-        </table>
+
+          <div class="carrinho-resumo carrinho-card">
+            <h2>Resumo do pedido</h2>
+
+            <div class="resumo-linha">
+              <span>Subtotal</span>
+              <span class="resumo-total">R$ {{ subtotal }}</span>
+            </div>
+
+            <div class="resumo-linha">
+              <span>Frete</span>
+              <span>R$ 0,00</span>
+            </div>
+
+            <div class="resumo-linha resumo-final">
+              <span>Total</span>
+              <span class="resumo-total">R$ {{ subtotal }}</span>
+            </div>
+
+            <div class="entrega-form">
+              <form method="post" action="{% url 'produtos:index' %}">
+                {% csrf_token %}
+                <button type="submit">Comprar</button>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   {% else %}
