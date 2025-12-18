@@ -1,0 +1,16 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  <div>
+    <h2>Login</h2>
+
+    {% if user.is_authenticated %}
+      <p>
+        Bem vindo {{ user.name }}
+        Clique <a href="">aqui</a> para sair
+      </p>
+    {% else %}
+      {% include 'cadastro_de_usuarios/partials/_user_form.html' %}
+    {% endif %}
+  </div>
+{% endblock %}

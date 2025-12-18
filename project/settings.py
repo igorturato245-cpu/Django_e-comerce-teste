@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'e_comerce',
     'pagamentos',
     'carrinho',
+    'cadastro_de_usuarios',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,1 @@
+from cadastro_de_usuarios.views import view_usuario
