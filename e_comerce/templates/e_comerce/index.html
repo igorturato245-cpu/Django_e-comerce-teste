@@ -3,6 +3,9 @@
 {%block content%}
 {% load static %}
 <section class="hero">
+
+    {% if not user.is_authenticated %}
+
     <div class="hero-inner ">
         <div class="hero-left">
             <div class="main-content">
@@ -15,9 +18,11 @@
                     1/mês.
                 </div>
                 <div>
-                    <button type="button" {% url "cadastro_login:cadastro" %}>
-                        Se cadastre e começe a comprar.
-                    </button>
+                    <form action="{% url 'cadastro_login:cadastro'%}">
+                        {% csrf_token %}
+                        <input type="hidden" name="cadastro" id="cadastrousers">
+                        <button type="submit" class="">Cadastra e continuar comprando</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -27,6 +32,37 @@
             </div>
         </div>
     </div>
+
+    {% else %}
+
+    <div class="hero-inner ">
+        <div class="hero-left">
+            <div class="main-content">
+                <h2 class="sobretitulo">
+                    Titulo Generico
+                </h2>
+                <div class="descricao">
+                    A Shopify é muito mais do que um criador de sites: ela ajuda você a vender seus produtos,
+                    reduzir os custos e poupar tempo. Comece sem pagar nada e depois aproveite 3 meses por US$
+                    1/mês.
+                </div>
+                <div>
+                    <form action="{% url 'cadastro_login:atualizarcadastro'%}">
+                        {% csrf_token %}
+                        <input type="hidden" name="atualizar" id="atualizarusers">
+                        <button type="submit" class="">Conferir dados de usuarios</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="hero-image">
+                <img src="{% static 'global/img/perfumes.jpeg' %}" alt="Produtos em destaque">
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
 </section>
 
 <section id="ofertas-do-dia" class="ofertas">

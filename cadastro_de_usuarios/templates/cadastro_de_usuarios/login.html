@@ -1,16 +1,20 @@
 {% extends 'global/base.html' %}
 
 {% block content %}
-  <div>
-    <h2>Login</h2>
+  <!-- Adicionado a classe auth-container -->
+  <div class="auth-container">
+    <!-- Adicionado a classe auth-card -->
+    <div class="auth-card">
+      <h2>Login</h2>
 
-    {% if user.is_authenticated %}
-      <p>
-        Bem vindo {{ user.name }}
-        Clique <a href="">aqui</a> para sair
-      </p>
-    {% else %}
-      {% include 'cadastro_de_usuarios/partials/_user_form.html' %}
-    {% endif %}
+      {% if user.is_authenticated %}
+        <p>
+          Bem vindo {{ user.name }}<br>
+          Clique <a href="cadastro_login:logoutuser">aqui</a> para sair
+        </p>
+      {% else %}
+        {% include 'cadastro_de_usuarios/partials/_user_form.html' %}
+      {% endif %}
+    </div>
   </div>
 {% endblock %}

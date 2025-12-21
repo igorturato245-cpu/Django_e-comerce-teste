@@ -1489,3 +1489,155 @@ footer a:hover {
     text-align: center;
   }
 }
+
+
+/* =======================================================
+   CSS Específico para Autenticação (Login, Cadastro, Update)
+   ======================================================= */
+
+/* Container que garante que o form ocupe 100% da altura da tela visível e centralize tudo */
+.auth-container {
+    display: flex;
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center;     /* Centraliza verticalmente */
+    min-height: 100vh;       /* Garante altura total da tela */
+    padding: 20px;
+    /* Se o fundo do site for branco, isso ajuda o card branco a aparecer */
+    background-color: transparent; 
+}
+
+/* O Cartão (Card) onde fica o formulário */
+.auth-card {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 480px; /* Largura máxima bonita para desktops */
+    padding: 40px;
+    border-radius: 12px; /* Bordas arredondadas solicitadas */
+    
+    /* Truque para card branco em fundo branco: Sombra suave + Borda sutil */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); 
+    border: 1px solid #f0f0f0; 
+}
+
+/* Títulos dentro do card */
+.auth-card h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+/* ============================
+   Estilos do Formulário
+   ============================ */
+
+/* Espaçamento entre cada campo (divs dentro do form) */
+.auth-card form > div > div {
+    margin-bottom: 20px;
+}
+
+/* Labels */
+.auth-card label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Inputs de texto, senha, email, selects */
+.auth-card input[type="text"],
+.auth-card input[type="email"],
+.auth-card input[type="password"],
+.auth-card select,
+.auth-card textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px; /* Borda arredondada nos inputs */
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+    box-sizing: border-box; /* Importante para o padding não estourar a largura */
+}
+
+/* Foco nos inputs */
+.auth-card input:focus,
+.auth-card select:focus {
+    border-color: #007bff; /* Mude para a cor principal do seu site */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Texto de ajuda (help_text) */
+.auth-card .help-text, 
+.auth-card p {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* Listas de erros do Django */
+.auth-card .errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0 0;
+    color: #dc3545;
+    font-size: 0.85rem;
+}
+
+/* Botão de Enviar */
+.auth-card button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: #333; /* Ou a cor do seu site */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.auth-card button[type="submit"]:hover {
+    background-color: #555;
+    opacity: 0.9;
+}
+
+/* Links (ex: Logout) */
+.auth-card a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* ============================
+   Media Queries (Responsividade)
+   ============================ */
+
+/* Tablets (até 768px) */
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 30px;
+        max-width: 600px; /* Permite ficar um pouco mais largo no tablet */
+    }
+}
+
+/* Celulares (até 480px) */
+@media (max-width: 480px) {
+    .auth-container {
+        align-items: flex-start; /* No celular, joga para o topo em vez de centralizar */
+        padding: 15px;
+    }
+
+    .auth-card {
+        padding: 20px;
+        box-shadow: none; /* Remove a sombra para parecer mais 'nativo' e limpo */
+        border: 1px solid #eee; /* Mantém uma borda sutil */
+    }
+
+    .auth-card h2 {
+        font-size: 1.5rem;
+    }
+}

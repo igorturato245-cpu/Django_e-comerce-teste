@@ -13,6 +13,8 @@
         <nav class="header-nav">
             <ul class="header-menu">
 
+                {% if not user.is_authenticated %}
+
                 <li class="header-item">
                     <a href="#ofertas-do-dia">Ofertas do dia</a>
                 </li>
@@ -34,9 +36,32 @@
                 </li>
                 
                 <li class="header-item">
-                    <a href="{% url 'cadastro_login:cadastro' %}">Faça seu login ou se cadastre</a>
+                    <a href="{% url 'cadastro_login:loginuser' %}">Faça seu login</a>
                 </li>
 
+                {% else %}
+
+                <li class="header-item">
+                    <a href="#ofertas-do-dia">Ofertas do dia</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="#perfumes">Perfumes</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="#sabonetes">Sabonetes</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="#produtos-de-limpeza">Produtos de limpeza</a>
+                </li>
+               
+                <li class="header-item">
+                    <a href="{% url 'carrinho:carrinho' %}">Carrinho</a>
+                </li>
+
+                {% endif %}
             </ul>
         </nav>
 

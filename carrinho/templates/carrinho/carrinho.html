@@ -77,12 +77,24 @@
               <span class="resumo-total">R$ {{ subtotal }}</span>
             </div>
 
+            {% if not user.is_authenticated %}
             <div class="entrega-form">
-              <form method="post" action="{% url 'produtos:index' %}">
+              <form method="post" action="{% url 'cadastro_login:loginuser' %}">
                 {% csrf_token %}
                 <button type="submit">Comprar</button>
               </form>
             </div>
+
+            {% else %}
+
+            <div class="entrega-form">
+              <form method="post" action="{% url '' %}">
+                {% csrf_token %}
+                <button type="submit">Comprar</button>
+              </form>
+            </div>
+
+            {% endif %}
           </div>
         </div>
       </div>
