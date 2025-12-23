@@ -13,11 +13,15 @@ class Cadastraruser(UserCreationForm):
         required=True,
         min_length=3,
     )
+    username=forms.CharField(
+        required=True,
+        min_length=3
+    )
     email=forms.EmailField()
 
     class Meta:
         model=User
-        fields=('first_name','email','password1','password2',)
+        fields=('first_name','email','username','password1','password2',)
 
     def clean_email(self):
         email=self.cleaned_data.get('email')

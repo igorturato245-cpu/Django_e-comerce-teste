@@ -5,6 +5,8 @@
     <div class="auth-card">
         <h2>Atualização de cadastro</h2>
         {% include "cadastro_de_usuarios/partials/_user_form.html" %}
+        {% url "cadastro_login:index" as url_padrao %}
+        <button type="button" onclick="window.location.href='{{request.META.HTTP_REFERER | default:"url_padrao"}}'">Voltar</button>
     </div>
 </div>
 {% endblock content %}

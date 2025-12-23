@@ -10,10 +10,18 @@
       {% if user.is_authenticated %}
         <p>
           Bem vindo {{ user.name }}<br>
-          Clique <a href="cadastro_login:logoutuser">aqui</a> para sair
+          Clique <a href="{% url 'cadastro_login:logoutuser' %}">aqui</a> para sair
         </p>
       {% else %}
         {% include 'cadastro_de_usuarios/partials/_user_form.html' %}
+        <div>
+          <p>
+            Não tem cadastro?
+            <a href="{% url 'cadastro_login:cadastro' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Clique aqui</a>
+          </p>
+        </div>
+        {% url "cadastro_login:index" as url_home %}
+        <button style="margin-top: 20px; text-align: center; border: none; background-color: white;" type="button" onclick="window.location.href='{{ request.GET.next|default:request.META.HTTP_REFERER|default:url_home }}'">Voltar</button>
       {% endif %}
     </div>
   </div>
