@@ -13,23 +13,43 @@
         {% include "global/partials/_footer.html"%}
     </main>
 
+        <script>
+            // helper to read CSRF cookie for fetch
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        </script>
+
 
     <script>
-        let lastScroll = 0;
-        const header = document.querySelector('.header');
+        // Safe header hide on scroll
+        document.addEventListener('DOMContentLoaded', function () {
+            let lastScroll = 0;
+            const header = document.querySelector('.header');
+            if (!header) return;
 
-        window.addEventListener('scroll', () => {
-            const current = window.pageYOffset;
+            window.addEventListener('scroll', () => {
+                const current = window.pageYOffset;
 
-            if (current > lastScroll && current > 80) {
-                // Descendo → esconder header
-                header.classList.add('hide');
-            } else {
-                // Subindo → mostrar header
-                header.classList.remove('hide');
-            }
+                if (current > lastScroll && current > 80) {
+                    header.classList.add('hide');
+                } else {
+                    header.classList.remove('hide');
+                }
 
-            lastScroll = current;
+                lastScroll = current;
+            });
         });
     </script>
 
@@ -37,56 +57,44 @@
         // =========================
         // CARROSSEL OFERTAS DO DIA
         // =========================
-        const carrosselOferta = document.getElementById("carrosselOfertas");
-        const setaPrevOferta = document.getElementById("btnoferta");
-        const setaNextOferta = document.getElementById("btnnextoferta");
+        document.addEventListener('DOMContentLoaded', function () {
+            const carrosselOferta = document.getElementById("carrosselOfertas");
+            const setaPrevOferta = document.getElementById("btnoferta");
+            const setaNextOferta = document.getElementById("btnnextoferta");
+            if (!carrosselOferta) return;
 
-        // calcula o tamanho de um card para rolagem precisa
-        function getScrollAmountOferta() {
-            const item = carrosselOferta.querySelector(".oferta-card");
-            return item ? item.offsetWidth + 22 : 300; // 22 = gap entre os cards
-        }
-
-        // botão → direita
-        setaNextOferta.addEventListener("click", () => {
-            carrosselOferta.scrollBy({
-                left: getScrollAmountOferta(),
-                behavior: "smooth"
-            });
-            updateSetasOferta();
-        });
-
-        // botão ← esquerda
-        setaPrevOferta.addEventListener("click", () => {
-            carrosselOferta.scrollBy({
-                left: -getScrollAmountOferta(),
-                behavior: "smooth"
-            });
-            updateSetasOferta();
-        });
-
-        // controla quando mostrar/esconder as setas
-        function updateSetasOferta() {
-            const maxScroll = carrosselOferta.scrollWidth - carrosselOferta.clientWidth;
-
-            if (carrosselOferta.scrollLeft <= 5) {
-                setaPrevOferta.classList.add("hidden");
-            } else {
-                setaPrevOferta.classList.remove("hidden");
+            function getScrollAmountOferta() {
+                const item = carrosselOferta.querySelector(".oferta-card");
+                return item ? item.offsetWidth + 22 : 300;
             }
 
-            if (carrosselOferta.scrollLeft >= maxScroll - 5) {
-                setaNextOferta.classList.add("hidden");
-            } else {
-                setaNextOferta.classList.remove("hidden");
+            if (setaNextOferta) {
+                setaNextOferta.addEventListener("click", () => {
+                    carrosselOferta.scrollBy({ left: getScrollAmountOferta(), behavior: "smooth" });
+                    updateSetasOferta();
+                });
             }
-        }
 
-        // atualiza setas ao rolar manualmente
-        carrosselOferta.addEventListener("scroll", updateSetasOferta);
+            if (setaPrevOferta) {
+                setaPrevOferta.addEventListener("click", () => {
+                    carrosselOferta.scrollBy({ left: -getScrollAmountOferta(), behavior: "smooth" });
+                    updateSetasOferta();
+                });
+            }
 
-        // inicia corretamente
-        updateSetasOferta();
+            function updateSetasOferta() {
+                const maxScroll = carrosselOferta.scrollWidth - carrosselOferta.clientWidth;
+                if (setaPrevOferta) {
+                    if (carrosselOferta.scrollLeft <= 5) setaPrevOferta.classList.add("hidden"); else setaPrevOferta.classList.remove("hidden");
+                }
+                if (setaNextOferta) {
+                    if (carrosselOferta.scrollLeft >= maxScroll - 5) setaNextOferta.classList.add("hidden"); else setaNextOferta.classList.remove("hidden");
+                }
+            }
+
+            carrosselOferta.addEventListener("scroll", updateSetasOferta);
+            updateSetasOferta();
+        });
     </script>
 
 
@@ -94,56 +102,44 @@
         // =========================
         // CARROSSEL PERFUMES
         // =========================
-        const carrosselPerf = document.getElementById("carrosselPerfumes");
-        const setaPrevPerf = document.getElementById("btnPrev");
-        const setaNextPerf = document.getElementById("btnNext");
+        document.addEventListener('DOMContentLoaded', function () {
+            const carrosselPerf = document.getElementById("carrosselPerfumes");
+            const setaPrevPerf = document.getElementById("btnPrev");
+            const setaNextPerf = document.getElementById("btnNext");
+            if (!carrosselPerf) return;
 
-        // calcula o tamanho de um card para rolagem precisa
-        function getScrollAmountPerf() {
-            const item = carrosselPerf.querySelector(".perfume-item");
-            return item ? item.offsetWidth + 22 : 300; // 22 = gap entre os cards
-        }
-
-        // botão → direita
-        setaNextPerf.addEventListener("click", () => {
-            carrosselPerf.scrollBy({
-                left: getScrollAmountPerf(),
-                behavior: "smooth"
-            });
-            updateSetasPerf();
-        });
-
-        // botão ← esquerda
-        setaPrevPerf.addEventListener("click", () => {
-            carrosselPerf.scrollBy({
-                left: -getScrollAmountPerf(),
-                behavior: "smooth"
-            });
-            updateSetasPerf();
-        });
-
-        // controla quando mostrar/esconder as setas
-        function updateSetasPerf() {
-            const maxScroll = carrosselPerf.scrollWidth - carrosselPerf.clientWidth;
-
-            if (carrosselPerf.scrollLeft <= 5) {
-                setaPrevPerf.classList.add("hidden");
-            } else {
-                setaPrevPerf.classList.remove("hidden");
+            function getScrollAmountPerf() {
+                const item = carrosselPerf.querySelector(".perfume-item");
+                return item ? item.offsetWidth + 22 : 300;
             }
 
-            if (carrosselPerf.scrollLeft >= maxScroll - 5) {
-                setaNextPerf.classList.add("hidden");
-            } else {
-                setaNextPerf.classList.remove("hidden");
+            if (setaNextPerf) {
+                setaNextPerf.addEventListener("click", () => {
+                    carrosselPerf.scrollBy({ left: getScrollAmountPerf(), behavior: "smooth" });
+                    updateSetasPerf();
+                });
             }
-        }
 
-        // atualiza setas ao rolar manualmente
-        carrosselPerf.addEventListener("scroll", updateSetasPerf);
+            if (setaPrevPerf) {
+                setaPrevPerf.addEventListener("click", () => {
+                    carrosselPerf.scrollBy({ left: -getScrollAmountPerf(), behavior: "smooth" });
+                    updateSetasPerf();
+                });
+            }
 
-        // inicia corretamente
-        updateSetasPerf();
+            function updateSetasPerf() {
+                const maxScroll = carrosselPerf.scrollWidth - carrosselPerf.clientWidth;
+                if (setaPrevPerf) {
+                    if (carrosselPerf.scrollLeft <= 5) setaPrevPerf.classList.add("hidden"); else setaPrevPerf.classList.remove("hidden");
+                }
+                if (setaNextPerf) {
+                    if (carrosselPerf.scrollLeft >= maxScroll - 5) setaNextPerf.classList.add("hidden"); else setaNextPerf.classList.remove("hidden");
+                }
+            }
+
+            carrosselPerf.addEventListener("scroll", updateSetasPerf);
+            updateSetasPerf();
+        });
 
     </script>
 
@@ -152,54 +148,44 @@
         // =========================
         // CARROSSEL SABONETES
         // =========================
-        const carrosselSab = document.getElementById("carrosselsabonetes");
-        const setaPrevSab = document.getElementById("btnPrevSab");
-        const setaNextSab = document.getElementById("btnNextSab");
+        document.addEventListener('DOMContentLoaded', function () {
+            const carrosselSab = document.getElementById("carrosselsabonetes");
+            const setaPrevSab = document.getElementById("btnPrevSab");
+            const setaNextSab = document.getElementById("btnNextSab");
+            if (!carrosselSab) return;
 
-        // largura base para rolar (um card)
-        function getScrollAmountSab() {
-            const item = carrosselSab.querySelector(".sabonete-item");
-            return item ? item.offsetWidth + 20 : 300; // 20 = gap
-        }
-
-        // botão → direita
-        setaNextSab.addEventListener("click", () => {
-            carrosselSab.scrollBy({
-                left: getScrollAmountSab(),
-                behavior: "smooth"
-            });
-            updateSetasSab();
-        });
-
-        // botão ← esquerda
-        setaPrevSab.addEventListener("click", () => {
-            carrosselSab.scrollBy({
-                left: -getScrollAmountSab(),
-                behavior: "smooth"
-            });
-            updateSetasSab();
-        });
-
-        // controlar visibilidade das setas
-        function updateSetasSab() {
-            const maxScroll = carrosselSab.scrollWidth - carrosselSab.clientWidth;
-
-            if (carrosselSab.scrollLeft <= 5) {
-                setaPrevSab.classList.add("hidden");
-            } else {
-                setaPrevSab.classList.remove("hidden");
+            function getScrollAmountSab() {
+                const item = carrosselSab.querySelector(".sabonete-item");
+                return item ? item.offsetWidth + 20 : 300;
             }
 
-            if (carrosselSab.scrollLeft >= maxScroll - 5) {
-                setaNextSab.classList.add("hidden");
-            } else {
-                setaNextSab.classList.remove("hidden");
+            if (setaNextSab) {
+                setaNextSab.addEventListener("click", () => {
+                    carrosselSab.scrollBy({ left: getScrollAmountSab(), behavior: "smooth" });
+                    updateSetasSab();
+                });
             }
-        }
 
-        carrosselSab.addEventListener("scroll", updateSetasSab);
+            if (setaPrevSab) {
+                setaPrevSab.addEventListener("click", () => {
+                    carrosselSab.scrollBy({ left: -getScrollAmountSab(), behavior: "smooth" });
+                    updateSetasSab();
+                });
+            }
 
-        updateSetasSab();
+            function updateSetasSab() {
+                const maxScroll = carrosselSab.scrollWidth - carrosselSab.clientWidth;
+                if (setaPrevSab) {
+                    if (carrosselSab.scrollLeft <= 5) setaPrevSab.classList.add("hidden"); else setaPrevSab.classList.remove("hidden");
+                }
+                if (setaNextSab) {
+                    if (carrosselSab.scrollLeft >= maxScroll - 5) setaNextSab.classList.add("hidden"); else setaNextSab.classList.remove("hidden");
+                }
+            }
+
+            carrosselSab.addEventListener("scroll", updateSetasSab);
+            updateSetasSab();
+        });
 
     </script>
 
@@ -208,50 +194,44 @@
         // =========================
         // CARROSSEL PRODUTOS DE LIMPEZA
         // =========================
-        const carLim = document.getElementById("carrosselprodutosdelimpeza");
-        const setaPrevLim = document.getElementById("btnPrevLim");
-        const setaNextLim = document.getElementById("btnNextLim");
+        document.addEventListener('DOMContentLoaded', function () {
+            const carLim = document.getElementById("carrosselprodutosdelimpeza");
+            const setaPrevLim = document.getElementById("btnPrevLim");
+            const setaNextLim = document.getElementById("btnNextLim");
+            if (!carLim) return;
 
-        function getScrollAmountLim() {
-            const item = carLim.querySelector(".produto-de-limpeza-item");
-            return item ? item.offsetWidth + 22 : 300;
-        }
-
-        setaNextLim.addEventListener("click", () => {
-            carLim.scrollBy({
-                left: getScrollAmountLim(),
-                behavior: "smooth"
-            });
-            updateSetasLim();
-        });
-
-        setaPrevLim.addEventListener("click", () => {
-            carLim.scrollBy({
-                left: -getScrollAmountLim(),
-                behavior: "smooth"
-            });
-            updateSetasLim();
-        });
-
-        function updateSetasLim() {
-            const maxScroll = carLim.scrollWidth - carLim.clientWidth;
-
-            if (carLim.scrollLeft <= 5) {
-                setaPrevLim.classList.add("hidden");
-            } else {
-                setaPrevLim.classList.remove("hidden");
+            function getScrollAmountLim() {
+                const item = carLim.querySelector(".produto-de-limpeza-item");
+                return item ? item.offsetWidth + 22 : 300;
             }
 
-            if (carLim.scrollLeft >= maxScroll - 5) {
-                setaNextLim.classList.add("hidden");
-            } else {
-                setaNextLim.classList.remove("hidden");
+            if (setaNextLim) {
+                setaNextLim.addEventListener("click", () => {
+                    carLim.scrollBy({ left: getScrollAmountLim(), behavior: "smooth" });
+                    updateSetasLim();
+                });
             }
-        }
 
-        carLim.addEventListener("scroll", updateSetasLim);
+            if (setaPrevLim) {
+                setaPrevLim.addEventListener("click", () => {
+                    carLim.scrollBy({ left: -getScrollAmountLim(), behavior: "smooth" });
+                    updateSetasLim();
+                });
+            }
 
-        updateSetasLim();
+            function updateSetasLim() {
+                const maxScroll = carLim.scrollWidth - carLim.clientWidth;
+                if (setaPrevLim) {
+                    if (carLim.scrollLeft <= 5) setaPrevLim.classList.add("hidden"); else setaPrevLim.classList.remove("hidden");
+                }
+                if (setaNextLim) {
+                    if (carLim.scrollLeft >= maxScroll - 5) setaNextLim.classList.add("hidden"); else setaNextLim.classList.remove("hidden");
+                }
+            }
+
+            carLim.addEventListener("scroll", updateSetasLim);
+            updateSetasLim();
+        });
 
     </script>
 
@@ -308,7 +288,7 @@
                         fetch("{% url 'carrinho:atualizar_quantidade' %}", {
                             method: "POST",
                             headers: {
-                                "X-CSRFToken": "{{ csrf_token }}",
+                                "X-CSRFToken": getCookie('csrftoken'),
                                 "Content-Type": "application/x-www-form-urlencoded"
                             },
                             body: `item_id=${itemId}&quantidade=${quantidade}`
@@ -335,10 +315,10 @@
                     const itemId = btn.dataset.itemId;
                     const linha = btn.closest(".carrinho-item");
 
-                    fetch(`/carrinho/remover/${itemId}/`, {
+                        fetch(`/carrinho/remover/${itemId}/`, {
                         method: "POST",
                         headers: {
-                            "X-CSRFToken": "{{ csrf_token }}",
+                            "X-CSRFToken": getCookie('csrftoken'),
                         }
                     })
                         .then(res => res.json())
