@@ -1,8 +1,10 @@
 from django.urls import path
-from pagamentos.views import view_pagamentos
+from . import views
 
-app_name='Pagamentos'
+app_name = 'pagamentos'
 
 urlpatterns = [
-    path('',view_pagamentos.index,name='index')
+    path('start/', views.start_payment, name='start_payment'),
+    path('return/', views.payment_return, name='payment_return'),
+    path('notifications/', views.pagseguro_notification, name='pagseguro_notify'),
 ]

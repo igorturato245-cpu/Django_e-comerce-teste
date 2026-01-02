@@ -8,13 +8,9 @@ dist/
 build/
 eggs/
 parts/
-bin/
-var/
 sdist/
 develop-eggs/
 .installed.cfg
-lib/
-lib64/
 
 # VS Code
 .vscode/
@@ -65,6 +61,7 @@ db.sqlite3
 db.sqlite3-journal
 media/
 static/
+test_db.sqlite3
 
 # Virtual Environment
 venv/
@@ -75,6 +72,22 @@ ENV/
 env.bak/
 venv.bak/
 
-coisasimportantes.txt
+#Cache e celery
+*.pid
+celerybeat-schedule
+celerybeat.pid
 
-.py
+#Arquivos temp:
+*.tmp
+*.temp
+
+#Arquivos de backapp:
+*.bak
+*.backup
+
+#Arquivos de pagamentos
+.env.payments
+.env.production
+
+
+coisasimportantes.txt

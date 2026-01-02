@@ -26,6 +26,11 @@ class Produto(models.Model):
     criado=models.DateTimeField('Criado em' ,auto_now_add=True)
     atualizado=models.DateTimeField('Atualizado em' ,auto_now=True)
 
+    erp_id=models.CharField('ERP ID', max_length=128,null=True,blank=True,db_index=True)
+    remote_price=models.DecimalField(("Preço remoto"), max_digits=10, decimal_places=2,null=True,blank=True)
+    remote_stock=models.IntegerField('Estoque remoto', null=True,blank=True)
+    last_synced = models.DateTimeField('Última sincronização', null=True,blank=True)
+
     class Meta:
         verbose_name='Produto'
         verbose_name_plural='Produtos'
