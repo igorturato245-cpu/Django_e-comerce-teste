@@ -61,34 +61,4 @@
       <span class="produto-aviso">Produto não é entregue pela nossa loja.</span>
     </div>
   </section>
-
-  <section id="ofertas-do-dia" class="ofertas">
-    <h2 class="ofertas-titulo">Ofertas do Dia</h2>
-
-    {% if ofertas_do_dia %}
-      <div class="ofertas-container">
-        {% for produto in ofertas_do_dia %}
-          <div class="oferta-card">
-            <picture class="oferta-img">
-              <a href="{% url 'produtos:produto' produto.id %}"><img alt="{{ produto.name }}" /></a>
-            </picture>
-
-            <div class="oferta-info">
-              <h2 class="oferta-nome"><a href="{% url 'produtos:produto' produto.id %}">{{ produto.name }}</a></h2>
-              <div class="oferta-preco">
-                <a href="#">R$ {{ produto.preco }}</a>
-              </div>
-              <div class="oferta-descricao">
-                <a href="#">{{ produto.descricao }}</a>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <div class="sem-ofertas">
-        <p>Nenhuma oferta disponível hoje.</p>
-      </div>
-    {% endif %}
-  </section>
 {% endblock %}
