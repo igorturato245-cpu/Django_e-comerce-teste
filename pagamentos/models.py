@@ -7,19 +7,26 @@ class Pedido(models.Model):
         ('pending','Pendente'),
         ('paid','Pago'),
         ('cancelled','Cancelado'),
-        ('erp_sent','ERP Enviado'),
-        ('erp_confirmed','ERP Confirmado'),
-        ('erp_error','ERP Error'),
+        ('refunded','Reembolsado'),
+        ('erp_sent','Enviado ao ERP'),
+        ('erp_confirmed','Confirmado no ERP'),
+        ('erp_error','Erro no ERP'),
+    ]
+    ERP_STATUS_CHOICES=[
+        ('sending','Enviando'),
+        ('sent','Enviado'),
+        ('confirmed','Confirmado'),
+        ('error','Erro'),
     ]
 
     usuario = models.ForeignKey(User,null=True,blank=True,on_delete=models.SET_NULL)
     carrinho=models.ForeignKey(Carrinho,null=True,blank=True,on_delete=models.SET_NULL)
-    total=models.DecimalField(max_digits=10, decimal_places=2)
+    total=models.DecimalField(max_digits=10, decimal_places=2 )
     status=models.CharField(max_length=32,choices=STATUS_CHOICES,default='pending')
     created_at=models.DateTimeField(auto_now_add=True)
     payment_reference=models.CharField(max_length=128,null=True,blank=True,db_index=True)
     erp_order_id = models.CharField(max_length=128,null=True,blank=True)
-    erp_status=models.CharField(max_length=32,null=True,blank=True)
+    erp_status=models.CharField(max_length=32,choices=ERP_STATUS_CHOICES,null=True,blank=True)
     metadata=models.JSONField(null=True,blank=True)
 
 

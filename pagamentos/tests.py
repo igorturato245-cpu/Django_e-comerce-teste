@@ -22,41 +22,74 @@ class PagSeguroWebhookTests(TestCase):
         resp = self.client.post(url, data={})
         self.assertEqual(resp.status_code, 400)
     
-    @patch('pagamentos.integrations.pagseguro.requests.get')
-    def test_notification_paid_status(self, mock_get):
-        """
-        Testa recebimento de notificação de pagamento APROVADO (Status 3)
-        """
-        # Simulando resposta XML do PagSeguro
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        # XML simplificado simulando resposta da API v2/v3
-        mock_response.content = b"""
-            <Transaction>
-                <reference>PED-1</reference>
-                <status>3</status>
-                <code>TRANS-12345</code>
-                <lastEventDate>2023-01-01T12:00:00.000-03:00</lastEventDate>
-                <grossAmount>10.00</grossAmount>
-                <netAmount>9.50</netAmount>
-                <paymentMethod><type>1</type></paymentMethod>
-                <installmentCount>1</installmentCount>
-            </Transaction>
-        """
-        mock_get.return_value = mock_response
+    
+    @patch('pagamentos.views.view_pagamentos.pagseguro_integration.validate_notification')
+    @patch('pagamentos.views.view_pagamentos.pagseguro_integration.get_notification_data')
+    @patch('pagamentos.tasks.send_order_to_erp_task.delay')
+    def test_notification_paid_status(self, mock_delay,mock_get_data, mock_validate):
+        mock_validate.return_value = True
+        mock_get_data.return_value = {
+            'reference': 'PED-1',
+            'status': '3',
+            'code': 'TRANS-12345',
+            'lastEventDate': '2023-01-01T12:00:00.000-03:00'
+        }
 
         url = reverse('pagamentos:pagseguro_notify')
         resp = self.client.post(url, data={'notificationCode': 'any-valid-code'})
-        
+
         self.assertEqual(resp.status_code, 200)
-        
-        # Verificar se o pedido foi atualizado no banco
+
         self.pedido.refresh_from_db()
         self.assertEqual(self.pedido.status, 'paid')
-        self.assertEqual(self.pedido.metadata['pagseguro_transaction_code'], 'TRANS-12345')
+        self.assertEqual(
+            self.pedido.metadata['pagseguro_transaction_code'],
+            'TRANS-12345'
+        )
+
 
     def test_payment_return_page(self):
         url = reverse('pagamentos:payment_return')
         resp = self.client.get(url, {'reference': 'PED-1', 'status': '3'})
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'PED-1')
+
+    @patch('pagamentos.views.view_pagamentos.transaction.on_commit')
+    @patch('pagamentos.views.view_pagamentos.pagseguro_integration.get_notification_data')
+    @patch('pagamentos.views.view_pagamentos.pagseguro_integration.validate_notification')
+    @patch('pagamentos.tasks.send_order_to_erp_task.delay')
+    def test_paid_status_triggers_erp_task(self,mock_delay,mock_validate,mock_get_data,mock_on_commit):
+        """
+        Quando PagSeguro envia status = 3 (PAGO),
+        o sistema deve disparar a task de envio ao ERP.
+        """
+
+        pedido=self.pedido
+
+        mock_get_data.return_value={
+            'reference':'PED-1',
+            'status':'3',
+            'code':'TX123',
+            'lastEventDate':'2026-01-15T12:00:00',
+        }
+
+        mock_validate.return_value=True
+
+        mock_on_commit.side_effect=lambda func:func()
+
+        url=reverse('pagamentos:pagseguro_notify')
+
+        payload={
+            'notificationCode':'ABC123',
+            'notificationType':'transaction',
+        }
+
+
+        response=self.client.post(url,payload)
+
+        self.assertEqual(response.status_code, 200)
+
+        pedido.refresh_from_db()
+        self.assertEqual(pedido.status,'paid')
+
+        mock_delay.assert_called_once_with(pedido.pk)

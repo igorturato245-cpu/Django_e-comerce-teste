@@ -31,6 +31,5 @@ def send_order_to_erp_task(self,pedido_id):
         try:
             self.retry(exc=exc,countdown=60 * (2**(self.request.retries)))
         except self.MaxRetriesExceededError:
-            pedido.erp_status='erp_error'
-            pedido.save(update_fields=['erp_status'])
+            pedido.objects.filter(id=pedido_id).update(erp_status='error')
             logger.error(f'Pedido {pedido_id}:Máximo de tentativas excedido')

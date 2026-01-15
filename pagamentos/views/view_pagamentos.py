@@ -96,13 +96,17 @@ def pagseguro_notification(request):
                 logger.error(f"Pedido não encontrado para reference: {ref}")
                 return HttpResponse(status=404)
             
+            if pedido.status == 'paid':
+                return HttpResponse('Ok')
+            
             status_map = {
-                '1': 'pending', '2': 'review', '3': 'paid',
-                '4': 'paid',    '5': 'dispute', '6': 'refunded',
+                '1': 'pending', '2': 'pending', '3': 'paid',
+                '4': 'paid',    '5': 'cancelled', '6': 'refunded',
                 '7': 'cancelled',
             }
             
             new_status = status_map.get(status_code, 'pending')
+
             
             # Só atualiza se houver mudança de status
             if pedido.status != new_status:
@@ -115,11 +119,11 @@ def pagseguro_notification(request):
                 })
                 pedido.save(update_fields=['status', 'metadata'])
                 
-                logger.info(f"Pedido {pedido.id} atualizado para status: {new_status}")
+                logger.info(f"Pedido {pedido.pk} atualizado para status: {new_status}")
                 
                 if new_status == 'paid':
                     # on_commit: Só dispara a task se o DB confirmar a gravação do 'paid'
-                    transaction.on_commit(lambda: send_order_to_erp_task.delay(pedido.id))
+                    transaction.on_commit(lambda: send_order_to_erp_task.delay(pedido.pk)) 
         
         return HttpResponse('OK')
         

@@ -2,8 +2,6 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-ERP_BASE=getattr(settings,'ERP_API_URL',None)
-
 
 def build_order_payload(pedido):
     items=[]
@@ -28,9 +26,13 @@ def build_order_payload(pedido):
 
 
 def send_order(pedido):
-    if not ERP_BASE:
+    if not settings.ERP_API_URL or not settings.ERP_API_KEY:
         raise RuntimeError('ERP_API_URL not configured')
     payload=build_order_payload(pedido)
-    resp=requests.post(f'{ERP_BASE}/orders', json=payload,timeout=10,headers={'Content-Type':'application/json'})
+    headers={
+        'Authorization': f'Bearer {settings.ERP_API_KEY}',
+        'Content-Type':'application/json'
+    }
+    resp=requests.post(f'{settings.ERP_API_URL}/orders', json=payload,timeout=settings.ERP_TIMEOUT,headers=headers)
     resp.raise_for_status()
     return resp.json()
