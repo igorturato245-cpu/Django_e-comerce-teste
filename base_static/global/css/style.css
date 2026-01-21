@@ -394,6 +394,13 @@ footer a:hover {
     color: #000000;
 }
 
+.oferta-preco-antigo {
+    text-decoration: line-through;
+    font-size: 20px;
+    font-weight: bold;
+    color: #000000;
+}
+
 .oferta-descricao {
     margin-top: 10px;
 }
@@ -598,6 +605,13 @@ footer a:hover {
     font-weight: 700;
 }
 
+.perfume-preco-antigo {
+    text-decoration: line-through;
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
 .perfume-desc {
     margin-top: 6px;
     font-size: 13px;
@@ -780,6 +794,13 @@ footer a:hover {
     font-weight: 700;
 }
 
+.sabonete-preco-antigo {
+    text-decoration: line-through;
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
 .sabonete-desc {
     margin-top: 6px;
     font-size: 13px;
@@ -956,6 +977,13 @@ footer a:hover {
 }
 
 .produto-de-limpeza-preco {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.produto-de-limpeza-preco-antigo {
+    text-decoration: line-through;
     margin-top: 8px;
     font-size: 18px;
     font-weight: 700;

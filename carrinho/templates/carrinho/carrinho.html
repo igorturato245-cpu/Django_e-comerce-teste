@@ -1,5 +1,7 @@
 {% extends 'global/base.html' %}
 
+{% load filters %}
+
 {% block content %}
   {% load static %}
 
@@ -38,7 +40,11 @@
                 </div>
               </div>
 
-              <div class="item-preco">R$ {{ item.produto.preco }}</div>
+              {% if item.produto.preco_promocional %}
+              <div class="item-preco">{{ item.produto.preco_promocional|formata_preco}}</div>
+              {% else %}
+              <div class="item-preco">{{ item.produto.preco|formata_preco}}</div>
+              {% endif %}
 
               <div class="item-remover">
                 <button class="btn-remover" data-item-id="{{ item.id }}">Remover</button>
@@ -64,7 +70,7 @@
 
             <div class="resumo-linha">
               <span>Subtotal</span>
-              <span class="resumo-total">R$ {{ subtotal }}</span>
+              <span class="resumo-total">{{ subtotal|formata_preco }}</span>
             </div>
 
             <div class="resumo-linha">
@@ -74,7 +80,7 @@
 
             <div class="resumo-linha resumo-final">
               <span>Total</span>
-              <span class="resumo-total">R$ {{ subtotal }}</span>
+              <span class="resumo-total">{{ subtotal|formata_preco}}</span>
             </div>
 
             {% if not user.is_authenticated %}

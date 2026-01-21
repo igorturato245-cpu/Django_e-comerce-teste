@@ -1,5 +1,7 @@
 {% extends "global/base.html" %}
 
+{% load filters %}
+
 {%block content%}
 {% load static %}
 <section class="hero">
@@ -92,7 +94,10 @@
                         <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                     </h2>
                     <div class="oferta-preco">
-                        <a href="#">R$ {{ produto.preco }}</a>
+                        <a>{{produto.preco_promocional|formata_preco}}</a>
+                    </div>
+                    <div class="oferta-preco-antigo text-center">
+                        <a href="#">{{ produto.preco|formata_preco }}</a>
                     </div>
                     <div class="oferta-descricao">
                         <a href="#">{{ produto.descricao }}</a>
@@ -134,9 +139,18 @@
                     <h3 class="perfume-nome">
                         <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                     </h3>
+                    {% if produto.preco_promocional %}
                     <div class="perfume-preco">
-                        <a href="#">R$ {{ produto.preco }}</a>
+                        <a href="#">{{ produto.preco_promocional|formata_preco }}</a>
                     </div>
+                    <div class="perfume-preco-antigo text-center">
+                        <a href="#">{{ produto.preco|formata_preco }}</a>
+                    </div>
+                    {% else %}
+                    <div class="perfume-preco">
+                        <a href="#">{{ produto.preco|formata_preco }}</a>
+                    </div>
+                    {% endif %}
                     <div class="perfume-desc">
                         <a href="#">{{ produto.descricao }}</a>
                     </div>
@@ -173,9 +187,18 @@
                     <h3 class="sabonete-nome">
                         <a href='{% url "produtos:produto" produto.id %}'>{{ produto.name }}</a>
                     </h3>
+                    {% if produto.preco_promocional %}
                     <div class="sabonete-preco">
-                        <a href="#">R$ {{ produto.preco }}</a>
+                        <a href="#">{{ produto.preco_promocional|formata_preco}}</a>
                     </div>
+                    <div class="sabonete-preco-antigo text-center">
+                        <a href="#">{{ produto.preco|formata_preco}}</a>
+                    </div>
+                    {% else %}
+                    <div class="sabonete-preco">
+                        <a href="#">{{ produto.preco|formata_preco}}</a>
+                    </div>
+                    {% endif %}
                     <div class="sabonete-desc">
                         <a href="#">{{ produto.descricao }}</a>
                     </div>
@@ -213,9 +236,18 @@
                     <h3 class="produto-de-limpeza-nome">
                         <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
                     </h3>
+                    {% if preco.preco_promocional %}
                     <div class="produto-de-limpeza-preco">
-                        <a href="#">R$ {{ produto.preco }}</a>
+                        <a href="#">{{ produto.preco_promocional|formata_preco}}</a>
                     </div>
+                    <div class="produto-de-limpeza-preco-antigo text-center">
+                        <a href="#">{{ produto.preco|formata_preco}}</a>
+                    </div>
+                    {% else %}
+                    <div class="produto-de-limpeza-preco">
+                        <a href="#">{{ produto.preco|formata_preco}}</a>
+                    </div>
+                    {% endif %}
                     <div class="produto-de-limpeza-desc">
                         <a href="#">{{ produto.descricao }}</a>
                     </div>

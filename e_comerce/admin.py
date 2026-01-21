@@ -3,7 +3,7 @@ from e_comerce.models import *
 
 @admin.register(Produto)
 class Produtoadmin(admin.ModelAdmin):
-    list_display=('category','name','preco','disponivel','ofertas_do_dia',)
+    list_display=('category','name','preco','preco_promocional','disponivel','ofertas_do_dia',)
     list_editable=('ofertas_do_dia',)
     ordering=('-id',)
     list_per_page=10

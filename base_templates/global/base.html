@@ -296,7 +296,7 @@
                             .then(res => res.json())
                             .then(data => {
                                 numEl.textContent = data.quantidade;
-                                document.querySelectorAll(".resumo-total, .resumo-subtotal")
+                                document.querySelectorAll(".resumo-total")
                                     .forEach(el => el.textContent = `R$ ${data.subtotal}`);
                             });
                     });

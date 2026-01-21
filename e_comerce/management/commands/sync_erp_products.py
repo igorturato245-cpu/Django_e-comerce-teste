@@ -13,7 +13,6 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> str | None:
         page = 1
         max_pages=1000
-        default_cat,_=Category.objects.get_or_create(name='Geral',defaults={'slug':'geral'})
 
         self.stdout.write('Iniciando sincronização...')
 
@@ -31,24 +30,37 @@ class Command(BaseCommand):
                     erp_id=str(item.get('id'))
                     name=item.get('name','---')
 
+                    cat_name=item.get('category','Geral')
+                    cat_slug=slugify(cat_name)
+
+                    category,_=Category.objects.get_or_create(
+                        name=cat_name,
+                        defaults={'slug':cat_slug}
+                    )
 
                     slug_candidate=slugify(f"{name}-{erp_id}")
+
+                    stock=item.get('stock') or 0
+                    price=item.get('price') or 0
 
                     produto,created=Produto.objects.update_or_create(
                         erp_id=erp_id,
                         defaults={
-                            'category': default_cat,
+                            'category': category,
                             'name': name,
                             'slug': slug_candidate,
-                            'preco': item.get('price') or 0,
-                            'remote_price': item.get('price'),
-                            'remote_stock': item.get('stock'),
-                            'estoque': item.get('stock') or 0,
-                            'last_synced':timezone.now()
+                            'descricao':item.get('description',''),
+                            'preco': price,
+                            'remote_price': price,
+                            'remote_stock':stock,
+                            'estoque':stock,
+                            'disponivel':stock > 0,
+                            'image_url':item.get('image_url'),
+                            'last_synced':timezone.now(),
                         }
                     )
                     action="Criado" if created else "Atualizado"
-                    self.stdout.write(f"{action}:{name} (ID:{erp_id})")
+                    self.stdout.write(f"{action}:{name} (ERP ID:{erp_id})")
 
                 
                 page += 1 

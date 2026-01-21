@@ -1,5 +1,6 @@
 {% extends 'global/base.html' %}
 {% load static %}
+{% load filters %}
 {% block content %}
   <!-- ============================== -->
   <!-- SEÇÃO PRODUTO -->
@@ -21,9 +22,15 @@
           <p class="produto-descricao">{{ produto.descricao }}</p>
         </div>
 
+        {% if produto.preco_promocional %}
         <div class="produto-preco-box card-box">
-          <span class="produto-preco">R$ {{ produto.preco }}</span>
+          <span class="produto-preco">{{ produto.preco_promocional|formata_preco}}</span>
         </div>
+        {% else %}
+        <div class="produto-preco-box card-box">
+          <span class="produto-preco">{{ produto.preco|formata_preco}}</span>
+        </div>
+        {% endif %}
 
         <!-- QUANTIDADE -->
         <div class="produto-quantidade-box card-box">
