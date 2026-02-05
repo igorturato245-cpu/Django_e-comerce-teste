@@ -4,7 +4,11 @@
 <div class="auth-container">
     <div class="auth-card">
         <h2>Atualização de cadastro</h2>
-        {% include "cadastro_de_usuarios/partials/_user_form.html" %}
+        <form method="post" action="{% url "cadastro_login:atualizarcadastro" %}">
+            {% csrf_token %}
+            {% include "cadastro_de_usuarios/partials/_user_form.html"%}
+            <button type="submit">Enviar</button>
+        </form>
         {% url "cadastro_login:index" as url_padrao %}
         <button style="margin-top: 20px; text-align: center; border: none; background-color: white;" type="button" onclick="window.location.href='{{request.META.HTTP_REFERER | default:"url_padrao"}}'">Voltar</button>
     </div>

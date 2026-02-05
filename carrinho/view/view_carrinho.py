@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from carrinho.models import ItemCarrinho,Carrinho
 from e_comerce.services import erp as erp_service
+from decimal import Decimal,ROUND_HALF_UP
 
 def _get_cart_for_request(request):
     if request.user.is_authenticated:
@@ -21,7 +22,7 @@ def carrinho(request):
         subtotal=0
     else:
         itens=carrinho.itens.select_related('produto').all() # type: ignore
-        subtotal = 0
+        subtotal = Decimal('0.00')
 
         for item in itens:
             produto=item.produto
@@ -36,7 +37,12 @@ def carrinho(request):
                     item.quantidade=availabity['stock']
                     item.save()
 
-            subtotal += produto.preco * item.quantidade
+        for i in itens:
+            preco=i.produto.preco_promocional or i.produto.preco
+            preco=Decimal(str(preco))
+            subtotal+=preco*i.quantidade
+
+        subtotal=subtotal.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
             
     context = {
         'is_index': False,

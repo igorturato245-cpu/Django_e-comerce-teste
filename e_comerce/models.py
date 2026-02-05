@@ -1,6 +1,7 @@
 from django.db import models
 from django.urls import reverse
 from utils import utils
+from decimal import Decimal
 
 class Category(models.Model):
     name=models.CharField( 'Nome',max_length=200,unique=True)
@@ -46,11 +47,11 @@ class Produto(models.Model):
         return reverse("produto_detail", args=[self.slug])
     
     def formata_preco(self):
-        return utils.formata_preco(self.preco)
+        return Decimal(utils.formata_preco(self.preco))
     formata_preco.short_description='Preço'
 
     def formata_preco_promo(self):
-        return utils.formata_preco(self.preco_promocional)
+        return Decimal(utils.formata_preco(self.preco_promocional))
     formata_preco_promo.short_description='Preço Promo'
         
     

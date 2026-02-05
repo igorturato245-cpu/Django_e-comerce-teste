@@ -9,7 +9,17 @@
     {% include "global/partials/_header.html"%}
     {%include "global/partials/_propaganda.html"%}
     <main>
-        {% block content %}{% endblock content %}
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {{message.tags}}">
+                {{message}}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}
+        {% endblock content %}
         {% include "global/partials/_footer.html"%}
     </main>
 
@@ -51,6 +61,16 @@
                 lastScroll = current;
             });
         });
+    </script>
+
+    <script>
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(el => {
+                el.style.opacity ='0';
+                el.style.transform = 'translateX(30px)';
+                setTimeout(() => el.remove(),300);
+            })
+        }, 4000)
     </script>
 
     <script>
@@ -297,7 +317,7 @@
                             .then(data => {
                                 numEl.textContent = data.quantidade;
                                 document.querySelectorAll(".resumo-total")
-                                    .forEach(el => el.textContent = `R$ ${data.subtotal}`);
+                                    .forEach(el => el.textContent = ` ${data.subtotal_format}`);
                             });
                     });
                 });
@@ -329,7 +349,7 @@
 
                                 // Atualiza subtotal e total
                                 document.querySelectorAll(".resumo-subtotal, .resumo-total")
-                                    .forEach(el => el.textContent = `R$ ${data.subtotal}`);
+                                    .forEach(el => el.textContent = ` ${data.subtotal_format}`);
 
                                 // Se não sobrar itens → recarrega para mostrar carrinho vazio
                                 if (data.itens_restantes === 0) {

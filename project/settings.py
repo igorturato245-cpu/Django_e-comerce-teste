@@ -104,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
@@ -136,6 +135,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SESSION_COOKIE_AGE=60 * 60 * 24 * 7
 
 SESSION_SAVE_EVERY_REQUEST=False
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 #SESSION_SERIALIZER='django.contrib.sessions.serializers.PickleSerializer'
 

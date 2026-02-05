@@ -1,119 +1,59 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.contrib.auth import password_validation
+from .models import Perfil
 
-class Cadastraruser(UserCreationForm):
-    first_name=forms.CharField(
-        required=True,
-        min_length=3,
-    )
-    last_name=forms.CharField(
-        required=True,
-        min_length=3,
-    )
-    username=forms.CharField(
-        required=True,
-        min_length=3
-    )
-    email=forms.EmailField()
-
+class PerfilForm(forms.ModelForm):
     class Meta:
-        model=User
-        fields=('first_name','email','username','password1','password2',)
+        model=Perfil
+        exclude=('usuario',)
 
-    def clean_email(self):
-        email=self.cleaned_data.get('email')
+class CadastroForm(forms.ModelForm):
 
-        if User.objects.filter(email=email).exists():
-            self.add_error(
-                'email',
-                ValidationError('Esse email já esta cadastrado.',code='invalid')
-            )
-        
-        return email
-    
-
-class Atualizarcadastro(forms.ModelForm):
-    first_name=forms.CharField(
-        min_length=3,
-        max_length=30,
-        required=True,
-        help_text='Required.',
-        error_messages={
-            'min_length':'Nome muito curto.'
-        }
-    )
-    last_name=forms.CharField(
-        min_length=3,
-        max_length=30,
-        required=True,
-        help_text='Required.'
-    )
-    password1=forms.CharField(
+    password=forms.CharField(
         label='Senha',
         strip=False,
-        widget=forms.PasswordInput(attrs={"autocomplete":"new-password"}),
+        widget=forms.PasswordInput(),
         help_text=password_validation.password_validators_help_text_html(),
         required=False,
     )
+
     password2=forms.CharField(
         label="Confirme a senha",
         strip=False,
-        widget=forms.PasswordInput(attrs={'autocomplete':'new-password'}),
+        widget=forms.PasswordInput(),
         help_text='Use a mesma senha de antes.',
         required=False
     )
+
+    def __init__(self,usuario=None,*args, **kwargs):
+        self.usuario=kwargs.pop('usuario',None)
+        super().__init__(*args, **kwargs)
+
     class Meta:
         model=User
-        fields=('first_name','last_name','email',)
-    def save(self,commit=True):
-        cleaned_data=self.cleaned_data
-        user=super().save(commit=False)
-        password = cleaned_data.get('password1')
-
-        if password:
-            user.set_password(password)
-
-        if commit:
-            user.save()
-
-        return user
+        fields=('first_name','last_name','username','password','password2','email'
+                )
+   
     def clean(self):
-        password1=self.cleaned_data.get("password1")
-        password2=self.cleaned_data.get("password2")
+        cleaned = super().clean()
+        
+        # Sua validação manual continua funcionando perfeitamente aqui
+        # pois ela pega os dados do 'cleaned' (que inclui os campos extras acima)
+        
+        usuario_data = cleaned.get('username')
+        email_data = cleaned.get('email')
+        password_data = cleaned.get('password')
+        password2_data = cleaned.get('password2')
 
-        if password1 or password2:
-            if password1 != password2:
-                self.add_error(
-                    'password2',
-                    ValidationError("Senhas não batem!")
-                )
+        # Verificações no banco de dados User padrão
+        if usuario_data and User.objects.filter(username=usuario_data).exclude(pk=self.instance.pk).exists():
+             self.add_error('username', 'Usuário já existe')
 
-        return super().clean()
-    
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        current_email = self.instance.email
+        if email_data and User.objects.filter(email=email_data).exclude(pk=self.instance.pk).exists():
+             self.add_error('email', 'Email já existe')
 
-        if current_email != email:
-            if User.objects.filter(email=email).exists():
-                self.add_error(
-                    'email',
-                    ValidationError("Esse email ja está registrado.", code='invalid')
-                )
-        return email
+        if password_data != password2_data:
+             self.add_error('password2', 'As senhas não conferem')
 
-    def clean_password(self):
-        password1=self.cleaned_data.get('password1')
-
-        if password1:
-            try:
-                password_validation.validate_password(password1)
-            except ValidationError as errors:
-                self.add_error(
-                    'password1',
-                    ValidationError(errors)
-                )
-        return password1
+        return cleaned

@@ -1,6 +1,8 @@
 from django.db import models
 from e_comerce.models import Produto
 from django.contrib.auth.models import User
+from utils import utils
+from decimal import Decimal
 
 class Carrinho(models.Model):
     usuario=models.ForeignKey(User,null=True,blank=True,on_delete=models.CASCADE)

@@ -1,0 +1,46 @@
+{% extends "global/base.html" %}
+
+{% load filters %}
+
+{%block content%}
+{% if cart and cart.itens.all %}
+<table>
+    <tr>
+        <th>Produto</th>
+        <th>Quantidade</th>
+        <th>Preço Unitário</th>
+    </tr>
+    <tbody>
+        {% for item in cart.itens.all %}
+        <tr>
+            <th>{{item.produto.name}}</th>
+            <th>{{item.quantidade}}</th>
+            {% if item.produto.preco_promocional %}
+            <th>{{item.produto.preco_promocional | formata_preco}}</th>
+            {% else %}
+            <th>{{item.produto.preco | formata_preco}}</th>
+            {% endif %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+
+    <h3>{{subtotal}}</h3>
+
+    <form method="post" action="{% url "pagamentos:start_payment" %}">
+        {% csrf_token %}
+        <h3>Metodo de pagamento</h3>
+
+        <label>
+            <input type="radio" name="metodo" value="pagseguro" checked>
+            pagseguro
+        </label>
+
+        <button type="submit">Finalizar compra</button>
+    </form>
+
+</table>
+{% else %}
+<h2>Carrinho esta vazio.</h2>
+{% endif %}
+{%endblock content%}

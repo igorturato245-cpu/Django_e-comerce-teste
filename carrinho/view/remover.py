@@ -2,6 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from carrinho.models import ItemCarrinho
 from carrinho.view.view_carrinho import _get_cart_for_request
+from utils import utils
+from decimal import Decimal,ROUND_HALF_UP
 
 def remover_do_carrinho(request, item_id):
     if request.method == "POST":
@@ -10,7 +12,7 @@ def remover_do_carrinho(request, item_id):
         item.delete()
 
         subtotal = sum(
-            i.produto.preco * i.quantidade
+            (i.produto.preco_promocional if i.produto.preco_promocional else i.produto.preco) * i.quantidade
             for i in cart.itens.select_related('produto').all() #type:ignore
         ) if cart else 0
 
@@ -19,5 +21,6 @@ def remover_do_carrinho(request, item_id):
         return JsonResponse({
             "success": True,
             "subtotal": float(subtotal),
+            "subtotal_format":utils.formata_preco(subtotal),
             "itens_restantes": itens_restantes
         })

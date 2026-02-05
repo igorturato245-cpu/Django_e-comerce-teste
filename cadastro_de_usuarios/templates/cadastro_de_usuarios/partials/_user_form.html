@@ -1,29 +1,33 @@
-<form method="POST">
-  {% csrf_token %}
-  <div>
-    {% for field in form %}
-      <div>
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {{ field.errors }}
-        {% if field.help_text %}
-          <p>{{ field.help_text }}</p>
-        {% endif %}
-      </div>
-    {% endfor %}
-  </div>
-
-  {% if form.non_field_errors %}
-    <div>
-      <div>
-        <div>{{ form.non_field_errors }}</div>
-      </div>
+{% if form_cadastro.errors %}
+    <div class="alert alert-danger">
+        <p>Corrija os erros abaixo:</p>
     </div>
-  {% endif %}
+{% endif %}
 
+{% for field in form_cadastro%}
   <div>
-    <div>
-      <button type="submit">Enviar</button>
-    </div>
+    <label>{{ field.label }}</label>
+    {{ field }}
+    {{ field.errors }}
+    {% if field.help_text %}
+      <p>{{ field.help_text }}</p>
+    {% endif %}
   </div>
-</form>
+{% endfor %}
+
+{% for field in perfil_cadastro%}
+  <div>
+    <label>{{ field.label }}</label>
+    {{ field }}
+    {{ field.errors }}
+    {% if field.help_text %}
+      <p>{{ field.help_text }}</p>
+    {% endif %}
+  </div>
+{% endfor %}
+
+{% if form.non_field_errors %}
+  <div>
+    {{ form.non_field_errors }}
+  </div>
+{% endif %}

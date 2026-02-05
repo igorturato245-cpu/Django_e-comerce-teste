@@ -13,7 +13,13 @@ logger = logging.getLogger(__name__)
 
 # ... (função start_payment e payment_return permanecem iguais) ...
 def start_payment(request):
-    # O código anterior estava correto, mantendo omitido para brevidade
+    if not request.user.is_authenticated:
+        return redirect ('cadastro_login:loginuser')
+    
+    if request.method != 'POST':
+        messages.error(request, 'Método inválido')
+        return redirect('carrinho:carrinho')
+
     cart = _get_cart_for_request(request)
     if not cart or not cart.itens.exists():
         messages.error(request, 'Carrinho vazio')
@@ -24,7 +30,7 @@ def start_payment(request):
     
     with transaction.atomic():
         pedido = Pedido.objects.create(
-            usuario=request.user if request.user.is_authenticated else None,
+            usuario=request.user,
             carrinho=cart,
             total=total,
             status='pending'
@@ -130,3 +136,25 @@ def pagseguro_notification(request):
     except Exception as e:
         logger.error(f"Erro ao processar notificação: {e}")
         return HttpResponse(status=500)
+    
+    
+def checkout(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('cadastro_login:loginuser')
+    
+    cart=_get_cart_for_request(request)
+    
+    if not cart or not cart.itens.exists():
+        messages.error(request,'Carrinho vazio.')
+        return redirect('carrinho:carrinho')
+    
+    itens=cart.itens.select_related('produto').all()
+    total=sum(item.produto.preco * item.quantidade for item in itens)
+    
+    context={
+        'cart':cart,
+        'total':total,
+    }
+    
+    return render(request,'pagamentos/checkout.html',context)
