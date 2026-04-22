@@ -11,6 +11,8 @@ from django.contrib import auth
 from cadastro_de_usuarios import models,forms
 import copy
 from django.contrib import messages
+from carrinho import services
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class BasePerfil(View):
@@ -77,6 +79,13 @@ class CriarUser(BasePerfil):
         perfil.usuario=usuario
         perfil.save()
         
+        #user=self.form_cadastro.get_user()
+        
+        if not self.request.session.session_key:
+            self.request.session.save()
+            
+        old_session_key=self.request.session.session_key
+        
         if password:
             autentica=authenticate(
                 self.request,
@@ -85,6 +94,8 @@ class CriarUser(BasePerfil):
             )
             if autentica:
                 login(self.request,user=usuario)
+                
+                services.marge_carts(old_session_key,usuario)
                 
         self.request.session['carrinho']=self.carrinho
         self.request.session.save()
@@ -152,16 +163,21 @@ class loginviw(View):
             request,'cadastro_de_usuarios/login.html',{'form_cadastro':form}
         ) 
     def post(self,request):
-        carrinho_anonimo=copy.deepcopy(self.request.session.get('carrinho',{}))
-        
         form=AuthenticationForm(self.request,data=self.request.POST)
         
         if form.is_valid():
+            
             user=form.get_user()
+            
+            if not request.session.session_key:
+                request.session.save()
+            
+            old_session_key=request.session.session_key
+            
             auth.login(request,user)
-            self.request.session['carrinho']=carrinho_anonimo
-            self.request.session.modified=True
-            self.request.session.save()
+            
+            services.marge_carts(old_session_key,user)
+            
             messages.success(request,'Sucesso ao fazer login.')
             return redirect('carrinho:carrinho')
         
@@ -169,7 +185,7 @@ class loginviw(View):
                 request,'Erro ao autentificar usuario'
             )
         
-        return redirect('produtos:index')
+        return render(request,'cadastro_de_usuarios/login.html',{'form_cadastro':form})
     
 class logoutviw(View):
     def get(self,*args, **kwargs):
@@ -179,3 +195,108 @@ class logoutviw(View):
         self.request.session.modified=True
         self.request.session.save()
         return redirect('produtos:index')
+    
+class enderecoview(LoginRequiredMixin,View):
+    
+    def setup(self,request,*args, **kwargs):
+        super().setup(request,*args, **kwargs)
+        
+        pk = self.kwargs.get('pk')
+        self.endereco=models.Endereco.objects.filter(
+                    usuario=self.request.user,
+                    pk=pk,
+                ).first()
+            
+        if self.endereco:
+                self.template_name='cadastro_de_usuarios/atualizarend.html'
+            
+                form=forms.EnderecoForm(
+                        data=self.request.POST or None,
+                        instance=self.endereco
+                    )
+        else:
+                self.template_name='cadastro_de_usuarios/endereco.html'
+            
+                form=forms.EnderecoForm(
+                    data=self.request.POST or None
+                )               
+        
+        self.contexto={'endereco':form}
+        self.enderecoform=form
+        
+    def get(self,*args, **kwargs):
+        self.renderizar=render(self.request,self.template_name,self.contexto)
+        return self.renderizar
+    
+    
+class Criarend(enderecoview,LoginRequiredMixin):
+    def post(self,*args, **kwargs):
+        if not self.enderecoform or not self.enderecoform.is_valid():
+            messages.error(self.request, 'Erro ao criar endereço. Verifique os campos abaixo.')
+            return render(self.request, self.template_name, self.contexto)
+                
+        endereco=self.enderecoform.save(commit=False)
+        endereco.usuario=self.request.user
+        endereco.save()
+        
+        messages.success(
+            self.request,'Sucesso ao criar endereço.'
+        )
+        
+        return redirect('carrinho:carrinho')
+    
+class Atualizarend(enderecoview,LoginRequiredMixin):
+    def post(self,*args, **kwargs):
+        form=self.enderecoform
+        if not form or not form.is_valid():
+            return self.renderizar
+                
+        endereco=form.save(commit=False)
+        endereco.usuario=self.request.user
+        endereco.save()
+        
+        messages.success(self.request,'Sucesso ao atualizar endereço.')
+        
+        return redirect('produtos:index')    
+    
+class Listarend(LoginRequiredMixin,View):
+    template_name='cadastro_de_usuarios/lista_end.html'
+    
+    def get(self,request):
+        
+        enderecos=models.Endereco.objects.filter(usuario=self.request.user).order_by('-padrao','-id')
+        
+        return render(request,self.template_name,{'enderecos':enderecos})
+    
+class deletarend(LoginRequiredMixin,View):
+    def post(self,request,pk):
+        
+        endereco=get_object_or_404(
+            models.Endereco,
+            pk=pk,
+            usuario=request.user
+        )
+        
+        endereco.delete()
+        
+        messages.success(self.request,'Sucesso ao deletar endereço.')
+        
+        return redirect('cadastro_login:listarend')
+    
+class defaultend(LoginRequiredMixin,View):
+    def post(self,*args, **kwargs):
+        
+        pk=self.kwargs.get('pk')
+        
+        enderecopadrao=get_object_or_404(
+            models.Endereco,
+            usuario=self.request.user,
+            pk=pk
+        )
+        
+        enderecopadrao.padrao=True
+        enderecopadrao.save()
+        
+        messages.success(self.request,'Endereço padrão alterado com sucesso.')
+        
+        return redirect('cadastro_login:listarend')

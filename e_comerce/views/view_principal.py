@@ -1,19 +1,22 @@
 from django.shortcuts import render,get_list_or_404,redirect
-from e_comerce.models import Produto
+from e_comerce.models import Produto,Category
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
+from django.db.models import Prefetch
 
-def index(request):
-    perfumes=Produto.objects.filter(category__slug='perfume-',disponivel=True)
 
-    sabonetes=Produto.objects.filter(category__slug='sabonete-',disponivel=True)
-    produto_de_limpeza=Produto.objects.filter(category__slug='limpeza-',disponivel=True)
+def index(request): 
 
-    ofertas_do_dia=Produto.objects.filter(ofertas_do_dia=True,disponivel=True)[:5]
+    categories=Category.objects.prefetch_related(
+        Prefetch('produtos',queryset=Produto.objects.filter(disponivel=True),to_attr='lista_produtos')
+    ).filter(produtos__disponivel=True).distinct()
+
+
+    ofertas_do_dia=Produto.objects.filter(ofertas_do_dia=True,disponivel=True).select_related('category')[:5]
 
     context={
         'is_index':True,
-        'perfumes':perfumes,
-        'sabonetes':sabonetes,
-        'produto_de_limpeza':produto_de_limpeza,
+        'categorias':categories,
 
         'ofertas_do_dia':ofertas_do_dia,
     }

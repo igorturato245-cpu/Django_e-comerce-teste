@@ -41,13 +41,13 @@
               </div>
 
               {% if item.produto.preco_promocional %}
-              <div class="item-preco">{{ item.produto.preco_promocional|formata_preco}}</div>
+              <div class="item-preco">{{ item.preco_unitario|formata_preco}}</div>
               {% else %}
-              <div class="item-preco">{{ item.produto.preco|formata_preco}}</div>
+              <div class="item-preco">{{ item.preco_unitario|formata_preco}}</div>
               {% endif %}
 
               <div class="item-remover">
-                <button class="btn-remover" data-item-id="{{ item.id }}">Remover</button>
+                <button class="btn-remover" data-item-id="{{ item.id }}" data-url="{% url 'carrinho:remover' item.id %}">Remover</button>
               </div>
             </div>
           {% endfor %}
@@ -56,13 +56,8 @@
         <!-- LATERAL -->
         <div class="carrinho-lateral">
           <div class="carrinho-entrega carrinho-card">
-            <h2>Entrega</h2>
-            <span>Cálculo de frete e prazo de entrega</span>
-
-            <div class="entrega-form">
-              <input type="text" placeholder="Digite seu cep" />
-              <button>Calcular</button>
-            </div>
+            <h2>Calculo de frete</h2>
+            <span>O frete será calculado automaticamente no checkout, adicione um endereço na área "Endereço" que você verá o valor do frete.</span>
           </div>
 
           <div class="carrinho-resumo carrinho-card">
@@ -116,3 +111,103 @@
     </section>
   {% endif %}
 {% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".qtd-controle").forEach(controle => {
+
+                const btns = controle.querySelectorAll(".qtd-btn");
+                const numEl = controle.querySelector(".qtd-num");
+                const itemId = controle.dataset.itemId;
+
+                btns.forEach(btn => {
+
+                    btn.addEventListener("click", async () => {
+
+                        let quantidade = parseInt(numEl.textContent);
+                        const tipo = btn.textContent.trim();
+
+                        if (tipo === "+" && quantidade < 99) quantidade++;
+                        if (tipo === "-" && quantidade > 1) quantidade--;
+
+                        // 🔒 trava os botões durante a requisição
+                        btns.forEach(b => b.disabled = true);
+
+                        try {
+                            const response = await fetch("{% url 'carrinho:atualizar_quantidade' %}", {
+                                method: "POST",
+                                cache: "no-store",
+                                headers: {
+                                    "X-CSRFToken": getCookie('csrftoken'),
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: `item_id=${itemId}&quantidade=${quantidade}`
+                            });
+
+                            const data = await response.json();
+
+                            // atualiza quantidade exibida
+                            numEl.textContent = data.quantidade;
+
+                            // 🔥 atualiza apenas o subtotal geral
+                            document.querySelectorAll(".resumo-total")
+                                .forEach(el => el.textContent = data.subtotal_format);
+
+                        } catch (error) {
+                            console.error("Erro ao atualizar quantidade:", error);
+                        }
+
+                        // 🔓 libera os botões
+                        btns.forEach(b => b.disabled = false);
+                    });
+
+                });
+
+            });
+
+        });
+</script>
+
+
+        
+<script>     
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.querySelectorAll(".btn-remover").forEach(btn => {
+
+                btn.addEventListener("click", function () {
+                    const itemId = btn.dataset.itemId;
+                    const url = btn.dataset.url;
+                    const linha = btn.closest(".carrinho-item");
+
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": getCookie('csrftoken'),
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+
+                            if (data.success) {
+                                linha.remove();
+
+                                // Atualiza subtotal e total
+                                document.querySelectorAll(".resumo-subtotal, .resumo-total")
+                                    .forEach(el => el.textContent = ` ${data.subtotal_format}`);
+
+                                // Se não sobrar itens → recarrega para mostrar carrinho vazio
+                                if (data.itens_restantes === 0) {
+                                    location.reload();
+                                }
+                            }
+                        });
+                });
+
+            });
+
+        });
+</script>
+{% endblock extra_scripts %}

@@ -1,0 +1,53 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  <section class="feedback-section">
+    <div class="feedback-container shadow-form">
+      <h2 class="feedback-title">Sua opinião é importante</h2>
+
+      <form method="post" >
+        {% csrf_token %}
+        <!-- Avaliação do Site -->
+        <div class="rating-group">
+          <p class="rating-label">Como você avalia nosso site?</p>
+          <div class="rating">
+            <input type="radio" id="site-star5" name="rating_site" value="5" />
+            <label for="site-star5" title="5 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="site-star4" name="rating_site" value="4" />
+            <label for="site-star4" title="4 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="site-star3" name="rating_site" value="3" />
+            <label for="site-star3" title="3 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="site-star2" name="rating_site" value="2" />
+            <label for="site-star2" title="2 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="site-star1" name="rating_site" value="1" required />
+            <label for="site-star1" title="1 estrela" class="transition-fast">★</label>
+          </div>
+        </div>
+
+        <!-- Avaliação do Produto -->
+        <div class="rating-group">
+          <p class="rating-label">Como você avalia nosso produto?</p>
+          <div class="rating">
+            <input type="radio" id="prod-star5" name="rating_prod" value="5" />
+            <label for="prod-star5" title="5 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="prod-star4" name="rating_prod" value="4" />
+            <label for="prod-star4" title="4 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="prod-star3" name="rating_prod" value="3" />
+            <label for="prod-star3" title="3 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="prod-star2" name="rating_prod" value="2" />
+            <label for="prod-star2" title="2 estrelas" class="transition-fast">★</label>
+            <input type="radio" id="prod-star1" name="rating_prod" value="1" required />
+            <label for="prod-star1" title="1 estrela" class="transition-fast">★</label>
+          </div>
+        </div>
+
+        <!-- Comentário -->
+        <div class="feedback-form-wrapper">
+          <h3>Deixe um feedback para que possamos evoluir:</h3>
+            <textarea name="feedback" id="feedback_user" placeholder="Digite sua mensagem" class="transition-medium"></textarea>
+            <button type="submit" class="btn-submit transition-medium">Enviar Avaliação</button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

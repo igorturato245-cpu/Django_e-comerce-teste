@@ -74,7 +74,8 @@ venv.bak/
 
 #Cache e celery
 *.pid
-celerybeat-schedule
+celerybeat-schedule.dat
+celerybeat-schedule.dir
 celerybeat.pid
 
 #Arquivos temp:

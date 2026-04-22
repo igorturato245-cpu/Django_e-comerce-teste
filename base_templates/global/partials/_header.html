@@ -6,75 +6,60 @@
 
         <!-- Logo + título -->
         <a href="/" class="header-logo">
-            <img src="{% static 'global/img/OIP.jpeg' %}"alt="Logo" style="height:40px;">
+            <img src="{% static 'global/img/OIP.jpeg' %}" alt="Logo" style="height:40px;">
         </a>
 
         <!-- Menu -->
         <nav class="header-nav">
+            <!-- Hambúrguer (mobile) -->
+            <div id="hamburger" class="hamburger" >
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
             <ul class="header-menu">
 
                 {% if not user.is_authenticated %}
 
                 <li class="header-item">
-                    <a href="#ofertas-do-dia">Ofertas do dia</a>
-                </li>
-
-                <li class="header-item">
-                    <a href="#perfumes">Perfumes</a>
-                </li>
-
-                <li class="header-item">
-                    <a href="#sabonetes">Sabonetes</a>
-                </li>
-
-                <li class="header-item">
-                    <a href="#produtos-de-limpeza">Produtos de limpeza</a>
-                </li>
-               
-                <li class="header-item">
                     <a href="{% url 'carrinho:carrinho' %}">Carrinho</a>
                 </li>
-                
+
                 <li class="header-item">
                     <a href="{% url 'cadastro_login:loginuser' %}">Faça seu login</a>
                 </li>
 
+                <li class="header-item">
+                    <a href="{% url 'cadastro_login:cadastro' %}">Cadastro</a>
+                </li>
+
+
                 {% else %}
 
                 <li class="header-item">
-                    <a href="#ofertas-do-dia">Ofertas do dia</a>
+                    <a href="{% url 'pagamentos:meus_pedidos' %}">Meus Pedidos</a>
                 </li>
 
-                <li class="header-item">
-                    <a href="#perfumes">Perfumes</a>
-                </li>
-
-                <li class="header-item">
-                    <a href="#sabonetes">Sabonetes</a>
-                </li>
-
-                <li class="header-item">
-                    <a href="#produtos-de-limpeza">Produtos de limpeza</a>
-                </li>
-               
                 <li class="header-item">
                     <a href="{% url 'carrinho:carrinho' %}">Carrinho</a>
                 </li>
 
                 <li class="header-item">
-                    <a href="{% url 'cadastro_login:loginuser' %}">Logout</a>
+                    <a href="{% url 'cadastro_login:listarend' %}">Endereço</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="{% url 'cadastro_login:cadastro' %}">Minhas informações</a>
+                </li>
+
+                <li class="header-item">
+                    <a href="{% url 'cadastro_login:loginuser'  %}">Logout</a>
                 </li>
 
                 {% endif %}
             </ul>
         </nav>
 
-        <!-- Hambúrguer (mobile) -->
-        <div class="hamburger" onclick="document.querySelector('.header-menu').classList.toggle('active')">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
 
     </div>
 
@@ -83,7 +68,7 @@
 <header class="header">
     <div class="header-container">
         <a>
-            <img src="{% static 'global/img/OIP.jpeg' %}"alt="Logo" style="height:40px;">
+            <img src="{% static 'global/img/OIP.jpeg' %}" alt="Logo" style="height:40px;">
         </a>
     </div>
 </header>

@@ -1,0 +1,136 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  <div class="detalhe-container">
+    <div class="detalhe-header">
+      <span></span>
+
+      <span>Status</span>
+      <span>Payment Reference</span>
+      <span>Ordem do fornecedo</span>
+      <span>Status do fornecedor</span>
+      <span>Produtos</span>
+      {% if pedido.tracking_code %}
+      <span>Código de rastreio</span>
+      <span>Url de rastreio</span>
+      <span>Data de envio</span>
+      {% endif %}
+      <span>Total</span>
+
+      <span></span>
+    </div>
+
+    <div class="detalhe-info">
+      <div class="detalhe-info-txt">
+        <span></span>
+
+        <span>{{ pedido.status }}</span>
+        <span>{{ pedido.payment_reference }}</span>
+        <span>{{ pedido.erp_order_id }}</span>
+        <span>{{ pedido.erp_status }}</span>
+
+        <span>
+          {% for produtos in itens %}
+            {{ produtos.produto_name }}{% if loop.last %}. {% else %}, {% endif %}
+          {% endfor %}
+        </span>
+
+        
+        {% if pedido.tracking_code %}
+        <span>{{pedido.tracking_code}}</span>
+        <span>{{pedido.tracking_url}}</span>
+        <span>{{pedido.data_envio}}</span>
+        {% endif %}
+
+        <span>{{pedido.total}}</span>
+
+        <span></span>
+      </div>
+        
+
+      {% if pedido.erp_status == 'received' %}
+        {% if not pedido.ja_avaliado %}
+        <div class="detalhe-avaliacao-box">
+          <p class="detalhe-confimacao">Já recebeu seu pedido? Confirme aqui:</p>
+          <a class="detalhe-avaliacao transition-fast" href="{% url 'pagamentos:avaliar_pedido' pedido.id %}">Recebi meu pedido</a>
+        </div>
+          
+        {% else %}
+        <div class="badge-sucesso">
+          <span>Pedido Avaliado ✓</span>
+        </div>
+
+        {% endif %}
+        
+      {% endif %}
+    </div>
+
+    {% if pedido.status == 'pending' and pedido.erp_status == 'pending' %}
+      <div class="detalhe-redirect">
+        <form method="post" action="{% url 'pagamentos:retry_payment' pedido.id %}">
+          {% csrf_token %}
+          <p class="detalhe-help">Caso o status estaja "pending", efetue o pagamento a baixo para concluir a compra.</p>
+          <button type="submit" class="detalhe-paymente-redirect">Pagamento</button>
+        </form>
+      </div>
+
+    {% elif pedido.pode_cancelar_direto %}
+      <div class="detalhe-redirect">
+        <form id='formCancelar' method="post" action="{% url 'pagamentos:cancel_payment' pedido.id %}">
+          {% csrf_token %}
+          <p class="detalhe-help">Caso queria cancelar o pedido, clique no botão abaixo.</p>
+          <small class="detalhe-small-info">Caso o produto não esteja na condição original, o reembolso poderá ser negado.</small>
+          <button type="button" onclick="confirmarAcao('formCancelar', 'Tem certeza que deseja cancelar?')" class="detalhe-paymente-redirect">Cancelamento e reembolso</button>
+        </form>
+      </div>
+
+      
+    
+    {% elif pedido.pode_solicitar_reembolso %}
+      <div class="detalhe-redirect">
+        {% if pedido.erp_status == 'received' %}
+          <p class="detalhe-help">Caso queria solicitar um reembolso com a devolução do produto, clique no botão abaixo.</p>
+        {% else %}
+          <p class="detalhe-help">O produto ja esta a caminho. Para cancelar, aguarde o recebimento e solicite o reembolso.</p>
+        {% endif %}
+          <small class="detalhe-small-info" >Caso o produto não esteja na condição original, o reembolso poderá ser negado.</small>
+          <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:devoluacao_reembolso' pedido.id %}">Reembolso e devolução</a>
+      </div>
+
+        
+    {% elif pedido.status == 'cancelled'%}
+      <div class="detalhe-redirect">
+        <p class="detalhe-help">
+          {% if pedido.erp_status == 'cancelled' %}
+            Cancelamento efetuado, veja os termos de devolução abaixo.
+          {% elif pedido.erp_status == 'return' %}
+            Analise de devolução efetuada, logo mais seu reembolso será processado.
+          {% endif %}
+        </p>
+        <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:analise_reembolso' pedido.id %}">Análise de devolução</a>
+      </div>
+    
+    {% elif pedido.status == 'refusal' %}
+      <div class="detalhe-redirect">
+        <p class="detalhe-help">Seu pedido foi negado. Para mais informações, entre em contato com nosso suporte.</p>
+      </div>
+    {% elif pedido.status == 'refunded' %}
+      <div class="detalhe-redirect">
+        <p p class="detalhe-help">Confirmado o reembolso e a devolução do produto, lamentamos o inconveniente, esperamos que você tenha uma boa experiência com nosso atendimento.</p>
+      </div>
+
+    {% elif pedido.status == 'erp_error' or pedido.erp_status == 'error' %}
+      <div class="detalhe-redirect">
+        <p class="detalhe-help">Ocorreu um erro no processamento do seu pedido, por favor entre em contato com nosso suporte para mais informações.</p>
+      </div>
+    {% endif %}
+  </div>
+
+<script>
+  function confirmarAcao(formId, mensagem) {
+    if (confirm(mensagem)) {
+      document.getElementById(formId).submit();
+    }
+  }
+</script>
+{% endblock %}

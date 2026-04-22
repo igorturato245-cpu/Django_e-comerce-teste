@@ -1,0 +1,79 @@
+{% extends "global/base.html" %}
+
+{% block content %}
+<div class="lista-container">
+
+    {% if enderecos %}
+        <div class="lista-cards">
+
+            <div class="end-info-txt">
+                <span></span>
+
+                <span>Endereço</span>
+                <span>Número</span>
+                <span>Complemeto</span>
+                <span>Bairro</span>
+                <span>Cep</span>
+                <span>Cidade</span>
+                <span>Estado</span>
+
+                <span></span>
+            </div>
+
+            {% for end in enderecos %}
+            <div class="end-card">
+
+                <!-- radio padrão -->
+                <form class="padrao-form" method="post" action="{% url "cadastro_login:endpadrao" end.pk %}">
+                    {% csrf_token %}
+                    <input class="lista-select" type="radio" name="padrao"
+                        onchange="this.form.submit()"
+                        {% if end.padrao %}checked{% endif %}>
+                </form>
+
+                <!-- infos -->
+                <div class="end-info">
+                    <span>{{end.endereco}}</span>
+                    <span>{{end.numero}}</span>
+                    <span>{{end.complemento}}</span>
+                    <span>{{end.bairro}}</span>
+                    <span>{{end.cep}}</span>
+                    <span>{{end.cidade}}</span>
+                    <span>{{end.estado}}</span>
+                </div>
+
+                <!-- ações -->
+                <div class="end-acoes">
+                    <a class="btn-editar" href="{% url "cadastro_login:atualizarend" end.pk %}">
+                        Editar
+                    </a>
+
+                    <form method="post" action="{% url "cadastro_login:deletarend" end.pk %}">
+                        {% csrf_token %}
+                        <button class="btn-excluir" type="submit"
+                            onclick="return confirm('Tem certeza que quer excluir esse endereço?')">
+                            Excluir
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <a class="novoend-btn" href="{% url "cadastro_login:criarend" %}">
+            Adicionar novo endereço
+        </a>
+
+    {% else %}
+    <section class="lista-vazia">
+        <h2>Você ainda não tem nenhum endereço adicionado.</h2>
+        <a class="novoend-btn" href="{% url "cadastro_login:criarend" %}">
+            Adicionar novo endereço
+        </a>
+    </section>
+    {% endif %}
+
+</div>
+{% endblock content %}

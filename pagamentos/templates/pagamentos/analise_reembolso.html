@@ -1,0 +1,35 @@
+{% extends "global/base.html" %}
+
+
+{% block content %}
+<div class="analise-reembolso-page">
+    <div class="analise-reembolso-container">
+        <h2 class="analise-reembolso-titulo">Análise de Reembolso</h2>
+        <p class="analise-reembolso-txt"><strong>Pedido:</strong> {{ pedido.id }}</p>
+        <p class="analise-reembolso-txt"><strong>Status:</strong> {{ pedido.status }}</p>
+        {% if solicitacao %}
+            <p class="analise-reembolso-txt"><strong>Solicitação de Reembolso:</strong> {{ solicitacao.id }}</p>
+            <p class="analise-reembolso-txt"><strong>Motivo da Solicitação:</strong> {{ solicitacao.motivo }}</p>
+            <p class="analise-reembolso-txt"><strong>Status do cancelamento:</strong> {{ solicitacao.status }}</p>
+        {% else %}
+            <p class="analise-reembolso-txt">Nenhuma solicitação de reembolso encontrada para este pedido.</p>
+        {% endif %}
+
+        {% if solicitacao.status == 'approved' %}
+            <div>
+                <p>Solicitação de reembolso aprovada, clique no botão abaixo para processar o reembolso.</p>
+                <form method="post" action="{% url 'pagamentos:solicitacao_reembolso_aprovada' pedido.id %}">
+                    {% csrf_token %}
+                    <button type="submit">Processar reembolso</button>
+                </form>
+            </div>
+        {% elif solicitacao.status == 'rejected' %}
+            <p>Solicitação de reembolso e devolução rejeitada, para mais informações, entre em contato com o suporte.</p>
+        {% elif solicitacao.status == 'completed' %}
+            <p>Solicitação de reembolso concluída.</p>
+        {% else %}
+            <p>Solicitação de reembolso pendente de análise.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

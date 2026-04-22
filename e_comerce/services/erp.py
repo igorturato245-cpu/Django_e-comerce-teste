@@ -36,3 +36,26 @@ def send_order(payload):
     resp=requests.post(f'{BASE}/orders',json=payload,headers=_auth_headers(),timeout=TIMEOUT)
     resp.raise_for_status()
     return resp.json()
+
+
+
+
+def get_shipping_quote(cep,items):
+    
+    
+    if not BASE:raise RuntimeError("ERP_API_URL is not configured")
+    
+    
+    paylod={
+        'zipcode':cep,
+        'items':items
+    }
+    
+    
+    try:
+        resp=requests.post(f'{BASE}/shipping/quote' ,json=paylod,headers=_auth_headers(),timeout=TIMEOUT)
+        resp.raise_for_status()
+        return resp.json()
+    
+    except Exception as e:
+        return None

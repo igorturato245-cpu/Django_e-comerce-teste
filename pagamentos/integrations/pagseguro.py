@@ -1,7 +1,10 @@
+import logging
 import requests
 import xml.etree.ElementTree as ET
 from django.conf import settings
 from urllib.parse import urlencode
+
+logger = logging.getLogger(__name__)
 
 PAGSEGURO_EMAIL = getattr(settings, 'PAGSEGURO_EMAIL', None)
 PAGSEGURO_TOKEN = getattr(settings, 'PAGSEGURO_TOKEN', None)
@@ -23,12 +26,15 @@ def create_checkout(pedido, return_url, notification_url):
         'reference': f'PED-{pedido.id}',
         'redirectURL': return_url,
         'notificationURL': notification_url,
+        
+        'shippingCode':f'{pedido.valor_frete:.2f}',
+        'shippingType':3,
     }
     
     # Adicionar itens ao payload
     items = pedido.items.all()
     for i, item in enumerate(items, start=1):
-        params[f'itemId{i}'] = item.produto_id or str(item.id)
+        params[f'itemId{i}'] = item.produto_id_string or str(item.id)
         params[f'itemDescription{i}'] = item.produto_name[:100]  # Limitar tamanho
         params[f'itemAmount{i}'] = f'{item.price:.2f}'
         params[f'itemQuantity{i}'] = item.quantidade
@@ -100,3 +106,32 @@ def validate_notification(data):
     """
     required_fields = ['reference', 'status', 'code']
     return all(field in data and data[field] for field in required_fields)
+
+
+def refund_transaction(transaction_code, amount=None):
+    
+    url=f'{BASE_WS}/v2/transactions/{transaction_code}/refund'
+    
+    if not PAGSEGURO_EMAIL or not PAGSEGURO_TOKEN:
+        raise RuntimeError('Credenciais Pagseguro não configuradas')
+    
+    params={
+        'email':PAGSEGURO_EMAIL,
+        'token':PAGSEGURO_TOKEN,
+        'transactioncode':transaction_code
+    }
+    
+    if amount:
+        params['refundValue'] = f'{amount:.2f}'
+        
+    try:
+        response =requests.post(url,params=params, timeout=10)
+        if response.status_code == 200:
+            logger.info(f'Transação {transaction_code} reembolsada com sucesso')
+            return True
+        else:
+            logger.error(f'Erro ao reembolsar transação {transaction_code}: {response.text}')
+            return False
+    
+    except Exception as e :
+        logger.error(f'Falha na comunicação com PagSeguro para reembolso da transação {transaction_code}:{str(e)}')

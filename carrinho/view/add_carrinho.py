@@ -1,79 +1,62 @@
 import logging
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from carrinho.models import Carrinho, ItemCarrinho
 from e_comerce.models import Produto
 from e_comerce.services import erp as erp_service
+from carrinho.view.view_carrinho import _get_cart_for_request
 
 logger=logging.getLogger(__name__)
 
-def _get_or_create_cart(request):
-    if request.user.is_authenticated:
-        cart,created=Carrinho.objects.get_or_create(usuario=request.user)
-        return cart
-    
-    session_key=request.session.session_key
-    if not session_key:
-        request.session.save()
-        session_key=request.session.session_key
-    cart,created=Carrinho.objects.get_or_create(session_key=session_key)
-    return cart
-
-
 def adicionar_ao_carrinho(request, produto_id):
     produto = get_object_or_404(Produto, id=produto_id)
-    carrinho = _get_or_create_cart(request)
+    carrinho = _get_cart_for_request(request)
 
     try:
-        quantidade=int(request.POST.get("quantidade",1))
-    except(TypeError,ValueError):
-        quantidade=1
+        quantidade_adicionada = int(request.POST.get("quantidade", 1))
+    except (TypeError, ValueError):
+        quantidade_adicionada = 1
 
-    quantidade=max(1,quantidade)
-
-    erp_available=False
-    if produto.erp_id:
-        try:
-            avail=erp_service.check_availability(produto.erp_id,quantidade)
-
-            if not avail.get('available', False):
-                messages.error(request,'Produto indisponível no fornecedor.') #type:ignore
-                return redirect('produtos:index')
-            
-
-            produto.remote_price=avail.get('price')
-            produto.remote_stock=avail.get('stock')
-            produto.estoque=min(produto.estoque,avail.get('stock',0))
-            produto.save(update_fields=['remote_price','remote_stock', 'estoque'])
-            erp_available=True
-
-        except Exception as e:
-            logger.warning(f"ERP Indisponível ao adicionar carrinho (ID {produto.erp_id}): {e}")
-            messages.warning(request, 'Não foi possível verificar estoque atualizado no fornecedor.') #type:ignore
-
-    if hasattr(produto,'estoque') and produto.estoque is not None:
-        if produto.estoque <=0:
-            messages.error(request,'Produto sem estoque') # type: ignore
-            return redirect('Produtos:index')
-        if quantidade > produto.estoque:
-            quantidade = produto.estoque
-            messages.info(request, f'Quantidade ajustada para o estoque disponível: {quantidade}') #type:ignore
-    
-    item, created=ItemCarrinho.objects.get_or_create(
+    # 1. Tenta buscar o item ou criar um novo
+    item, created = ItemCarrinho.objects.get_or_create(
         carrinho=carrinho,
         produto=produto,
-        defaults={'quantidade':quantidade},
+        defaults={
+            'quantidade': 0, # Começa com 0 para somarmos corretamente abaixo
+            'preco_unitario': produto.get_preco()
+        }
     )
 
-    if not created:
-        item.quantidade=max(1,item.quantidade)
-        if item.quantidade > produto.estoque:
-            item.quantidade=produto.estoque
-            messages.warning(request, f'Você já possui a quantidade máxima deste item no carrinho.') #type:ignore
+    # 2. Lógica de Soma: nova quantidade + o que já tinha lá
+    quantidade_total = item.quantidade + quantidade_adicionada
+
+    # 3. Verificação de estoque e fornecedor (Apenas na adição)
+    if produto.erp_id:
+        try:
+            avail = erp_service.check_availability(produto.erp_id, quantidade_total)
+            if not avail.get('available', False):
+                # Se não tem o total, tentamos baixar para o que tem no estoque
+                quantidade_total = avail.get('stock', 0)
+                messages.warning(request, 'Quantidade ajustada para o limite do fornecedor.')
+            
+            # Atualizamos os dados do produto com o preço/estoque mais recente do ERP
+            produto.remote_price = avail.get('price')
+            produto.remote_stock = avail.get('stock')
+            produto.estoque = avail.get('stock', 0)
+            produto.save(update_fields=['remote_price', 'remote_stock', 'estoque'])
+        except Exception as e:
+            logger.warning(f"Erro ao checar ERP: {e}")
+
+    # 4. Validação final no Model e SAVE único
+    try:
+        item.atualiza_qtd(quantidade_total)
         item.save()
+        if created:
+            messages.success(request, f'{produto.name} adicionado ao carrinho.')
+    except Exception as e:
+        messages.error(request, str(e))
 
-    acao =request.POST.get('acao')
-
+    acao = request.POST.get('acao')
     if acao == 'comprar':
         return redirect('carrinho:carrinho')
     return redirect('produtos:index')

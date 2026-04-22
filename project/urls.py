@@ -18,13 +18,21 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path,include
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path('',include('e_comerce.urls')),
     path('carrinho/',include('carrinho.urls')),
-    path('cadastro_usuario/',include('cadastro_de_usuarios.urls')),
+    path('cadastro_usuario/',include(('cadastro_de_usuarios.urls', 'cadastro_login'), namespace='cadastro_login')),
     path('pagamentos/',include('pagamentos.urls')),
+    path('institucional/',include('institucional.urls')),
+    path('senha/reset/',auth_views.PasswordResetView.as_view( template_name='registration/password_reset_form.html',
+        email_template_name='registration/password_reset_email.html',
+        subject_template_name='registration/password_reset_subject.txt'),name='password_reset'),
+    path('senha/reset/enviado/',auth_views.PasswordResetDoneView.as_view(),name='password_reset_done'),
+    path('senha/reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),
+    path('senha/reset/completo/',auth_views.PasswordResetCompleteView.as_view(),name='password_reset_complete'),
     path('admin/', admin.site.urls),
+    path('',include('e_comerce.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

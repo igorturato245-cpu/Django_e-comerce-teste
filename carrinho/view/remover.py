@@ -10,13 +10,11 @@ def remover_do_carrinho(request, item_id):
         cart = _get_cart_for_request(request)
         item = get_object_or_404(ItemCarrinho, id=item_id,carrinho=cart)
         item.delete()
+        
+        itens=cart.itens.all() #type:ignore        
+        subtotal=cart.total()
 
-        subtotal = sum(
-            (i.produto.preco_promocional if i.produto.preco_promocional else i.produto.preco) * i.quantidade
-            for i in cart.itens.select_related('produto').all() #type:ignore
-        ) if cart else 0
-
-        itens_restantes=cart.itens.count() if cart else 0 #type:ignore
+        itens_restantes=len(itens)
 
         return JsonResponse({
             "success": True,

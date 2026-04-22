@@ -14,19 +14,12 @@ def atualizar_quantidade(request):
             quantidade=1
         
         cart=_get_cart_for_request(request)
-        item = get_object_or_404(ItemCarrinho, id=item_id,carrinho=cart)
+        item = get_object_or_404(ItemCarrinho.objects.select_related('produto'), id=item_id,carrinho=cart)
 
-        item.quantidade = max(1, quantidade)
+        item.atualiza_qtd(quantidade)
         item.save()
-
-        subtotal=Decimal('0.00')
-
-        for i in cart.itens.select_related('produto').all(): #type:ignore
-            preco=i.produto.preco_promocional or i.produto.preco
-            preco=Decimal(str(preco))
-            subtotal+=preco*i.quantidade
-
-        subtotal=subtotal.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+        
+        subtotal=cart.total()
         
         return JsonResponse({
             "quantidade": item.quantidade,

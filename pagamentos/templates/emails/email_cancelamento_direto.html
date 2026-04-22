@@ -1,0 +1,6 @@
+{% if pedido.status == 'cancelled' %}
+<h1>Pedido Cancelado</h1>
+<p>Seu pedido #{pedido.id} foi cancelado.</p>
+<p>Como você ainda não recebeu seu pedido, o reembolso é processado automaticamente no cancelamento.</p>
+<p>Caso não tenha recebido o reembolso dentro de 5 dias úteis, entre em contato com nosso suporte.</p>
+{% endif %}

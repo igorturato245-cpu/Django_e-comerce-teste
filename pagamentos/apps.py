@@ -4,3 +4,7 @@ from django.apps import AppConfig
 class PagamentosConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'pagamentos'
+    
+    def ready(self) -> None:
+        import pagamentos.signals
+        return super().ready()

@@ -1,0 +1,53 @@
+{% extends "global/base.html" %}
+
+{% block content %}
+<div class="meus-pedidos-container" >
+
+    {% if pedidos %}
+        <div class="pedidos-container">
+            <div class="pedidos-header">
+                <span></span>
+
+                <span>Status</span>
+                <span>Payment Reference</span>
+                <span>Status do fornecedor</span>
+                <span>Total</span>
+
+                <span></span>
+            </div>
+
+            {% for pedido in pedidos %}
+                <div class="pedido-info">
+
+                    <div class="pedido-info-txt">
+                        <span></span>
+
+                        <span>{{pedido.status}}</span>
+                        <span>{{pedido.payment_reference}}</span>
+                        <span>{{pedido.erp_status}}</span>
+                        <span>{{pedido.total}}</span>
+
+                        <span></span>
+                    </div>
+
+                    <div class="pedido-reedirect-detalhe" >
+                        <a  href="{% url 'pagamentos:detalhe_pedido' pedido_id=pedido.pk %}">
+                            Detalhes
+                        </a>
+                    </div>
+
+
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+    <section class="carrinho-vazio">
+        <div class="carrinho-vazio-box">
+            <h2>Nenhum pedido encontrado no nome de:{{ user.username}}</h2>
+            <p>Volte para o carrinho e conclua a compra ver seus pedidos</p>
+            <a href="{% url 'carrinho:carrinho' %}" class="btn-voltar">Voltar para o carrinho</a>
+        </div>
+    </section>
+</div>
+{% endif %}
+{% endblock content %}

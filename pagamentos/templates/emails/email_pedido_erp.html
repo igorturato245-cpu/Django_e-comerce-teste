@@ -1,0 +1,10 @@
+{% if pedido.erp_status == 'error' %}
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Tivemos um problema com o envio do pedido:{{pedido.id}}. Status atual de entrega:{{pedido.erp_status}}</p>
+<p>Caso necessario, entre em "meus pedidos" e cancele, o reembolso sera feito o quanto antes possivel.</p>
+<p>Obrigado pela compreensão, volte sempre!</p>
+{% else %}
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Email relacionado ao pedido:{{pedido.id}}. Status atual de entrega:{{pedido.erp_status}}</p>
+<p>Obrigado por comprar conosco, volte sempre!</p>
+{% endif %}

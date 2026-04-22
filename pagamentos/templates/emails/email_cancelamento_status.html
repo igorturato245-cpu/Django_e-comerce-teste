@@ -1,0 +1,18 @@
+{% if solicitacao.status == 'approved' %}
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Email relacionado ao pedido:{{pedido.id}}. Status atual de reembolso:{{solicitacao.status}}</p>
+<p>Seu reembolso foi aprovado, para processa-lo,vá em "Meus pedidos" e entre no pedido que você solicitou o reembolso.</p>
+<p>Caso você tenha alguma dúvida, não hesite em entrar em contato conosco.</p>
+<p>Obrigado pela compreensão, volte sempre!</p>
+{% elif solicitacao.status == 'rejected' %}
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Email relacionado ao pedido:{{pedido.id}}. Status atual de reembolso:{{solicitacao.status}}</p>
+<p>Lamentamos informar que sua solicitação de reembolso foi rejeitada, pois o pedido não atende aos critérios de devolução.</p>
+<p>Caso você tenha alguma dúvida, não hesite em entrar em contato conosco.</p>
+<p>Obrigado pela compreensão, volte sempre!</p>
+{% else %}
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Email relacionado ao pedido:{{pedido.id}}. Status atual de reembolso:{{solicitacao.status}}</p>
+<p>Caso você tenha alguma dúvida, não hesite em entrar em contato conosco.</p>
+<p>Obrigado pela compreensão, volte sempre!</p>
+{% endif %}

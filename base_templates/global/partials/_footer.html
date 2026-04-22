@@ -5,9 +5,11 @@
                  ©  - Todos os direitos reservados.
             </div>
             <nav class="footer-nav">
-                <a href="/sobre/" class="footer-link">Sobre</a>
-                <a href="/contato/" class="footer-link">Contato</a>
-                <a href="/politica-privacidade/" class="footer-link">Política de Privacidade</a>
+                <a href={% url "institucional:sobre" %} class="footer-link">Sobre</a>
+                <a href={% url "institucional:contato" %} class="footer-link">Contato</a>
+                <a href={% url "institucional:politica-privacidade" %} class="footer-link">Política de Privacidade</a>
+                <a href={% url "institucional:termo-uso" %} class="footer-link">Termos de Uso</a>
+                <a href={% url "institucional:politica-troca" %} class="footer-link">Política de Troca</a>
             </nav>
         </div>
     </div>

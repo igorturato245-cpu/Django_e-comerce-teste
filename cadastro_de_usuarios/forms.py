@@ -1,7 +1,12 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import password_validation
-from .models import Perfil
+from .models import Perfil,Endereco
+
+class EnderecoForm(forms.ModelForm):
+    class Meta:
+        model=Endereco
+        exclude=('usuario','padrao')
 
 class PerfilForm(forms.ModelForm):
     class Meta:
@@ -45,6 +50,7 @@ class CadastroForm(forms.ModelForm):
         email_data = cleaned.get('email')
         password_data = cleaned.get('password')
         password2_data = cleaned.get('password2')
+        user_instance = self.instance
 
         # Verificações no banco de dados User padrão
         if usuario_data and User.objects.filter(username=usuario_data).exclude(pk=self.instance.pk).exists():
@@ -55,5 +61,11 @@ class CadastroForm(forms.ModelForm):
 
         if password_data != password2_data:
              self.add_error('password2', 'As senhas não conferem')
+             
+        if password_data:
+            try:
+                password_validation.validate_password(password_data,user_instance)
+            except forms.ValidationError as e:
+                self.add_error('password',e)
 
         return cleaned

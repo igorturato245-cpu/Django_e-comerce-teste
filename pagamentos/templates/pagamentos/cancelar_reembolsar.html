@@ -1,0 +1,75 @@
+{% extends "global/base.html" %}
+
+
+{% block content %}
+<div class="devolucao-reembolsar">
+    <div class="devolucao-reembolsar-container">
+        <h2 class="devolucao-reembolsar-container">Cancelar/Reembolsar pedido</h2>
+
+        <p class="devolucao-reembolsar-text">Nota: Se você chegou a essa pagina é porque seu pedido já foi recebido ou está em envio, fique ciente de que a operação pode levar algum tempo para ser processada.</p>
+
+        <div class="devolucao-reembolsar-info">
+            <p class="devolucao-reembolsar-text">Funcionamento de devolução e reembolso: </p>
+            <ul class="devolucao-reembolsar-lista">
+                <li class="devolucao-reembolsar-lista-info">-O cliente deve solicitar o cancelamento ou reembolso dentro do prazo estabelecido.</li>
+                <li class="devolucao-reembolsar-lista-info">-O produto deve estar em um periodo de analise antes de ser efetuada a devolução e o reembolso.</li>
+                <li class="devolucao-reembolsar-lista-info">-O reembolso será processado dentro de 5 a 10 dias úteis após a aprovação da solicitação.</li>
+                <li class="devolucao-reembolsar-lista-info">-O cliente será notificado sobre o status da solicitação.</li>
+            </ul>
+        </div>
+
+        <div class="devolucao-reembolsar-info-detalhes">
+            <span></span>
+
+            <span>Produtos:</span>
+            <span>Total:</span>
+
+            <span></span>
+        </div>
+
+
+        <div class="devolucao-reembolsar-detalhes">
+            <span></span>
+
+            <span>
+                {% for produto in itens %}
+                    <p>{{produto.produto_name}}</p>
+                {% endfor %}
+            </span>
+            <span>
+                <p>{{pedido.total}}</p>
+            </span>
+
+        </div>
+
+
+        <div class="devolucao-reembolsar-confirmar">
+            <form class="devolucao-reembolsar-form" method="post" action="{% url 'pagamentos:solicitar_cancelamento' pedido.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="devolucao-reembolsar-grup">
+                    <label for="motivo">Motivo da devolução/reembolso:</label>
+                    <select name="motivo-devolucao" id="devolucao">
+                        <option value="defeito">Produto recebido com defeito</option>
+                        <option value="arrependimento">Arrependimento(7 dias)</option>
+                        <option value="tamanho">Produto não se encaixa com o que esperava</option>
+                        <option value="errado">Recebi o produto errado</option>
+                    </select>
+                </div>
+
+                <div class="devolucao-reembolsar-grup">
+                    <label for="feedback-devolucao">Deixe seu feedback:</label>
+                    <textarea name="feedback-devolucao" id="feedback-devolucao" rows="4" cols="50"></textarea>
+                </div>
+
+                <div class="devolucao-reembolsar-grup">
+                    <label for="fotos-devolucao">Anexe fotos do produto:</label>
+                    <input type="file" id="evidencias-devolucao" name="evidencias-reembolso" accept="image/*, video/*" required>
+                </div>
+
+                <button class="devolucao-reembolsar-button" type="submit">Solicitar devolução/reembolso</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

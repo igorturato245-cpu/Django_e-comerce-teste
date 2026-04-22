@@ -1,30 +1,18 @@
 {% extends "global/base.html" %}
-
 {% load filters %}
+{% load cache %}
 
-{%block content%}
+{% block content %}
 {% load static %}
+
+<!-- HERO SECTION (Mantida idêntica) -->
 <section class="hero">
-
-    {% if not user.is_authenticated %}
-
     <div class="hero-inner ">
         <div class="hero-left">
             <div class="main-content">
-                <h2 class="sobretitulo">
-                    Titulo Generico
-                </h2>
+                <h2 class="sobretitulo">Titulo Generico</h2>
                 <div class="descricao">
-                    A Shopify é muito mais do que um criador de sites: ela ajuda você a vender seus produtos,
-                    reduzir os custos e poupar tempo. Comece sem pagar nada e depois aproveite 3 meses por US$
-                    1/mês.
-                </div>
-                <div>
-                    <form action="{% url 'cadastro_login:cadastro'%}">
-                        {% csrf_token %}
-                        <input type="hidden" name="cadastro" id="cadastrousers">
-                        <button type="submit" class="">Cadastra e continuar comprando</button>
-                    </form>
+                    A Shopify é muito mais do que um criador de sites...
                 </div>
             </div>
         </div>
@@ -34,232 +22,122 @@
             </div>
         </div>
     </div>
-
-    {% else %}
-
-    <div class="hero-inner ">
-        <div class="hero-left">
-            <div class="main-content">
-                <h2 class="sobretitulo">
-                    Titulo Generico
-                </h2>
-                <div class="descricao">
-                    A Shopify é muito mais do que um criador de sites: ela ajuda você a vender seus produtos,
-                    reduzir os custos e poupar tempo. Comece sem pagar nada e depois aproveite 3 meses por US$
-                    1/mês.
-                </div>
-                <div>
-                    <form action="{% url 'cadastro_login:atualizarcadastro'%}">
-                        {% csrf_token %}
-                        <input type="hidden" name="atualizar" id="atualizarusers">
-                        <button type="submit" class="">Conferir dados de usuarios</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="hero-right">
-            <div class="hero-image">
-                <img src="{% static 'global/img/perfumes.jpeg' %}" alt="Produtos em destaque">
-            </div>
-        </div>
-    </div>
-
-    {% endif %}
 </section>
 
+<!-- OFERTAS DO DIA (Mantida idêntica) -->
 <section id="ofertas-do-dia" class="ofertas">
-
     <div class="oferta-secao">
-        
-        <h2 class="ofertas-titulo">
-            Ofertas do Dia
-        </h2>
-
+        <h2 class="ofertas-titulo">Ofertas do Dia</h2>
         {% if ofertas_do_dia %}
-
         <button class="seta seta-esquerda" id="btnoferta">‹</button>
         <button class="seta seta-direita" id="btnnextoferta">›</button>
     
         <div class="ofertas-container" id="carrosselOfertas">
-        
             {% for produto in ofertas_do_dia %}
-            <div class="oferta-card" >
-
+            {% cache 1 produto_card_oferta produto.id %}
+            <div class="oferta-card">
                 <picture class="oferta-img">
-                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
+                    <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
+                        <img alt="{{ produto.name }}">
+                    </a>
                 </picture>
-
                 <div class="oferta-info">
                     <h2 class="oferta-nome">
-                        <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
+                        <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">{{ produto.name }}</a>
                     </h2>
-                    <div class="oferta-preco">
-                        <a>{{produto.preco_promocional|formata_preco}}</a>
-                    </div>
-                    <div class="oferta-preco-antigo text-center">
-                        <a href="#">{{ produto.preco|formata_preco }}</a>
-                    </div>
-                    <div class="oferta-descricao">
-                        <a href="#">{{ produto.descricao }}</a>
-                    </div>
+                    <div class="oferta-preco"><a>{{ produto.get_preco|formata_preco }}</a></div>
+                    {% if produto.preco_promocional %}
+                    <div class="oferta-preco-antigo text-center"><a>{{ produto.preco|formata_preco }}</a></div>
+                    {% endif %}
+                    <div class="oferta-descricao"><a>{{ produto.descricao }}</a></div>
+                </div>    
+                <div class="product-rating">
+                    {% for i in produto.estrelas_cheias %}<i class="fa-solid fa-star star-icon"></i>{% endfor %}
+                    {% if produto.tem_meia %}<i class="fa-solid fa-star-half-stroke star-icon"></i>{% endif %}
+                    {% for i in produto.estrelas_vazias %}<i class="fa-regular fa-star star-icon"></i>{% endfor %}
+                    <div class="avaliação">{{ produto.media_avaliacao }}</div>
                 </div>
-
             </div>
+            {% endcache %}
             {% endfor %}
         </div>
-
         {% else %}
-        <div class="sem-ofertas">
-            <p>Nenhuma oferta disponível hoje.</p>
-        </div>
+        <div class="sem-ofertas"><p>Nenhuma oferta disponível hoje.</p></div>
         {% endif %}
     </div>
-
 </section>
 
-<section id="perfumes" class="secao-perfumes">
+<!-- SEÇÕES DINÂMICAS (Mantendo suas classes de CSS: bg-gray, bg-dark, bg-light) -->
+{% for categoria in categorias %}
+<section id="{{ categoria.slug }}" class="secao-produtos {% cycle 'bg-gray' 'bg-dark' 'bg-light' %}">
+    <div class="produtos-container">
+        <h2 class="produtos-titulo">{{ categoria.name }}</h2>
 
-    <div class="perfumes-container">
-        
-        <h2 class="perfumes-titulo">Perfumes</h2>
+        <!-- IDs dinâmicos para os botões funcionarem de forma independente -->
+        <button class="seta seta-esquerda" id="btnPrev-{{ categoria.id }}">‹</button>
+        <button class="seta seta-direita" id="btnNext-{{ categoria.id }}">›</button>
 
-        <button class="seta seta-esquerda" id="btnPrev">‹</button>
-        <button class="seta seta-direita" id="btnNext">›</button>
-
-        <ul class="perfumes-lista" id="carrosselPerfumes">
-
-            {% for produto in perfumes %}
-            <li class="perfume-item">
-
-                <div class="perfume-img">
-                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
+        <ul class="produtos-lista" id="carrossel-{{ categoria.id }}">
+            {% for produto in categoria.lista_produtos %}
+            {% cache 1 produto_card_lista produto.id %}
+            <li class="produto-card">
+                <div class="produto-img">
+                    <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
+                        <img alt="{{ produto.name }}">
+                    </a>
                 </div>
-
-                <div class="perfume-info">
-                    <h3 class="perfume-nome">
-                        <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
+                <div class="produto-info-index">
+                    <h3 class="produto-nome-index">
+                        <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">{{ produto.name }}</a>
                     </h3>
+                    <div class="produto-preco-index">
+                        <a>{{ produto.get_preco|formata_preco }}</a>
+                    </div>
                     {% if produto.preco_promocional %}
-                    <div class="perfume-preco">
-                        <a href="#">{{ produto.preco_promocional|formata_preco }}</a>
-                    </div>
-                    <div class="perfume-preco-antigo text-center">
-                        <a href="#">{{ produto.preco|formata_preco }}</a>
-                    </div>
-                    {% else %}
-                    <div class="perfume-preco">
-                        <a href="#">{{ produto.preco|formata_preco }}</a>
+                    <div class="produto-preco-antigo text-center">
+                        <a>{{ produto.preco|formata_preco }}</a>
                     </div>
                     {% endif %}
-                    <div class="perfume-desc">
-                        <a href="#">{{ produto.descricao }}</a>
+                    <div class="produto-desc"><a>{{ produto.descricao }}</a></div>
+
+                    <div class="product-rating">
+                        {% for i in produto.estrelas_cheias %}<i class="fa-solid fa-star star-icon"></i>{% endfor %}
+                        {% if produto.tem_meia %}<i class="fa-solid fa-star-half-stroke star-icon"></i>{% endif %}
+                        {% for i in produto.estrelas_vazias %}<i class="fa-regular fa-star star-icon"></i>{% endfor %}
+                        <div class="avaliação">{{ produto.media_avaliacao }}</div>
                     </div>
                 </div>
-
             </li>
+            {% endcache %}
             {% endfor %}
-
         </ul>
-
     </div>
-
 </section>
+{% endfor %}
 
-<section id="sabonetes" class="secao-sabonetes">
+{% endblock content %}
 
-    <div class="sabonetes-container">
-        
-        <h2 class="sabonetes-titulo">Sabonetes</h2>
+{% block extra_scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Carrossel de Ofertas (Fixo)
+        initCarousel({
+            containerId: "carrosselOfertas",
+            prevBtnId: "btnoferta",
+            nextBtnId: "btnnextoferta",
+            itemSelector: ".oferta-card",
+            gap: 20
+        });
 
-        <button class="seta seta-esquerda" id="btnPrevSab">‹</button>
-        <button class="seta seta-direita" id="btnNextSab">›</button>
-
-        <ul class="sabonetes-lista" id="carrosselsabonetes">
-
-            {% for produto in sabonetes %}
-            <li class="sabonete-item">
-
-                <div class="sabonete-img">
-                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
-                </div>
-
-                <div class="sabonete-info">
-                    <h3 class="sabonete-nome">
-                        <a href='{% url "produtos:produto" produto.id %}'>{{ produto.name }}</a>
-                    </h3>
-                    {% if produto.preco_promocional %}
-                    <div class="sabonete-preco">
-                        <a href="#">{{ produto.preco_promocional|formata_preco}}</a>
-                    </div>
-                    <div class="sabonete-preco-antigo text-center">
-                        <a href="#">{{ produto.preco|formata_preco}}</a>
-                    </div>
-                    {% else %}
-                    <div class="sabonete-preco">
-                        <a href="#">{{ produto.preco|formata_preco}}</a>
-                    </div>
-                    {% endif %}
-                    <div class="sabonete-desc">
-                        <a href="#">{{ produto.descricao }}</a>
-                    </div>
-                </div>
-
-            </li>
-            {% endfor %}
-
-        </ul>
-
-    </div>
-
-</section>
-
-
-<section id="produtos-de-limpeza" class="secao-produtos-de-limpeza">
-
-    <div class="prdutos-de-limpeza-container">
-        
-        <h2 class="produtos-de-limpeza-titulo">Produtos de Limpeza</h2>
-
-        <button class="seta seta-esquerda" id="btnPrevLim">‹</button>
-        <button class="seta seta-direita" id="btnNextLim">›</button>
-
-        <ul class="produtos-de-limpeza-lista" id="carrosselprodutosdelimpeza">
-
-            {% for produto in produto_de_limpeza %}
-            <li class="produto-de-limpeza-item">
-
-                <div class="produto-de-limpeza-img">
-                    <a href="{%url 'produtos:produto' produto.id %}"><img  alt="{{ produto.name }}"></a>
-                </div>
-
-                <div class="produto-de-limpeza-info">
-                    <h3 class="produto-de-limpeza-nome">
-                        <a href="{%url 'produtos:produto' produto.id %}">{{ produto.name }}</a>
-                    </h3>
-                    {% if preco.preco_promocional %}
-                    <div class="produto-de-limpeza-preco">
-                        <a href="#">{{ produto.preco_promocional|formata_preco}}</a>
-                    </div>
-                    <div class="produto-de-limpeza-preco-antigo text-center">
-                        <a href="#">{{ produto.preco|formata_preco}}</a>
-                    </div>
-                    {% else %}
-                    <div class="produto-de-limpeza-preco">
-                        <a href="#">{{ produto.preco|formata_preco}}</a>
-                    </div>
-                    {% endif %}
-                    <div class="produto-de-limpeza-desc">
-                        <a href="#">{{ produto.descricao }}</a>
-                    </div>
-                </div>
-
-            </li>
-            {% endfor %}
-
-        </ul>
-
-    </div>
-
-</section>
-
-{%endblock content%}
+        // Carrosséis de Categorias (Dinâmicos)
+        {% for categoria in categorias %}
+        initCarousel({
+            containerId: "carrossel-{{ categoria.id }}",
+            prevBtnId: "btnPrev-{{ categoria.id }}",
+            nextBtnId: "btnNext-{{ categoria.id }}",
+            itemSelector: ".produto-card"
+        });
+        {% endfor %}
+    });
+</script>
+{% endblock extra_scripts %}

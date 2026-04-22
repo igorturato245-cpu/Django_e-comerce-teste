@@ -1,0 +1,9 @@
+<h1>Olá {{pedido.usuario.first_name}}</h1>
+<p>Email relacionado ao pedido:{{pedido.pk}}. Status Atual:{{pedido.status}}</p>
+{% if pedido.status == 'paid' %}
+<p>Obrigado por comprar conosco!</p>
+{% elif pedido.status == 'erp_confirmed' or 'erp_sent' %}
+<p>Obrigado por comprar conosco!</p>
+{% else %}
+<p>Obrigado pela comprenssão, esperamos que volte sempre.</p>
+{% endif %}

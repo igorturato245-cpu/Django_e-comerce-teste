@@ -23,26 +23,25 @@
         {% include "global/partials/_footer.html"%}
     </main>
 
-        <script>
-            // helper to read CSRF cookie for fetch
-            function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                return cookieValue;
-            }
-        </script>
 
 
     <script>
+        // helper to read CSRF cookie for fetch
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
         // Safe header hide on scroll
         document.addEventListener('DOMContentLoaded', function () {
             let lastScroll = 0;
@@ -61,310 +60,99 @@
                 lastScroll = current;
             });
         });
-    </script>
-
-    <script>
+    
         setTimeout(() => {
             document.querySelectorAll('.alert').forEach(el => {
-                el.style.opacity ='0';
+                el.style.opacity = '0';
                 el.style.transform = 'translateX(30px)';
-                setTimeout(() => el.remove(),300);
+                setTimeout(() => el.remove(), 300);
             })
         }, 4000)
-    </script>
+    
+        function initCarousel({ containerId, prevBtnId, nextBtnId, itemSelector, gap = 22 }) {
 
-    <script>
-        // =========================
-        // CARROSSEL OFERTAS DO DIA
-        // =========================
-        document.addEventListener('DOMContentLoaded', function () {
-            const carrosselOferta = document.getElementById("carrosselOfertas");
-            const setaPrevOferta = document.getElementById("btnoferta");
-            const setaNextOferta = document.getElementById("btnnextoferta");
-            if (!carrosselOferta) return;
+            const container = document.getElementById(containerId);
+            const prevBtn = document.getElementById(prevBtnId);
+            const nextBtn = document.getElementById(nextBtnId);
 
-            function getScrollAmountOferta() {
-                const item = carrosselOferta.querySelector(".oferta-card");
-                return item ? item.offsetWidth + 22 : 300;
+            if (!container) return;
+
+            function getScrollAmount() {
+                const item = container.querySelector(itemSelector);
+                return item ? item.offsetWidth + gap : 300;
             }
 
-            if (setaNextOferta) {
-                setaNextOferta.addEventListener("click", () => {
-                    carrosselOferta.scrollBy({ left: getScrollAmountOferta(), behavior: "smooth" });
-                    updateSetasOferta();
-                });
-            }
+            function updateArrows() {
+                const maxScroll = container.scrollWidth - container.clientWidth;
 
-            if (setaPrevOferta) {
-                setaPrevOferta.addEventListener("click", () => {
-                    carrosselOferta.scrollBy({ left: -getScrollAmountOferta(), behavior: "smooth" });
-                    updateSetasOferta();
-                });
-            }
-
-            function updateSetasOferta() {
-                const maxScroll = carrosselOferta.scrollWidth - carrosselOferta.clientWidth;
-                if (setaPrevOferta) {
-                    if (carrosselOferta.scrollLeft <= 5) setaPrevOferta.classList.add("hidden"); else setaPrevOferta.classList.remove("hidden");
+                if (prevBtn) {
+                    container.scrollLeft <= 5
+                        ? prevBtn.classList.add("hidden")
+                        : prevBtn.classList.remove("hidden");
                 }
-                if (setaNextOferta) {
-                    if (carrosselOferta.scrollLeft >= maxScroll - 5) setaNextOferta.classList.add("hidden"); else setaNextOferta.classList.remove("hidden");
+
+                if (nextBtn) {
+                    container.scrollLeft >= maxScroll - 5
+                        ? nextBtn.classList.add("hidden")
+                        : nextBtn.classList.remove("hidden");
                 }
             }
 
-            carrosselOferta.addEventListener("scroll", updateSetasOferta);
-            updateSetasOferta();
-        });
-    </script>
-
-
-    <script>
-        // =========================
-        // CARROSSEL PERFUMES
-        // =========================
-        document.addEventListener('DOMContentLoaded', function () {
-            const carrosselPerf = document.getElementById("carrosselPerfumes");
-            const setaPrevPerf = document.getElementById("btnPrev");
-            const setaNextPerf = document.getElementById("btnNext");
-            if (!carrosselPerf) return;
-
-            function getScrollAmountPerf() {
-                const item = carrosselPerf.querySelector(".perfume-item");
-                return item ? item.offsetWidth + 22 : 300;
-            }
-
-            if (setaNextPerf) {
-                setaNextPerf.addEventListener("click", () => {
-                    carrosselPerf.scrollBy({ left: getScrollAmountPerf(), behavior: "smooth" });
-                    updateSetasPerf();
-                });
-            }
-
-            if (setaPrevPerf) {
-                setaPrevPerf.addEventListener("click", () => {
-                    carrosselPerf.scrollBy({ left: -getScrollAmountPerf(), behavior: "smooth" });
-                    updateSetasPerf();
-                });
-            }
-
-            function updateSetasPerf() {
-                const maxScroll = carrosselPerf.scrollWidth - carrosselPerf.clientWidth;
-                if (setaPrevPerf) {
-                    if (carrosselPerf.scrollLeft <= 5) setaPrevPerf.classList.add("hidden"); else setaPrevPerf.classList.remove("hidden");
-                }
-                if (setaNextPerf) {
-                    if (carrosselPerf.scrollLeft >= maxScroll - 5) setaNextPerf.classList.add("hidden"); else setaNextPerf.classList.remove("hidden");
-                }
-            }
-
-            carrosselPerf.addEventListener("scroll", updateSetasPerf);
-            updateSetasPerf();
-        });
-
-    </script>
-
-
-    <script>
-        // =========================
-        // CARROSSEL SABONETES
-        // =========================
-        document.addEventListener('DOMContentLoaded', function () {
-            const carrosselSab = document.getElementById("carrosselsabonetes");
-            const setaPrevSab = document.getElementById("btnPrevSab");
-            const setaNextSab = document.getElementById("btnNextSab");
-            if (!carrosselSab) return;
-
-            function getScrollAmountSab() {
-                const item = carrosselSab.querySelector(".sabonete-item");
-                return item ? item.offsetWidth + 20 : 300;
-            }
-
-            if (setaNextSab) {
-                setaNextSab.addEventListener("click", () => {
-                    carrosselSab.scrollBy({ left: getScrollAmountSab(), behavior: "smooth" });
-                    updateSetasSab();
-                });
-            }
-
-            if (setaPrevSab) {
-                setaPrevSab.addEventListener("click", () => {
-                    carrosselSab.scrollBy({ left: -getScrollAmountSab(), behavior: "smooth" });
-                    updateSetasSab();
-                });
-            }
-
-            function updateSetasSab() {
-                const maxScroll = carrosselSab.scrollWidth - carrosselSab.clientWidth;
-                if (setaPrevSab) {
-                    if (carrosselSab.scrollLeft <= 5) setaPrevSab.classList.add("hidden"); else setaPrevSab.classList.remove("hidden");
-                }
-                if (setaNextSab) {
-                    if (carrosselSab.scrollLeft >= maxScroll - 5) setaNextSab.classList.add("hidden"); else setaNextSab.classList.remove("hidden");
-                }
-            }
-
-            carrosselSab.addEventListener("scroll", updateSetasSab);
-            updateSetasSab();
-        });
-
-    </script>
-
-
-    <script>
-        // =========================
-        // CARROSSEL PRODUTOS DE LIMPEZA
-        // =========================
-        document.addEventListener('DOMContentLoaded', function () {
-            const carLim = document.getElementById("carrosselprodutosdelimpeza");
-            const setaPrevLim = document.getElementById("btnPrevLim");
-            const setaNextLim = document.getElementById("btnNextLim");
-            if (!carLim) return;
-
-            function getScrollAmountLim() {
-                const item = carLim.querySelector(".produto-de-limpeza-item");
-                return item ? item.offsetWidth + 22 : 300;
-            }
-
-            if (setaNextLim) {
-                setaNextLim.addEventListener("click", () => {
-                    carLim.scrollBy({ left: getScrollAmountLim(), behavior: "smooth" });
-                    updateSetasLim();
-                });
-            }
-
-            if (setaPrevLim) {
-                setaPrevLim.addEventListener("click", () => {
-                    carLim.scrollBy({ left: -getScrollAmountLim(), behavior: "smooth" });
-                    updateSetasLim();
-                });
-            }
-
-            function updateSetasLim() {
-                const maxScroll = carLim.scrollWidth - carLim.clientWidth;
-                if (setaPrevLim) {
-                    if (carLim.scrollLeft <= 5) setaPrevLim.classList.add("hidden"); else setaPrevLim.classList.remove("hidden");
-                }
-                if (setaNextLim) {
-                    if (carLim.scrollLeft >= maxScroll - 5) setaNextLim.classList.add("hidden"); else setaNextLim.classList.remove("hidden");
-                }
-            }
-
-            carLim.addEventListener("scroll", updateSetasLim);
-            updateSetasLim();
-        });
-
-    </script>
-
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const numEl = document.querySelector(".quantidade-num");
-            const inputQtds = document.querySelectorAll("#quantidade-input");
-            const btns = document.querySelectorAll(".quantidade-btn");
-
-            let quantidade = 1;
-
-            btns.forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const acao = btn.dataset.acao;
-
-                    if (acao === "mais" && quantidade < 99) quantidade++;
-                    if (acao === "menos" && quantidade > 1) quantidade--;
-
-                    numEl.textContent = quantidade;
-
-                    inputQtds.forEach(input => {
-                        input.value = quantidade;
-                    });
-                });
+            nextBtn?.addEventListener("click", () => {
+                container.scrollBy({ left: getScrollAmount(), behavior: "smooth" });
             });
 
-        });
-    </script>
-
-
-
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-
-            document.querySelectorAll(".qtd-controle").forEach(controle => {
-
-                const btns = controle.querySelectorAll(".qtd-btn");
-                const numEl = controle.querySelector(".qtd-num");
-                const itemId = controle.dataset.itemId;
-
-                btns.forEach(btn => {
-                    btn.addEventListener("click", () => {
-
-                        let quantidade = parseInt(numEl.textContent);
-                        const tipo = btn.textContent.trim();
-
-                        if (tipo === "+" && quantidade < 99) quantidade++;
-                        if (tipo === "-" && quantidade > 1) quantidade--;
-
-                        fetch("{% url 'carrinho:atualizar_quantidade' %}", {
-                            method: "POST",
-                            headers: {
-                                "X-CSRFToken": getCookie('csrftoken'),
-                                "Content-Type": "application/x-www-form-urlencoded"
-                            },
-                            body: `item_id=${itemId}&quantidade=${quantidade}`
-                        })
-                            .then(res => res.json())
-                            .then(data => {
-                                numEl.textContent = data.quantidade;
-                                document.querySelectorAll(".resumo-total")
-                                    .forEach(el => el.textContent = ` ${data.subtotal_format}`);
-                            });
-                    });
-                });
+            prevBtn?.addEventListener("click", () => {
+                container.scrollBy({ left: -getScrollAmount(), behavior: "smooth" });
             });
 
-        });
-    </script>
+            container.addEventListener("scroll", updateArrows);
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
+            window.addEventListener("load", updateArrows);
+            new ResizeObserver(updateArrows).observe(container);
 
-            document.querySelectorAll(".btn-remover").forEach(btn => {
+            updateArrows();
+        }
+    
+        
+    
+        // Espera a página carregar completamente
+        window.onload = function () {
 
-                btn.addEventListener("click", function () {
-                    const itemId = btn.dataset.itemId;
-                    const linha = btn.closest(".carrinho-item");
+            // 1. Pegamos o botão pelo ID que você criou
+            const botaoHamburger = document.getElementById('hamburger');
 
-                        fetch(`/carrinho/remover/${itemId}/`, {
-                        method: "POST",
-                        headers: {
-                            "X-CSRFToken": getCookie('csrftoken'),
-                        }
-                    })
-                        .then(res => res.json())
-                        .then(data => {
+            // 2. Pegamos a lista (o menu) pela classe dela
+            const menuInformacoes = document.querySelector('.header-menu');
 
-                            if (data.success) {
-                                linha.remove();
+            // Verificamos se eles existem na página (para não dar erro em outras páginas)
+            if (botaoHamburger && menuInformacoes) {
 
-                                // Atualiza subtotal e total
-                                document.querySelectorAll(".resumo-subtotal, .resumo-total")
-                                    .forEach(el => el.textContent = ` ${data.subtotal_format}`);
+                // FUNÇÃO A: Quando clicar no botão Hamburger
+                botaoHamburger.addEventListener('click', function (evento) {
+                    // Impede que o clique "saia" do botão e chegue no fundo da tela
+                    evento.stopPropagation();
 
-                                // Se não sobrar itens → recarrega para mostrar carrinho vazio
-                                if (data.itens_restantes === 0) {
-                                    location.reload();
-                                }
-                            }
-                        });
+                    // Abre ou fecha o quadradinho de informações
+                    menuInformacoes.classList.toggle('active');
                 });
 
-            });
+                // FUNÇÃO B: Quando clicar em QUALQUER lugar da tela
+                document.addEventListener('click', function (evento) {
+                    // Se o clique NÃO foi dentro do menu, a gente fecha ele
+                    if (!menuInformacoes.contains(evento.target)) {
+                        menuInformacoes.classList.remove('active');
+                    }
+                });
 
-        });
+                // FUNÇÃO C: Evita que o menu feche se você clicar dentro do quadradinho branco
+                menuInformacoes.addEventListener('click', function (evento) {
+                    evento.stopPropagation();
+                });
+            }
+        };
     </script>
-
-
+    {% block extra_scripts %}{% endblock extra_scripts %}
 </body>
 
 </html>

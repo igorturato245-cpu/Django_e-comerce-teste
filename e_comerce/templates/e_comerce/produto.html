@@ -3,69 +3,135 @@
 {% load filters %}
 {% block content %}
   <!-- ============================== -->
-  <!-- SEÇÃO PRODUTO -->
+  <!-- SEÇÃO PRODUTO (Refatorada e JS Corrigido) -->
   <!-- ============================== -->
-  <section class="produto-section">
-    <div class="produto-card">
+  <section class="detalhe-section">
+    <div class="detalhe-container">
       <!-- FOTO -->
-      <div class="produto-foto-box">
-        <img class="produto-foto" alt="{{ produto.name }}" />
+      <div class="detalhe-foto-box">
+        <img alt="{{ produto.name }}" />
       </div>
 
-      <!-- INFO PRINCIPAL -->
-      <div class="produto-info">
-        <div class="produto-nome-box card-box">
-          <h1 class="produto-nome">{{ produto.name }}</h1>
+      <!-- INFO PRINCIPAL (Grid) -->
+      <div class="detalhe-grid">
+        
+        <!-- NOME DO PRODUTO -->
+        <div class="detalhe-box">
+          <h1 class="detalhe-nome">
+            {% block title %} {{produto.name}} | Minha Loja{% endblock title %}
+          </h1>
         </div>
 
-        <div class="produto-descricao-box card-box">
-          <p class="produto-descricao">{{ produto.descricao }}</p>
+        <!-- DESCRIÇÃO -->
+        <div class="detalhe-box">
+          <div class="detalhe-descricao">
+          {% block meta_description %}{{ produto.descricao|truncatewords:160 }}{% endblock meta_description %}
+          </div>
         </div>
 
+        <!-- PREÇO -->
         {% if produto.preco_promocional %}
-        <div class="produto-preco-box card-box">
-          <span class="produto-preco">{{ produto.preco_promocional|formata_preco}}</span>
+        <div class="detalhe-box">
+          <span class="detalhe-preco">{{ produto.preco_promocional|formata_preco}}</span>
         </div>
         {% else %}
-        <div class="produto-preco-box card-box">
-          <span class="produto-preco">{{ produto.preco|formata_preco}}</span>
+        <div class="detalhe-box">
+          <span class="detalhe-preco">{{ produto.preco|formata_preco}}</span>
         </div>
         {% endif %}
 
         <!-- QUANTIDADE -->
-        <div class="produto-quantidade-box card-box">
+        <div class="detalhe-box">
           <span>Quantidade</span>
 
-          <div class="quantidade-controle">
-            <button type="button" class="quantidade-btn" data-acao="menos">-</button>
-            <span class="quantidade-num">1</span>
-            <button type="button" class="quantidade-btn" data-acao="mais">+</button>
+          <div class="detalhe-qtd-controle">
+            <!-- 🔥 Recoloquei a classe "quantidade-btn" pro JS funcionar -->
+            <button type="button" class="detalhe-qtd-btn quantidade-btn" data-acao="menos">-</button>
+            
+            <!-- 🔥 Recoloquei a classe "quantidade-num" pro JS funcionar -->
+            <span class="detalhe-qtd-num quantidade-num">1</span>
+            
+            <!-- 🔥 Recoloquei a classe "quantidade-btn" pro JS funcionar -->
+            <button type="button" class="detalhe-qtd-btn quantidade-btn" data-acao="mais">+</button>
           </div>
 
-          <!-- quantidade real enviada -->
+          <!-- quantidade real enviada (Exatamente igual ao antigo) -->
           <input type="hidden" id="quantidade-input" value="1" />
         </div>
 
-        <div class="produto-comprar-box card-box">
-          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
+        <!-- BOTÃO COMPRAR -->
+        <div class="detalhe-box">
+          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}" style="width: 100%;">
             {% csrf_token %}
+            <!-- 🔥 Voltei para o id="quantidade-input" pro JS conseguir atualizar esse valor antes de enviar -->
             <input type="hidden" name="quantidade" id="quantidade-input" value="1">
             <input type="hidden" name="acao" value="comprar" />
-            <button type="submit" class="botao-comprar">Comprar</button>
+            <button type="submit" class="detalhe-btn-comprar">Comprar</button>
           </form>
         </div>
 
-        <div class="produto-comprar-box card-box">
-          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}">
+        <!-- BOTÃO ADICIONAR AO CARRINHO -->
+        <div class="detalhe-box">
+          <form method="post" action="{% url 'carrinho:adicionar' produto.id %}" style="width: 100%;">
             {% csrf_token %}
+            <!-- 🔥 Voltei para o id="quantidade-input" -->
             <input type="hidden" name="quantidade" id="quantidade-input" value="1">
             <input type="hidden" name="acao" value="continuar" />
-            <button type="submit" class="botao-comprar">Adicionar ao carrinho</button>
+            <button type="submit" class="detalhe-btn-comprar">Adicionar ao carrinho</button>
           </form>
         </div>
-      </div>
+        
+      </div> <!-- fim da grid -->
 
-      <span class="produto-aviso">Produto não é entregue pela nossa loja.</span>
+      <!-- AVISO -->
+      <span class="detalhe-aviso">Produto não é entregue pela nossa loja.</span>
     </div>
   </section>
 {% endblock %}
+
+{% block extra_scripts %}
+<!-- SCRIPT SCHEMA (Mantido intocado) -->
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org/",
+ "@type": "Product",
+ "name": "{{ produto.name }}",
+ "description": "{{ produto.descricao|truncatechars:200 }}",
+ "sku": "{{ produto.id }}",
+
+ "offers": {
+   "@type": "Offer",
+   "priceCurrency": "BRL",
+   "price": "{{ produto.preco }}",
+   "availability": "https://schema.org/{% if produto.disponivel %}InStock{% else %}OutOfStock{% endif %}"
+ }
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+            const numEl = document.querySelector(".quantidade-num");
+            const inputQtds = document.querySelectorAll("#quantidade-input");
+            const btns = document.querySelectorAll(".quantidade-btn");
+
+            let quantidade = 1;
+
+            btns.forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const acao = btn.dataset.acao;
+
+                    if (acao === "mais" && quantidade < 99) quantidade++;
+                    if (acao === "menos" && quantidade > 1) quantidade--;
+
+                    numEl.textContent = quantidade;
+
+                    inputQtds.forEach(input => {
+                        input.value = quantidade;
+                    });
+                });
+            });
+
+        });
+</script>
+{% endblock extra_scripts %}

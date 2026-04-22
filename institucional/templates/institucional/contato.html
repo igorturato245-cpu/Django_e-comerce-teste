@@ -1,0 +1,29 @@
+{% extends "global/base.html" %}
+{% block content %}
+<section class="institucional">
+  <div class="institucional-container">
+    <h1 class="institucional-title">Institucional</h1>
+
+    <p class="institucional-hel-txt">Precisa de ajuda? Nossa equipe está pronta para atender você.</p>
+
+    <h2 class="institucional-title">Atendimento</h2>
+    <p class="institucional-info"><strong>Email:</strong> suporte@sualoja.com</p>
+    <p class="institucional-info"><strong>WhatsApp:</strong> (00) 00000-0000</p>
+
+    <h2 class="institucional-title">Horário de atendimento</h2>
+    <p class="institucional-info">Segunda a Sexta: 09h às 18h</p>
+
+    <h2 class="institucional-title">Endereço</h2>
+    <p class="institucional-info">Rua XXXXX, nº XXX – Cidade – UF – CEP XXXXX-XXX</p>
+
+    <h2 class="institucional-title">Formulário</h2>
+    <form class="institucional-form" method="post">
+      {% csrf_token %}
+      <input class="institucional-input" type="text" name="nome" placeholder="Seu nome" required>
+      <input class="institucional-input" type="email" name="email" placeholder="Seu email" required>
+      <textarea class="institucional-textarea" name="mensagem" placeholder="Digite sua mensagem" required></textarea>
+      <button class="institucional-button" type="submit">Enviar</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

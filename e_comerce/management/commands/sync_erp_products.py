@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
@@ -38,17 +39,13 @@ class Command(BaseCommand):
                         defaults={'slug':cat_slug}
                     )
 
-                    slug_candidate=slugify(f"{name}-{erp_id}")
 
                     stock=item.get('stock') or 0
-                    price=item.get('price') or 0
-
-                    produto,created=Produto.objects.update_or_create(
-                        erp_id=erp_id,
-                        defaults={
+                    price=Decimal(str(item.get('price') or 0))
+                    
+                    defaults={
                             'category': category,
                             'name': name,
-                            'slug': slug_candidate,
                             'descricao':item.get('description',''),
                             'preco': price,
                             'remote_price': price,
@@ -58,7 +55,16 @@ class Command(BaseCommand):
                             'image_url':item.get('image_url'),
                             'last_synced':timezone.now(),
                         }
+
+                    produto,created=Produto.objects.update_or_create(
+                        erp_id=erp_id,
+                        defaults={'slug':slugify(f'{name}-{erp_id}')}
                     )
+                    
+                    for key, value in defaults.items():
+                        setattr(produto,key,value)
+                    produto.save()
+                    
                     action="Criado" if created else "Atualizado"
                     self.stdout.write(f"{action}:{name} (ERP ID:{erp_id})")
 

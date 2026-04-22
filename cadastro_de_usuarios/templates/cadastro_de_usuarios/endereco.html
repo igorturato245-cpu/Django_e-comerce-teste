@@ -1,0 +1,25 @@
+{% extends 'global/base.html' %}
+
+{% block content %}
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Atualização de cadastro</h2>
+      <form method="post" action="{% url 'cadastro_login:criarend' %}">
+        {% csrf_token %}
+        {% for field in endereco %}
+          <div>
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {{ field.errors }}
+            {% if field.help_text %}
+              <p>{{ field.help_text }}</p>
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit">Enviar</button>
+      </form>
+      {% url 'cadastro_login:index' as url_padrao %}
+      <button style="margin-top: 20px; text-align: center; border: none; background-color: white;" type="button" onclick="window.location.href='{{ request.META.HTTP_REFERER|default:'url_padrao' }}'">Voltar</button>
+    </div>
+  </div>
+{% endblock %}

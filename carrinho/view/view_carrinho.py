@@ -5,13 +5,18 @@ from decimal import Decimal,ROUND_HALF_UP
 
 def _get_cart_for_request(request):
     if request.user.is_authenticated:
-        return Carrinho.objects.filter(usuario=request.user).first()
+        cart,_=Carrinho.objects.get_or_create(usuario=request.user)
+        return cart
     
     session_key = request.session.session_key
     if not session_key:
-        return None
+        request.session.save()
+        session_key=request.session.session_key
+    cart,_=Carrinho.objects.get_or_create(
+        session_key=session_key
+    )
     
-    return Carrinho.objects.filter(session_key=session_key).first()
+    return cart
 
 
 def carrinho(request):
@@ -22,27 +27,8 @@ def carrinho(request):
         subtotal=0
     else:
         itens=carrinho.itens.select_related('produto').all() # type: ignore
-        subtotal = Decimal('0.00')
-
-        for item in itens:
-            produto=item.produto
-
-            if produto.erp_id:
-                availabity = erp_service.check_availability(
-                    produto.erp_id,
-                    item.quantidade
-                )
-
-                if not availabity['available']:
-                    item.quantidade=availabity['stock']
-                    item.save()
-
-        for i in itens:
-            preco=i.produto.preco_promocional or i.produto.preco
-            preco=Decimal(str(preco))
-            subtotal+=preco*i.quantidade
-
-        subtotal=subtotal.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
+                    
+        subtotal=carrinho.total()
             
     context = {
         'is_index': False,

@@ -31,3 +31,28 @@
     {{ form.non_field_errors }}
   </div>
 {% endif %}
+
+{% block extra_scripts %}
+<script>
+    // 1. Limpeza Automática de CPF (Garante que só números cheguem ao backend se desejar)
+    // Ou apenas permite que o usuário digite a máscara sem erro.
+    const cpfInput = document.querySelector('input[name="cpf"]');
+    if (cpfInput) {
+        cpfInput.addEventListener('blur', function() {
+            // Remove tudo que não for número antes de enviar
+            // Isso ajuda se você quiser manter o campo estritamente com 11 no banco
+            // this.value = this.value.replace(/\D/g, ''); 
+        });
+    }
+
+    // 2. Melhoria do Botão Voltar
+    // O fallback url_home continua lá, mas o history.back() é mais inteligente
+    function goBack() {
+        if (window.history.length > 1) {
+            window.history.back();
+        } else {
+            window.location.href = "/";
+        }
+    }
+</script>
+{% endblock extra_scripts %}
