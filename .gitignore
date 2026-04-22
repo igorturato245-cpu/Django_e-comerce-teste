@@ -62,6 +62,8 @@ db.sqlite3-journal
 media/
 static/
 test_db.sqlite3
+db.sqlite3-shm
+db.sqlite3-wal
 
 # Virtual Environment
 venv/
@@ -77,6 +79,7 @@ venv.bak/
 celerybeat-schedule.dat
 celerybeat-schedule.dir
 celerybeat.pid
+*.rdb
 
 #Arquivos temp:
 *.tmp
@@ -91,4 +94,6 @@ celerybeat.pid
 .env.production
 
 
+.caprime/
+*.pfx
 coisasimportantes.txt
