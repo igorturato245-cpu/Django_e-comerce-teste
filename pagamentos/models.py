@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from carrinho.models import Carrinho
+from django.utils import timezone
+from datetime import timedelta
+from e_comerce.services import erp as erp_service
+from decimal import Decimal
 
 class Pedido(models.Model):
     STATUS_CHOICES=[
@@ -65,6 +69,32 @@ class Pedido(models.Model):
     def ja_avaliado(self):
         from e_comerce.models import Avaliacao_produto
         return Avaliacao_produto.objects.filter(usuario=self.usuario, pedido=self).exists()
+    
+    @property
+    def prazo_arrependimento(self):
+        return timezone.now() < self.created_at + timedelta(days=7)
+    
+    @classmethod
+    def calcula_total(cls,cep,itens,total):
+        calcular_frete=erp_service.get_shipping_quote(cep,itens)
+    
+        if calcular_frete:
+            valor_frete=Decimal(str(calcular_frete.get('price','0')))
+            prazo_entrega=calcular_frete.get('delivery_days','0')
+        else:
+            valor_frete=Decimal('25.00')
+            prazo_entrega=10
+        
+        total_com_frete=total + valor_frete
+        
+        
+        return {
+            'valor_frete': valor_frete,
+            'prazo_entrega': prazo_entrega,
+            'total_com_frete': total_com_frete,
+            'total_produtos': total
+        }
+        
 
 
 class PedidoItem(models.Model):

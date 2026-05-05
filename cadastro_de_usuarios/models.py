@@ -3,13 +3,14 @@ from django.db import models,transaction
 from django.forms import ValidationError
 from django.contrib.auth.models import User
 from django.db.models import Q
+import re
 
 class Perfil(models.Model):
     #Perfil:
     usuario=models.ForeignKey(User, null=True,on_delete=models.CASCADE)
     idade=models.IntegerField()
     data_de_nascimento=models.DateField()
-    telefone=models.CharField(max_length=15)
+    telefone=models.CharField(max_length=13)
     cpf=models.CharField(max_length=14)
 
     def __str__(self):
@@ -30,7 +31,14 @@ class Perfil(models.Model):
 
         if not valida_cpf(self.cpf):
             error_messages['cpf']='Digite um CPF válido.'
-
+            
+        tel_limpo = re.sub(r'\D','',str(self.telefone))
+        
+        if len(tel_limpo) < 10 or len(tel_limpo) > 11:
+            error_messages['telefone']='O telefone deve ter DDD + 8 ou 9 dígitos (apenas números).'
+            
+        self.telefone=tel_limpo
+        
         if error_messages:
             raise ValidationError(error_messages)
         
@@ -45,7 +53,7 @@ class Endereco(models.Model):
     numero=models.CharField(max_length=5)
     complemento=models.CharField(max_length=30)
     bairro=models.CharField(max_length=30)
-    cep=models.CharField(max_length=8)
+    cep=models.CharField(max_length=9)
     cidade=models.CharField(max_length=30)
     estado=models.CharField(max_length=2,default="Sp",choices=(
         ('AC','Acre'),
@@ -82,10 +90,14 @@ class Endereco(models.Model):
         return f'{self.endereco}'
     
     def clean(self):
-        error_messages={}    
+        error_messages={}  
+        
+        cep_limpo=re.sub(r'\D','',str(self.cep))
     
-        if not self.cep.isdigit() or len(self.cep) != 8:
+        if not cep_limpo.isdigit() or len(cep_limpo) != 8:
             error_messages['cep']='CEP inválido.Digite apenas números.'
+            
+        self.cep=cep_limpo    
             
         if error_messages:
             raise ValidationError(error_messages)

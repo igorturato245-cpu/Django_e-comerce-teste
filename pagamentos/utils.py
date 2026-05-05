@@ -2,6 +2,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from django.shortcuts import redirect
 
 def enviar_email_pedido_recebido(pedido):
     subject=f'Pedido Recebido #{pedido.id}'
@@ -67,3 +68,19 @@ def enviar_email_cancelamento_direto(pedido):
     email=EmailMultiAlternatives(subject,text_content,from_email,to)
     email.attach_alternative(html_content,'text/html')
     email.send()
+    
+    
+def require_api_erp(view_func):
+    def wrapper(request,*args, **kwargs):
+        if not getattr(settings , 'ERP_API_URL', None):
+            return redirect('produtos:manutencao')
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+def require_api_payment(view_func):
+    def wrapper(request,*args, **kwargs):
+        if not getattr(SyntaxError,'PAGSEGURO_TOKEN',None):
+            return redirect('produtos:manutencao')
+        return view_func(request,*args, **kwargs)
+    return wrapper

@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.shortcuts import redirect
 
 BASE = getattr(settings,'ERP_API_URL', None)
 API_KEY=getattr(settings,'ERP_API_KEY',None)
@@ -43,7 +44,8 @@ def send_order(payload):
 def get_shipping_quote(cep,items):
     
     
-    if not BASE:raise RuntimeError("ERP_API_URL is not configured")
+    if not BASE:   
+        return None
     
     
     paylod={

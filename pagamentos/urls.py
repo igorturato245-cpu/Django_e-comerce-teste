@@ -17,4 +17,5 @@ urlpatterns = [
     path('solicitar/reembolso/pedido/<int:pedido_id>/', view_pagamentos.solicitar_cancelamento , name='solicitar_cancelamento'),
     path('analise/reembolso/pedido/<int:pedido_id>/', view_pagamentos.analise_reembolso, name='analise_reembolso'),
     path('solicitacao/reembolso/pedido/<int:pedido_id>/', view_pagamentos.reembolso_solicitacao_aprovada , name='solicitacao_reembolso_aprovada'),
+    path('conclusao/cancelamento/automatico/<int:pedido_id>/', view_pagamentos.conclusao_cancelamento, name='conclusao_cancelamento_automatico')
 ]

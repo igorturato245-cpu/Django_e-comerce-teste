@@ -4017,3 +4017,16 @@ h2.devolucao-reembolsar-container {
         margin-bottom: 2px;
     }
 }
+
+
+.field-error {
+  color: #dc2626;
+  font-size: 0.875rem;
+  display: block;
+  margin-top: 4px;
+}
+
+.has-error input {
+  border-color: #dc2626;
+  outline-color: #dc2626;
+}

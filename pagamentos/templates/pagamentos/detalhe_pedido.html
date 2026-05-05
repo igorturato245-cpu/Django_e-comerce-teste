@@ -42,7 +42,7 @@
         <span>{{pedido.data_envio}}</span>
         {% endif %}
 
-        <span>{{pedido.total}}</span>
+        <span>{{pedido.total_com_frete}}</span>
 
         <span></span>
       </div>
@@ -94,20 +94,25 @@
           <p class="detalhe-help">O produto ja esta a caminho. Para cancelar, aguarde o recebimento e solicite o reembolso.</p>
         {% endif %}
           <small class="detalhe-small-info" >Caso o produto não esteja na condição original, o reembolso poderá ser negado.</small>
-          <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:devoluacao_reembolso' pedido.id %}">Reembolso e devolução</a>
+          {% if not pedido.ja_avaliado and not pedido.prazo_arrependimento %}
+            <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:devoluacao_reembolso' pedido.id %}">Reembolso e devolução</a>
+          {% endif %}
       </div>
 
         
     {% elif pedido.status == 'cancelled'%}
       <div class="detalhe-redirect">
-        <p class="detalhe-help">
           {% if pedido.erp_status == 'cancelled' %}
+            <p class="detalhe-help">
             Cancelamento efetuado, veja os termos de devolução abaixo.
+            </p>
+            <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:conclusao_cancelamento_automatico' pedido.id %}">Análise de cancelamento</a>
           {% elif pedido.erp_status == 'return' %}
+            <p class="detalhe-help">
             Analise de devolução efetuada, logo mais seu reembolso será processado.
+            </p>
+            <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:analise_reembolso' pedido.id %}">Análise de devolução</a>
           {% endif %}
-        </p>
-        <a class="detalhe-paymente-redirect" href="{% url 'pagamentos:analise_reembolso' pedido.id %}">Análise de devolução</a>
       </div>
     
     {% elif pedido.status == 'refusal' %}

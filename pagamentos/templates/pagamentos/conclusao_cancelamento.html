@@ -1,0 +1,15 @@
+{% extends "global/base.html" %}
+
+{% block content %}
+<div class="analise-reembolso-page">
+    <div class="analise-reembolso-container">
+        <h2 class="analise-reembolso-titulo">Análise de Reembolso</h2>
+        <p class="analise-reembolso-txt"><strong>Pedido:</strong> {{ pedido.id }}</p>
+        <p class="analise-reembolso-txt"><strong>Status:</strong> {{ pedido.status }}</p>
+        <p class="analise-reembolso-txt"><strong>Status do fornecedor:</strong> {{ pedido.erp_status }}</p>
+
+
+        <p>Cancelamento/reembolso realizados com sucesso,caso tenha mais alguma duvida, entre em contado com o nosso suporte:suporte@luviehome.com.br</p>
+    </div>
+</div>
+{% endblock content %}

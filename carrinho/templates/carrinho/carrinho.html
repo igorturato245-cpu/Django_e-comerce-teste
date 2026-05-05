@@ -24,7 +24,7 @@
           {% for item in Items %}
             <div class="carrinho-item">
               <div class="item-imagem">
-                <img src="{% static 'global/img/OIP.jpeg' %}" alt="Logo" style="height:40px;" />
+                <img src="{% static 'global/img/logo.png' %}" alt="Logo" style="height:40px;" />
               </div>
 
               <div class="item-nome">{{ item.produto.name }}</div>
@@ -66,11 +66,6 @@
             <div class="resumo-linha">
               <span>Subtotal</span>
               <span class="resumo-total">{{ subtotal|formata_preco }}</span>
-            </div>
-
-            <div class="resumo-linha">
-              <span>Frete</span>
-              <span>R$ 0,00</span>
             </div>
 
             <div class="resumo-linha resumo-final">

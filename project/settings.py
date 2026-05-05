@@ -117,13 +117,13 @@ USE_I18N = True
 USE_TZ = True
 
 # E-mail (Configurações reais)
-EMAIL_BACKEND = getattr(local_settings, 'EMAIL_BACKEND', "django.core.mail.backends.console.EmailBackend")
-EMAIL_HOST = getattr(local_settings, 'EMAIL_HOST', "smtp.gmail.com")
+EMAIL_BACKEND = getattr(local_settings, 'EMAIL_BACKEND', "django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = getattr(local_settings, 'EMAIL_HOST', "smtp.zoho.com")
 EMAIL_PORT = getattr(local_settings, 'EMAIL_PORT', 587)
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = getattr(local_settings, 'EMAIL_HOST_USER', "")
 EMAIL_HOST_PASSWORD = getattr(local_settings, 'EMAIL_HOST_PASSWORD', "")
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = "contato@luviehome.com.br"
 
 # Estáticos e Media
 STATIC_URL = 'static/'
@@ -154,7 +154,7 @@ SENTRY_DSN = getattr(local_settings, 'SENTRY_DSN', None)
 if SENTRY_DSN and not DEBUG:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
-        integrations=[DjangoIntegration()],
+       integrations=[DjangoIntegration()],
         traces_sample_rate=1.0,
         send_default_pii=True
     )

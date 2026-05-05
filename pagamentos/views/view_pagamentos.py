@@ -15,11 +15,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from e_comerce.models import Produto,Avaliacao_produto
-from e_comerce import utils
+from pagamentos.utils import require_api_erp,require_api_payment
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-# ... (função start_payment e payment_return permanecem iguais) ...
+@require_api_payment
 def start_payment(request):
     if not request.user.is_authenticated:
         return redirect ('cadastro_login:loginuser')
@@ -49,19 +50,26 @@ def start_payment(request):
     if pedido_existente:
         messages.error(request,'Pedido ja existe e está em processo, aguarde.')
         return redirect('carrinho:carrinho')
-
-    valor_frete=Decimal(request.session.get('valor_frete','25.00'))
-
-    total_frete=total+valor_frete
+    
+    endereco=get_object_or_404(Endereco,usuario=request.user,padrao=True)
+    
+    itens_para_calculo=[]
+    for item in items:
+        itens_para_calculo.append({
+            'id':item.produto.erp_id or str(item.produto.id),
+            'quantity':item.quantidade
+        })
+    
+    total_com_frete=Pedido.calcula_total(cep=endereco.cep,itens=itens_para_calculo,total=total)
     
     try:    
         with transaction.atomic():
             pedido = Pedido.objects.create(
                 usuario=request.user,
                 carrinho=cart,
-                valor_frete=valor_frete,
-                total=total,
-                total_com_frete=total_frete,
+                valor_frete=total_com_frete['valor_frete'],
+                total=total_com_frete['total'],
+                total_com_frete=total_com_frete['total_com_frete'],
                 status='pending'
             )
             for it in items:
@@ -102,6 +110,7 @@ def start_payment(request):
     
 @login_required
 @require_POST   
+@require_api_payment
 def retry_payment(request,pedido_id):   
     
     try:
@@ -139,6 +148,7 @@ def retry_payment(request,pedido_id):
 
 @require_POST   
 @login_required
+@require_api_payment
 def cancelled_refunded_return(request,pedido_id):
     
     pedido=get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
@@ -176,7 +186,7 @@ def cancelled_refunded_return(request,pedido_id):
 
     
     
-
+@require_api_payment
 def payment_return(request):
     reference = request.GET.get('reference')
     status = request.GET.get('status', 'pending')
@@ -187,6 +197,7 @@ def payment_return(request):
     }
     return render(request, 'pagamentos/return.html', context)
 
+@require_api_payment
 @csrf_exempt
 def pagseguro_notification(request):
     """
@@ -251,7 +262,8 @@ def pagseguro_notification(request):
         logger.error(f"Erro ao processar notificação: {e}")
         return HttpResponse(status=500)
     
-    
+@require_api_erp 
+@require_api_payment  
 def checkout(request):
     
     if not request.user.is_authenticated:
@@ -305,28 +317,17 @@ def checkout(request):
                 # Se a API do fornecedor cair, por segurança, você decide:
                 # Aqui vamos deixar passar com log, mas você poderia travar.
                 logger.error(f"Erro ao validar estoque no checkout: {e}")
-                
-    calcular_frete=erp_service.get_shipping_quote(endereco.cep,itens_para_frete)
+             
+    calcular_frete=Pedido.calcula_total(cep=endereco.cep,itens=itens_para_frete,total=cart.total())
     
-    if calcular_frete:
-        valor_frete=Decimal(str(calcular_frete.get('price','0')))
-        prazo_entrega=calcular_frete.get('delivery_days','0')
-    else:
-        valor_frete=Decimal('25.00')
-        prazo_entrega=10
-
-
-    subtotal=cart.total()
-    total_com_frete=subtotal+valor_frete
-    
-    request.session['valor_frete']= str(valor_frete)
+    request.session['frete_calculado']=str(calcular_frete['valor_frete'])
     
     context={
         'itens':itens,
-        'valor_frete':valor_frete,
-        'prazo':prazo_entrega,
-        'subtotal':subtotal,
-        'total_com_frete':total_com_frete,
+        'valor_frete':calcular_frete['valor_frete'],
+        'prazo':calcular_frete['prazo_entrega'],
+        'subtotal':calcular_frete['total'],
+        'total_com_frete':calcular_frete['total_com_frete'],
         'endereco':[endereco],
         'cart':cart,
     }
@@ -400,7 +401,7 @@ def avaliar_pedido(request,pedido_id):
     
     return render(request,'pagamentos/avaliar_pedido.html',{'pedido':pedido})   
 
- 
+@require_api_erp 
 def cancelar_reembolsar_pedido(request,pedido_id):
     if not request.user.is_authenticated:
         return redirect('cadastro_login:loginuser')
@@ -419,7 +420,7 @@ def cancelar_reembolsar_pedido(request,pedido_id):
 
 
 
-@require_POST  
+@require_POST 
 def solicitar_cancelamento(request,pedido_id):
     if not request.user.is_authenticated:
         return redirect('cadastro_login:loginuser')
@@ -481,13 +482,13 @@ def reembolso_solicitacao_aprovada(request,pedido_id):
     else:
         try:
             with transaction.atomic():
-                if pedido.status in ['cancelled'] and pedido.erp_status in ['cancelled']:
+                if pedido.status in ['cancelled','refunde_requested'] and pedido.erp_status in ['cancelled']:
                     transaction_code=pedido.metadata.get('pagseguro_code')
                     
                     if not transaction_code:
                         raise Exception('Código de transação do PagSeguro não encontrado no pedido')
                     
-                    pg=pagseguro_integration.refund_transaction(transaction_code)
+                    pg=pagseguro_integration.refund_transaction(transaction_code,amount=pedido.total_com_frete)
                     
                     if not pg:
                         raise Exception('Falha ao processar reembolso no PagSeguro')
@@ -504,3 +505,18 @@ def reembolso_solicitacao_aprovada(request,pedido_id):
             messages.error(request,f'Erro ao processar reembolso: {str(e)}')
             
     return redirect('pagamentos:meus_pedidos')
+
+
+def conclusao_cancelamento(request,pedido_id):
+    if not request.user.is_authenticated:
+        return redirect('cadastro_login:loginuser')
+    
+    
+    pedido=get_object_or_404(Pedido,id=pedido_id, usuario=request.user)
+    
+    
+    context={
+        'pedido':pedido,
+    }
+    
+    return render(request, 'pagamentos/conclusao_cancelamento.html',context)
