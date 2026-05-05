@@ -102,7 +102,7 @@ class CriarUser(BasePerfil):
         
         messages.success(self.request,'Sucesso ao criar sua conta, boas compras.')
         
-        return redirect('cadastro_login:atualizarcadastro')
+        return redirect('produtos:index')
     
 class AtualizarUser(BasePerfil):
     def post(self,*args, **kwargs):
