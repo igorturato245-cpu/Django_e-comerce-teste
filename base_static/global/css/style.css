@@ -1329,7 +1329,7 @@ footer a:hover {
 ========================================== */
 .carrinho-header {
     display: grid;
-    grid-template-columns: 80px 2.5fr 120px 100px 80px;
+    grid-template-columns: 80px 2fr 130px 120px 100px;
     gap: 15px;
     font-weight: 700;
     padding-bottom: 15px;
@@ -1342,7 +1342,7 @@ footer a:hover {
 ========================================== */
 .carrinho-item {
     display: grid;
-    grid-template-columns: 80px 2.5fr 120px 100px 80px;
+    grid-template-columns: 80px 2fr 130px 120px 100px;
     gap: 15px;
     align-items: center;
     padding: 20px 0;
@@ -1614,10 +1614,10 @@ footer a:hover {
     .carrinho-item {
         display: grid;
         grid-template-columns: 80px 1fr; 
-        grid-template-areas: none !important; 
-        gap: 12px;
+        grid-template-rows: auto auto auto; 
+        gap: 10px;
         position: relative; 
-        padding: 18px 0;
+        padding: 20px 0;
     }
 
     /* 1. Imagem na esquerda */
@@ -1627,7 +1627,6 @@ footer a:hover {
         grid-row: 1 / span 3; 
         align-self: start; 
     }
-    .item-imagem img { width: 100%; height: auto; }
 
     /* 2. Textos (Nome/Vendedor) na direita */
     .carrinho-item > div:nth-child(2) { 
@@ -1685,35 +1684,46 @@ footer a:hover {
         width: 100%;
         padding: 14px;
     }
-}
 
-/* QUANTIDADE */
-.quantidade-controle {
-    margin-top: 10px;
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    justify-content: center;
-}
+    .item-imagem {
+        grid-column: 1;
+        grid-row: 1 / span 3; /* Imagem ocupa a lateral toda */
+    }
 
-.quantidade-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    border: none;
-    background: #ddd;
-    font-size: 20px;
+    .item-info-group {
+        grid-column: 2;
+        padding-right: 0;
+    }
+
+    .quantidade-box {
+        grid-column: 2;
+        margin-top: 5px;
+    }
+
+    .item-preco {
+        grid-column: 2;
+        text-align: left !important;
+        font-size: 1.1rem;
+        margin-top: 5px;
+    }
+
+    .item-remover {
+        position: absolute;
+        bottom: 10px;
+        right: 0;
+    }
+    .qtd-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    background: #fff;
     cursor: pointer;
-}
-
-.quantidade-btn:hover{
-    background: #ccc;
-}
-
-.quantidade-num {
-    font-size: 20px;
     font-weight: bold;
+    }
 }
+
+
 
 
 
