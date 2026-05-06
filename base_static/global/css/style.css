@@ -580,12 +580,14 @@ footer a:hover {
     text-decoration: underline;
 }
 
+
+
 /* ================================
    OFERTAS DO DIA
 ==================================*/
 .ofertas {
     height: 100vh;                 
-    background: var(--bg-dark); /* Aplicado */
+    background: var(--bg-dark);
     padding: 40px 0;
     display: flex;
     align-items: center;
@@ -596,7 +598,7 @@ footer a:hover {
 
 .oferta-secao{
     width: 100%;
-    max-width: var(--max-width); /* Aplicado */
+    max-width: var(--max-width);
     height: 100%;
     position: relative;
     padding: 40px 20px;
@@ -612,7 +614,7 @@ footer a:hover {
     font-weight: 700;
     margin-bottom: 40px;
     margin-right: auto;
-    color: var(--text-light); /* Aplicado */
+    color: var(--text-light);
 }
 
 /* CONTAINER EM MODO CARROSSEL */
@@ -635,30 +637,30 @@ footer a:hover {
     min-width: 450px;
     max-width: 450px;
     min-height: 370px;
-    background: var(--bg); /* Aplicado */
-    border-radius: var(--radius-xl); /* Aplicado */
+    background: var(--bg);
+    border-radius: var(--radius-xl);
     padding: 20px;
-    box-shadow: var(--shadow-card-dark); /* Aplicado */
-    transition: transform var(--transition-medium), box-shadow var(--transition-medium); /* Aplicado */
+    box-shadow: var(--shadow-card-dark);
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
     scroll-snap-align: start;
     cursor: pointer;
 }
 
 .oferta-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--shadow-card-dark-hover); /* Aplicado */
+    box-shadow: var(--shadow-card-dark-hover);
 }
 
 /* IMAGEM */
 .oferta-img {
     width: 100%;
     height: 190px;
-    border-radius: var(--radius-lg); /* Aplicado */
+    border-radius: var(--radius-lg);
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--bg-placeholder); /* Aplicado */
+    background: var(--bg-placeholder);
 }
 
 .oferta-img img {
@@ -676,20 +678,20 @@ footer a:hover {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 8px;
-    color: var(--text-darkest); /* Aplicado */
+    color: var(--text-darkest);
 }
 
 .oferta-preco {
     font-size: 20px;
     font-weight: bold;
-    color: var(--bg-dark); /* Aplicado */
+    color: var(--bg-dark);
 }
 
 .oferta-preco-antigo {
     text-decoration: line-through;
     font-size: 20px;
     font-weight: bold;
-    color: var(--bg-dark); /* Aplicado */
+    color: var(--bg-dark);
 }
 
 .oferta-descricao {
@@ -698,7 +700,7 @@ footer a:hover {
 
 .oferta-descricao a {
     font-size: 14px;
-    color: #444; /* Mantido fixo ou você pode criar uma var para textos secundários */
+    color: #444;
     line-height: 1.4;
     display: block;
     text-decoration: none;
@@ -713,134 +715,13 @@ footer a:hover {
    FALLBACK SEM OFERTAS
 ==================================*/
 .sem-ofertas {
-    color: var(--text-light); /* Aplicado */
+    color: var(--text-light);
     text-align: center;
     font-size: 26px;
     font-weight: bold;
     opacity: .6;
 }
 
-/* ================================
-   MEDIA QUERIES (Unificadas)
-==================================*/
-
-/* Tablets */
-@media (max-width: 900px) {
-    .ofertas {
-        padding: 20px 0;
-    }
-    .oferta-card {
-        min-width: 220px;
-        /* Veja Ponto de Atenção 2 abaixo sobre max-width */
-    }
-    .oferta-img {
-        height: 160px;
-    }
-    .oferta-descricao a {
-        font-size: 13px;
-    }
-}
-
-/* Celulares Maiores */
-@media (max-width: 768px) {
-    .ofertas-titulo {
-        font-size: 20px;
-        margin-bottom: 15px;
-    }
-}
-
-/* Celulares Padrão */
-@media (max-width: 600px) {
-    .ofertas {
-        padding: 10px 0;
-    }
-    .oferta-card {
-        min-width: 200px;
-    }
-    .oferta-img {
-        height: 140px;
-    }
-    .oferta-preco {
-        font-size: 18px;
-    }
-    .oferta-descricao a {
-        font-size: 12px;
-        line-height: 1.3;
-    }
-}
-
-/* Celulares Pequenos */
-@media (max-width: 480px) {
-    .ofertas-titulo {
-        font-size: 18px;
-        margin-bottom: 12px;
-    }
-}
-
-/* ==========================================
-   SEÇÕES DE PRODUTOS (Carrossel Genérico)
-   ========================================== */
-
-
-
-/* SEÇÃO BASE */
-.secao-produtos {
-    width: 100%;
-    min-height: 100vh; 
-    padding: var(--section-padding) 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-/* CONTAINER CENTRAL */
-.produtos-container {
-    width: 100%;
-    max-width: var(--max-width);
-    height: 100%;
-    position: relative;
-    padding: 0 var(--container-padding);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* TÍTULO */
-.produtos-titulo {
-    text-align: right;
-    font-size: var(--title-size);
-    font-weight: 700;
-    margin-bottom: 40px;
-    margin-right: auto;
-    color: var(--text-color); 
-}
-
-.bg-dark .produtos-titulo {
-    color: var(--text-light);
-}
-
-/* ==========================
-   LISTA / CARROSSEL
-========================== */
-.produtos-lista {
-    display: flex;
-    justify-content: flex-start;
-    gap: 22px;
-    width: 100%;
-    max-width: 90vw;
-    padding: 20px 40px; 
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    scroll-behavior: smooth;
-}
-
-.produtos-lista::-webkit-scrollbar { 
-    display: none; 
-}
-
 /* ==========================================
    SEÇÕES DE PRODUTOS (Carrossel Genérico)
    ========================================== */
@@ -889,7 +770,7 @@ footer a:hover {
 .produtos-lista {
     display: flex;
     justify-content: flex-start;
-    gap: 22px;
+    gap: 16px;
     width: 100%;
     max-width: 90vw;
     padding: 20px 40px; 
@@ -951,7 +832,6 @@ footer a:hover {
    TEXTOS DENTRO DO CARD
 ========================== */
 .produto-info-index {
-    /* 🔥 Esta proteção impede que o texto fique lado a lado! 🔥 */
     display: flex;
     flex-direction: column; 
     margin-top: 15px;
@@ -962,7 +842,7 @@ footer a:hover {
 .produto-nome-index {
     font-size: 16px;
     font-weight: 700;
-    margin-bottom: 8px; /* Dá um espacinho pro preço */
+    margin-bottom: 8px;
 }
 .produto-nome-index a { color: var(--text-darkest); }
 
@@ -1022,13 +902,38 @@ footer a:hover {
     .seta-direita  { right: 10px; }
 }
 
-/* ==========================
-   MEDIA QUERIES (Responsivo ajustado para o gordinho)
-========================== */
+/* ================================
+   MEDIA QUERIES (Unificadas)
+==================================*/
 
-/* Tablet */
+/* Tablets */
+@media (max-width: 900px) {
+    .ofertas {
+        padding: 20px 0;
+    }
+    .oferta-card {
+        min-width: 220px;
+    }
+    .oferta-img {
+        height: 160px;
+    }
+    .oferta-descricao a {
+        font-size: 13px;
+    }
+}
+
+/* Celulares Maiores */
 @media (max-width: 768px) {
-    .produtos-lista { max-width: 100vw; padding: 20px 20px; }
+    .ofertas-titulo {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .produtos-lista {
+        max-width: 100vw;
+        padding: 20px 20px;
+    }
+
     .produto-card { 
         flex: 0 0 250px; 
         width: 250px; 
@@ -1037,41 +942,154 @@ footer a:hover {
     }
 }
 
-/* Mobile Padrão */
+/* ================================
+   MOBILE — 600px e abaixo
+   Dois cards visíveis, tamanho correto
+==================================*/
 @media (max-width: 600px) {
-    .produtos-titulo { font-size: 24px; margin-bottom: 24px; }
-    .produto-card { 
-        flex: 0 0 calc(50% - 12px); 
-        width: calc(50% - 12px); 
-        min-width: 190px; 
-        max-width: calc(50% - 12px); 
-        min-height: 350px;
+
+    /* OFERTAS */
+    .ofertas-titulo {
+        font-size: 20px;
+        margin-bottom: 15px;
     }
-    .produto-img { height: 160px; }
+
+    /* CATEGORIAS */
+    .produtos-titulo {
+        font-size: 24px;
+        margin-bottom: 24px;
+    }
+
+    /* 
+     * LISTA: sem padding lateral exagerado.
+     * O padding-inline define a "borda visível" ao lado dos cards.
+     * Valor pequeno = cards maiores e sem corte feio.
+     */
+    .produtos-lista {
+        max-width: 100vw;
+        padding: 16px 12px;
+        gap: 12px;
+    }
+
+    /* 
+     * CARD: dois cards por vez, usando 100vw como base.
+     * Fórmula: (100vw - padding_esquerdo - padding_direito - gap_entre_cards) / 2
+     *           (100vw - 12px            - 12px             - 12px           ) / 2
+     * O resultado ocupa metade da tela, perfeito e sem corte.
+     */
+    .produto-card {
+        flex: 0 0 calc((100vw - 36px) / 2);
+        width: calc((100vw - 36px) / 2);
+        min-width: 0;
+        max-width: calc((100vw - 36px) / 2);
+        min-height: 350px;
+        padding: 10px;
+    }
+
+    .produto-img {
+        height: 150px;
+    }
+
+    .produto-nome-index {
+        font-size: 13px;
+        margin-bottom: 5px;
+    }
+
+    .produto-preco-index {
+        font-size: 15px;
+    }
+
+    .produto-preco-antigo {
+        font-size: 13px;
+    }
+
+    .produto-desc {
+        font-size: 11px;
+    }
+
+    /* Setas menores */
     .seta { width: 36px; height: 36px; font-size: 18px; }
+
+    /* CARDS DO CARROSSEL DE OFERTAS — mesmo tamanho dos outros */
+    #carrosselOfertas .produto-card {
+        flex: 0 0 calc((100vw - 36px) / 2);
+        width: calc((100vw - 36px) / 2);
+        min-width: 0;
+        max-width: calc((100vw - 36px) / 2);
+    }
 }
 
-/* Mobile Pequeno (480px) */
+/* ================================
+   MOBILE PEQUENO — 480px e abaixo
+   Mantém dois cards, ajusta padding mínimo
+==================================*/
 @media (max-width: 480px) {
-    .produtos-lista { 
-        gap: 12px; 
-        padding: 10px 15px;
+
+    .ofertas-titulo {
+        font-size: 18px;
+        margin-bottom: 12px;
     }
-    .produto-card { 
-        flex: 0 0 185px;
-        width: 185px;
-        min-width: 185px; 
-        max-width: 185px; 
-        padding: 10px; 
+
+    .produtos-titulo {
+        font-size: 20px;
+        margin-bottom: 16px;
     }
-    .produto-img { height: 140px; }
-    .produto-preco, .produto-preco-antigo { font-size: 16px; }
-    .produto-nome { font-size: 14px; }
-    
+
+    /* 
+     * Padding ainda menor para maximizar o espaço dos cards.
+     * (100vw - 8px - 8px - 10px) / 2  →  quase metade exata da tela.
+     */
+    .produtos-lista {
+        padding: 12px 8px;
+        gap: 10px;
+    }
+
+    .produto-card {
+        flex: 0 0 calc((100vw - 26px) / 2);
+        width: calc((100vw - 26px) / 2);
+        min-width: 0;
+        max-width: calc((100vw - 26px) / 2);
+        min-height: 320px;
+        padding: 8px;
+    }
+
+    .produto-img {
+        height: 130px;
+    }
+
+    .produto-nome-index {
+        font-size: 12px;
+    }
+
+    .produto-preco-index {
+        font-size: 14px;
+    }
+
+    .produto-preco-antigo {
+        font-size: 12px;
+    }
+
+    .produto-desc {
+        font-size: 11px;
+        line-height: 1.3;
+    }
+
     .seta-esquerda { left: 5px; }
     .seta-direita  { right: 5px; }
     .seta { width: 32px; height: 32px; font-size: 16px; }
+
+    /* Ofertas — mesma lógica */
+    #carrosselOfertas .produto-card {
+        flex: 0 0 calc((100vw - 26px) / 2);
+        width: calc((100vw - 26px) / 2);
+        min-width: 0;
+        max-width: calc((100vw - 26px) / 2);
+        padding: 8px;
+    }
 }
+
+
+
 
 /* =======================================================
    PÁGINA DE DETALHES DO PRODUTO (Nomes de classes únicos)

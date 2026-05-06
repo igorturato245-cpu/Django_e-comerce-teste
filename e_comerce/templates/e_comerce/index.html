@@ -24,49 +24,6 @@
     </div>
 </section>
 
-<!-- OFERTAS DO DIA (Mantida idêntica) 
-<section id="ofertas-do-dia" class="ofertas">
-    <div class="oferta-secao">
-        <h2 class="ofertas-titulo">Ofertas do Dia</h2>
-        {% if ofertas_do_dia %}
-        <button class="seta seta-esquerda" id="btnoferta">‹</button>
-        <button class="seta seta-direita" id="btnnextoferta">›</button>
-    
-        <div class="ofertas-container" id="carrosselOfertas">
-            {% for produto in ofertas_do_dia %}
-            {% cache 1 produto_card_oferta produto.id %}
-            <div class="oferta-card">
-                <picture class="oferta-img">
-                    <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img alt="{{ produto.name }}">
-                    </a>
-                </picture>
-                <div class="oferta-info">
-                    <h2 class="oferta-nome">
-                        <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">{{ produto.name }}</a>
-                    </h2>
-                    <div class="oferta-preco"><a>{{ produto.get_preco|formata_preco }}</a></div>
-                    {% if produto.preco_promocional %}
-                    <div class="oferta-preco-antigo text-center"><a>{{ produto.preco|formata_preco }}</a></div>
-                    {% endif %}
-                    <div class="oferta-descricao"><a>{{ produto.descricao }}</a></div>
-                </div>    
-                <div class="product-rating">
-                    {% for i in produto.estrelas_cheias %}<i class="fa-solid fa-star star-icon"></i>{% endfor %}
-                    {% if produto.tem_meia %}<i class="fa-solid fa-star-half-stroke star-icon"></i>{% endif %}
-                    {% for i in produto.estrelas_vazias %}<i class="fa-regular fa-star star-icon"></i>{% endfor %}
-                    <div class="avaliação">{{ produto.media_avaliacao }}</div>
-                </div>
-            </div>
-            {% endcache %}
-            {% endfor %}
-        </div>
-        {% else %}
-        <div class="sem-ofertas"><p>Nenhuma oferta disponível hoje.</p></div>
-        {% endif %}
-    </div>
-</section>-->
-
 
 <section id="ofertas-do-dia"  class="secao-produtos" style="background: #000;">
     <div class="produtos-container">
@@ -169,7 +126,7 @@
             containerId: "carrosselOfertas",
             prevBtnId: "btnoferta",
             nextBtnId: "btnnextoferta",
-            itemSelector: ".oferta-card",
+            itemSelector: ".produto-card",
             gap: 20
         });
 
