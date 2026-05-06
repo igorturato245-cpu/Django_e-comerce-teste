@@ -19,7 +19,7 @@ class Contato(TemplateView):
         texto=request.POST.get('Área de contato')
         
         
-        Contato_user.objects.create(
+        Contato_user.objects.update_or_create(
             nome=nome,
             email=email,
             texto=texto

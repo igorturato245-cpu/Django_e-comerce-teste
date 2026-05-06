@@ -16,11 +16,11 @@
     <p class="institucional-info">Rua Waldemar Zetola, nº 262 – Curitiba – PR – CEP 82640-140</p>
 
     <h2 class="institucional-title">Formulário</h2>
-    <form class="institucional-form" method="post">
+    <form class="institucional-form" method="post" action="{% url 'institucional:contato' %}">
       {% csrf_token %}
-      <input class="institucional-input" type="text" name="nome" placeholder="Seu nome" required>
-      <input class="institucional-input" type="email" name="email" placeholder="Seu email" required>
-      <textarea class="institucional-textarea" name="mensagem" placeholder="Digite sua mensagem" required></textarea>
+      <input class="institucional-input" type="text" name="Nome" placeholder="Seu nome" required>
+      <input class="institucional-input" type="email" name="Email" placeholder="Seu email" required>
+      <textarea class="institucional-textarea" name="Área de contato" placeholder="Digite sua mensagem" required></textarea>
       <button class="institucional-button" type="submit">Enviar</button>
     </form>
   </div>
