@@ -937,7 +937,7 @@ footer a:hover {
     .produto-card { 
         flex: 0 0 250px; 
         width: 250px; 
-        min-width: 250px; 
+        min-width: 0; 
         max-width: 250px; 
     }
 }
@@ -949,15 +949,45 @@ footer a:hover {
 @media (max-width: 600px) {
 
     /* OFERTAS */
+    .produtos-container,
+    .oferta-secao {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+
+    .ofertas-container {
+        padding: 16px 12px;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    .oferta-card {
+    flex: 0 0 calc((100vw - 36px) / 2);
+    width: calc((100vw - 36px) / 2);
+    min-width: 0;
+    max-width: calc((100vw - 36px) / 2);
+    min-height: auto;
+    padding: 10px;
+    box-sizing: border-box; /* Impede que o padding engorde o card */
+    margin: 0;
+    }
+
+    .oferta-img {
+        height: 120px;
+    }
+
     .ofertas-titulo {
         font-size: 20px;
         margin-bottom: 15px;
+        margin-left: 12px;
     }
 
     /* CATEGORIAS */
     .produtos-titulo {
         font-size: 24px;
         margin-bottom: 24px;
+        margin-left: 12px;
     }
 
     /* 
@@ -984,6 +1014,8 @@ footer a:hover {
         max-width: calc((100vw - 36px) / 2);
         min-height: 350px;
         padding: 10px;
+        box-sizing: border-box; /* Impede que o padding engorde o card */
+        margin: 0;
     }
 
     .produto-img {
@@ -1010,13 +1042,6 @@ footer a:hover {
     /* Setas menores */
     .seta { width: 36px; height: 36px; font-size: 18px; }
 
-    /* CARDS DO CARROSSEL DE OFERTAS — mesmo tamanho dos outros */
-    #carrosselOfertas .produto-card {
-        flex: 0 0 calc((100vw - 36px) / 2);
-        width: calc((100vw - 36px) / 2);
-        min-width: 0;
-        max-width: calc((100vw - 36px) / 2);
-    }
 }
 
 /* ================================
@@ -1025,14 +1050,41 @@ footer a:hover {
 ==================================*/
 @media (max-width: 480px) {
 
+    .produtos-container,
+    .oferta-secao {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .ofertas-container {
+        padding: 12px 8px;
+        gap: 10px;
+        justify-content: center;
+    }
+
+    .oferta-card {
+        flex: 0 0 calc((100vw - 26px) / 2);
+        width: calc((100vw - 26px) / 2);
+        min-width: 0;
+        max-width: calc((100vw - 26px) / 2);
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    .oferta-img {
+        height: 100px;
+    }
+
     .ofertas-titulo {
         font-size: 18px;
         margin-bottom: 12px;
+        margin-left:8px;
     }
 
     .produtos-titulo {
         font-size: 20px;
         margin-bottom: 16px;
+        margin-left: 8px;
     }
 
     /* 
@@ -1051,6 +1103,7 @@ footer a:hover {
         max-width: calc((100vw - 26px) / 2);
         min-height: 320px;
         padding: 8px;
+        box-sizing: border-box;
     }
 
     .produto-img {
@@ -1078,14 +1131,6 @@ footer a:hover {
     .seta-direita  { right: 5px; }
     .seta { width: 32px; height: 32px; font-size: 16px; }
 
-    /* Ofertas — mesma lógica */
-    #carrosselOfertas .produto-card {
-        flex: 0 0 calc((100vw - 26px) / 2);
-        width: calc((100vw - 26px) / 2);
-        min-width: 0;
-        max-width: calc((100vw - 26px) / 2);
-        padding: 8px;
-    }
 }
 
 

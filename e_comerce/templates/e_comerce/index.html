@@ -38,7 +38,7 @@
             <div class="produto-card">
                 <picture class="produto-img">
                     <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img alt="{{ produto.name }}">
+                        <img src="{{produto.imagem.url}}" alt="{{ produto.imagem }}">
                     </a>
                 </picture>
                 <div class="produto-info-index">
@@ -84,7 +84,7 @@
             <li class="produto-card">
                 <div class="produto-img">
                     <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img alt="{{ produto.name }}">
+                        <img src="{{produto.imagem.url}}"alt="{{ produto.imagem }}">
                     </a>
                 </div>
                 <div class="produto-info-index">
@@ -114,6 +114,7 @@
         </ul>
     </div>
 </section>
+<link rel="stylesheet" href="styles.css?v=4">
 {% endfor %}
 
 {% endblock content %}
