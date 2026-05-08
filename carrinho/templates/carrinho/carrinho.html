@@ -25,7 +25,7 @@
           <div class="carrinho-item">
             <!-- 1. IMAGEM -->
             <div class="item-imagem">
-              <img />
+              <img src="{{ item.produto.imagem.url }}" alt="{{ item.produto.imagem }}" />
             </div>
 
             <!-- 2. INFO (Agrupamos Nome e Descrição aqui) -->
@@ -52,8 +52,8 @@
               <button class="btn-remover" data-item-id="{{ item.id }}" data-url="{% url 'carrinho:remover' item.id %}">Remover</button>
             </div>
           </div>
+          {% endfor %}
         </div>
-        {% endfor %}
 
         <!-- LATERAL -->
         <div class="carrinho-lateral">
