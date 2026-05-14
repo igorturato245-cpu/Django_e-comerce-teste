@@ -280,7 +280,7 @@ def pagseguro_notification(request):
 
 
     
-#@require_api_erp 
+@require_api_erp 
 @require_api_payment  
 def checkout(request):
     
