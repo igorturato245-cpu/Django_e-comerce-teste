@@ -1,24 +1,37 @@
-{% extends "global/base.html" %}
+{% extends 'global/base.html' %} 
 
-{%block content%}
-<h1>Retorno do pagamento.</h1>
+{% block content %}
 
-<p>Referencia:{{reference}}</p>
-<p>Status:{{status}}</p>
 
-{% if success %}
-    <h2>Pagamento aprovado</h2>
+<div class="return-container">
+    
+    {% if success %}
+        <!-- TELA DE SUCESSO -->
+        <div class="icon-wrapper icon-success">
+            ✓
+        </div>
+        <h1 class="return-title">Pedido Confirmado!</h1>
+        <p class="return-message">Seu pagamento foi aprovado e seu pedido já está sendo processado. Em breve você receberá um e-mail com os detalhes.</p>
+    {% else %}
+        <!-- TELA DE PROCESSAMENTO / PENDENTE -->
+        <div class="icon-wrapper icon-pending">
+            ⏱
+        </div>
+        <h1 class="return-title">Pedido em Análise</h1>
+        <p class="return-message">Recebemos seu pedido com sucesso! O pagamento está em processamento pelo PagSeguro. Assim que for aprovado, o status será atualizado automaticamente.</p>
+    {% endif %}
 
-    <p>Seu pedido foi confirmado e esta sendo processado.</p>
+    {% if reference %}
+    <div class="order-reference">
+        Referência do Pedido:<br>
+        <span style="color: #000;">{{ reference }}</span>
+    </div>
+    {% endif %}
 
-    <a href="{% url "produtos:index" %}">Voltar para a loja.</a>
+    <p style="color: #888; font-size: 14px; margin-bottom: 20px;">
+        Você pode acompanhar o status em tempo real na aba <strong>Meus Pedidos</strong> da sua conta.
+    </p>
 
-{% else %}
-    <h2>Pagamento em analise ou não concluido.</h2>
-
-    <p>Voce pode acompanhar o status do pedido pela sua conta.</p>
-
-    <a href="{% url "carrinho:carrinho" %}">Voltar para o carrinho.</a>
-
-{% endif %}
-{%endblock content%}
+    <a href="{% url 'pagamentos:meus_pedidos' %}" class="btn-action">Acompanhar meu pedido</a>
+</div>
+{% endblock %}

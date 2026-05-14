@@ -80,7 +80,7 @@ def require_api_erp(view_func):
 
 def require_api_payment(view_func):
     def wrapper(request,*args, **kwargs):
-        if not getattr(SyntaxError,'PAGSEGURO_TOKEN',None):
+        if not getattr(settings,'PAGSEGURO_TOKEN',None):
             return redirect('produtos:manutencao')
         return view_func(request,*args, **kwargs)
     return wrapper

@@ -1,4 +1,5 @@
 import logging
+import json
 from django.shortcuts import render, redirect, HttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -68,7 +69,7 @@ def start_payment(request):
                 usuario=request.user,
                 carrinho=cart,
                 valor_frete=total_com_frete['valor_frete'],
-                total=total_com_frete['total'],
+                total=total_com_frete['total_produtos'],
                 total_com_frete=total_com_frete['total_com_frete'],
                 status='pending'
             )
@@ -93,7 +94,7 @@ def start_payment(request):
         return_url = request.build_absolute_uri(reverse('pagamentos:payment_return'))
         notification_url = request.build_absolute_uri(reverse('pagamentos:pagseguro_notify'))
         
-        pg_data = pagseguro_integration.create_checkout(pedido, return_url, notification_url)
+        pg_data = pagseguro_integration.create_checkout(pedido,endereco, return_url, notification_url)
         
         pedido.payment_reference = pg_data['reference']
         pedido.metadata = {'pagseguro_code': pg_data['code']}
@@ -104,7 +105,8 @@ def start_payment(request):
         
     except Exception as e:
         logger.error(f"Erro ao criar pagamento: {e}")
-        messages.error(request, 'Erro ao processar pagamento. Tente novamente.')
+        print(f"ERRO PAGSEGURO DETALHADO: {e}")
+        messages.error(request, f'Erro ao processar pagamento. Tente novamente. {e}')
         return redirect('pagamentos:meus_pedidos')
     
     
@@ -120,26 +122,29 @@ def retry_payment(request,pedido_id):
             if pedido.status != 'pending':
                 messages.error(request,'Erro ao processar pedido, status atual não permite retry.')
                 return redirect('pagamentos:meus_pedidos')
-    except ImportError:
+    except Exception:
         messages.error(request,'Error ao acessar o pedido.Tente novamente.')
         return redirect('pagamentos:meus_pedidos')
+    
+    endereco=get_object_or_404(Endereco,usuario=request.user, padrao=True)
     
     try:
         
         return_url=request.build_absolute_uri(reverse('pagamentos:payment_return'))
         notification_url=request.build_absolute_uri(reverse('pagamentos:pagseguro_notify'))
         
-        pg_data=pagseguro_integration.create_checkout(pedido,return_url,notification_url)
+        pg_data=pagseguro_integration.create_checkout(pedido,endereco,return_url,notification_url)
         
         pedido.payment_reference=pg_data['reference']
         pedido.metadata={'pagseguro_code':pg_data['code']}
         pedido.save(update_fields=['payment_reference','metadata'])
         
-        return redirect(pg_data['return_url'])
+        return redirect(pg_data['redirect_url'])
     
     except Exception as e:
         logger.error(f"Erro ao criar retentativa de pagamento para o pedido {pedido_id}: {e}")
-        messages.error(request, 'Erro de comunicação com o gateway de pagamento. Tente novamente mais tarde.')
+        print(f"ERRO PAGSEGURO DETALHADO: {e}")
+        messages.error(request, f'Erro de comunicação com o gateway de pagamento. Tente novamente mais tarde.{e}')
         return redirect('pagamentos:detalhe_pedido', pedido_id=pedido.pk)
 
  
@@ -149,37 +154,36 @@ def retry_payment(request,pedido_id):
 @require_POST   
 @login_required
 @require_api_payment
-def cancelled_refunded_return(request,pedido_id):
+def cancelled_refunded_return(request, pedido_id):
     
-    pedido=get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
-    
+    pedido = get_object_or_404(Pedido, id=pedido_id, usuario=request.user)
     pode_cancelar = pedido.status in ['paid','erp_sent','erp_confirmed'] and pedido.erp_status in ['paid','confirmed']
     
     if pode_cancelar:
         try:
             with transaction.atomic():                    
                 if pedido.status == 'paid':
-                    transaction_code=(pedido.metadata or {}).get('pagseguro_code')
-                    if not transaction_code:
-                        raise Exception('Código de transação do PagSeguro não encontrado no pedido')
+                    # Na V4, reembolsamos usando a cobrança (Charge ID) salva no metadata
+                    charge_id = (pedido.metadata or {}).get('pagseguro_charge_id')
+                    if not charge_id:
+                        raise Exception('Código de cobrança (Charge ID) não encontrado no pedido.')
                     
-                pg=pagseguro_integration.refund_transaction(transaction_code)
+                    pg = pagseguro_integration.refund_transaction(charge_id)
                     
-                if not pg:
-                    raise Exception('Falha ao processar reembolso no PagSeguro')
+                    if not pg:
+                        raise Exception('Falha ao processar reembolso no PagSeguro')
                 
-                pedido.status ='cancelled'
+                pedido.status = 'cancelled'
                 pedido.save()
                 
                 send_order_cancelled_to_erp_task.delay(pedido.id) #type:ignore
-                
-                messages.success(request,'Pedido cancelado com sucesso.')
+                messages.success(request, 'Pedido cancelado e reembolsado com sucesso.')
             
         except Exception as e:
-            messages.error(request,f'Erro ao cancelar pedido: {str(e)}')
+            messages.error(request, f'Erro ao cancelar pedido: {str(e)}')
             
     else:
-        messages.error(request,'Pedido não pode ser cancelado, status atual: {pedido.status}')
+        messages.error(request, f'Pedido não pode ser cancelado, status atual: {pedido.status}')
         
     return redirect('pagamentos:meus_pedidos')
 
@@ -197,30 +201,37 @@ def payment_return(request):
     }
     return render(request, 'pagamentos/return.html', context)
 
-@require_api_payment
+
+
+
 @csrf_exempt
 def pagseguro_notification(request):
     """
-    Webhook para notificações do PagSeguro com Proteção de Concorrência
+    Webhook para notificações do PagSeguro API V4 com Proteção de Concorrência
     """
-    notification_code = request.POST.get('notificationCode')
-    if not notification_code:
+    try:
+        # 1. API V4 manda os dados em formato JSON pelo request.body
+        payload = json.loads(request.body)
+        order_id = payload.get('id')  # ID do pedido, ex: OR_854B1...
+    except json.JSONDecodeError:
+        logger.error("Falha ao processar JSON do Webhook do PagSeguro")
+        return HttpResponse(status=400)
+
+    if not order_id:
         return HttpResponse(status=400)
 
     try:
-        # 1. Valida a notificação na API do PagSeguro
-        data = pagseguro_integration.get_notification_data(notification_code)
+        # 2. Valida batendo na API para garantir que não é fraude
+        data = pagseguro_integration.get_notification_data(order_id)
         
         if not data or not pagseguro_integration.validate_notification(data):
-            logger.warning(f"Dados de notificação inválidos: {data}")
+            logger.warning(f"Dados de notificação inválidos ou não encontrados: {order_id}")
             return HttpResponse(status=400)
         
         ref = data.get('reference')
-        status_code = str(data.get('status'))
+        status_string = data.get('status') # Ex: 'PAID', 'WAITING', 'CANCELED'
         
-        # Início da Transação Atômica
         with transaction.atomic():
-            # select_for_update(): Trava a linha no BD até o fim da transação
             pedido = Pedido.objects.select_for_update().filter(payment_reference=ref).select_related('carrinho','usuario').first()
             
             if not pedido:
@@ -228,41 +239,48 @@ def pagseguro_notification(request):
                 return HttpResponse(status=404)
             
             if pedido.status == 'paid':
-                return HttpResponse('Ok')
+                return HttpResponse('OK')
             
+            # Map da API V4 para os status do seu BD
             status_map = {
-                '1': 'pending', '2': 'pending', '3': 'paid',
-                '4': 'paid',    '5': 'cancelled', '6': 'refunded',
-                '7': 'cancelled',
+                'WAITING': 'pending', 
+                'IN_ANALYSIS': 'pending',
+                'AUTHORIZED': 'paid', 
+                'PAID': 'paid',    
+                'CANCELED': 'cancelled', 
+                'DECLINED': 'cancelled',
+                'REFUNDED': 'refunded',
             }
             
-            new_status = status_map.get(status_code, 'pending')
+            new_status = status_map.get(status_string, 'pending')
             
-            # Só atualiza se houver mudança de status
+            # Atualiza o status
             if pedido.status != new_status:
                 pedido.status = new_status
                 pedido.metadata = pedido.metadata or {}
                 pedido.metadata.update({
-                    'pagseguro_status': status_code,
+                    'pagseguro_status': status_string,
                     'pagseguro_last_update': data.get('lastEventDate'),
                     'pagseguro_transaction_code': data.get('code'),
+                    'pagseguro_charge_id': data.get('charge_id'), # Salva para uso futuro no reembolso!
                 })
                 pedido.save(update_fields=['status', 'metadata'])
                 
                 logger.info(f"Pedido {pedido.pk} atualizado para status: {new_status}")
                 
                 if new_status == 'paid':
-                    with transaction.atomic():
-                    # on_commit: Só dispara a task se o DB confirmar a gravação do 'paid'
-                        transaction.on_commit(lambda: send_order_to_erp_task.delay(pedido.pk))
+                    transaction.on_commit(lambda: send_order_to_erp_task.delay(pedido.pk))
                     
         return HttpResponse('OK')
         
     except Exception as e:
         logger.error(f"Erro ao processar notificação: {e}")
         return HttpResponse(status=500)
+
+
+
     
-@require_api_erp 
+#@require_api_erp 
 @require_api_payment  
 def checkout(request):
     
@@ -326,7 +344,7 @@ def checkout(request):
         'itens':itens,
         'valor_frete':calcular_frete['valor_frete'],
         'prazo':calcular_frete['prazo_entrega'],
-        'subtotal':calcular_frete['total'],
+        'subtotal':calcular_frete['total_produtos'],
         'total_com_frete':calcular_frete['total_com_frete'],
         'endereco':[endereco],
         'cart':cart,
@@ -401,7 +419,7 @@ def avaliar_pedido(request,pedido_id):
     
     return render(request,'pagamentos/avaliar_pedido.html',{'pedido':pedido})   
 
-@require_api_erp 
+#@require_api_erp 
 def cancelar_reembolsar_pedido(request,pedido_id):
     if not request.user.is_authenticated:
         return redirect('cadastro_login:loginuser')

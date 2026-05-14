@@ -17,6 +17,18 @@ SECRET_KEY = local_settings.SECRET_KEY
 DEBUG = getattr(local_settings, 'DEBUG', False) # Padrão é False para segurança
 ALLOWED_HOSTS = getattr(local_settings, 'ALLOWED_HOSTS', [])
 
+# PagSeguro
+PAGSEGURO_EMAIL = getattr(local_settings, 'PAGSEGURO_EMAIL', None)
+PAGSEGURO_TOKEN = getattr(local_settings, 'PAGSEGURO_TOKEN', None)
+PAGSEGURO_SANDBOX = getattr(local_settings, 'PAGSEGURO_SANDBOX', True)
+PAGSEGURO_NOTIFICATION_URL = getattr(local_settings, 'PAGSEGURO_NOTIFICATION_URL', None)
+PAGSEGURO_REDIRECT_URL = getattr(local_settings, 'PAGSEGURO_REDIRECT_URL', None)
+PAGSEGURO_LOG_IN_MODEL = getattr(local_settings, 'PAGSEGURO_LOG_IN_MODEL', False)
+
+# ERP
+ERP_API_URL = getattr(local_settings, 'ERP_API_URL', None)
+ERP_API_KEY = getattr(local_settings, 'ERP_API_KEY', None)
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
