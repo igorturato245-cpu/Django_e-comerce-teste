@@ -135,7 +135,7 @@ EMAIL_PORT = getattr(local_settings, 'EMAIL_PORT', 587)
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = getattr(local_settings, 'EMAIL_HOST_USER', "")
 EMAIL_HOST_PASSWORD = getattr(local_settings, 'EMAIL_HOST_PASSWORD', "")
-DEFAULT_FROM_EMAIL = "contato@luviehome.com.br"
+DEFAULT_FROM_EMAIL = "contato@luviahome.com.br"
 
 # Estáticos e Media
 STATIC_URL = 'static/'
