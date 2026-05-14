@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 def apenas_numeros(valor):
     if not valor:
         return ""
-    # CORREÇÃO: \D (Barra Invertida) é o comando certo para limpar não-números
     return re.sub(r'\D', '', str(valor))
 
 def _get_config():
@@ -20,7 +19,6 @@ def _get_config():
         'Authorization': f'Bearer {token}',
     }
     return token, base_url, headers
-
 
 def create_checkout(pedido, endereco, return_url, notification_url):
     token, base_url, headers = _get_config()
@@ -63,7 +61,6 @@ def create_checkout(pedido, endereco, return_url, notification_url):
                 'postal_code': cep_entrega
             }
         },
-        # Notification dupla para garantir que você receberá o status do checkout E do pagamento
         'notification_urls': [notification_url],
         'payment_notification_urls': [notification_url], 
         'redirect_url': return_url,
@@ -74,13 +71,7 @@ def create_checkout(pedido, endereco, return_url, notification_url):
         ],
     }
 
-    print("PAYLOAD ENVIADO:", payload)
-
-    # 1º CORREÇÃO AQUI: Mudamos de '/orders' para '/checkouts'
     response = requests.post(f'{base_url}/checkouts', json=payload, headers=headers, timeout=30)
-
-    print("STATUS:", response.status_code)
-    print("RESPOSTA:", response.text)
 
     if response.status_code in (200, 201):
         data = response.json()
@@ -91,19 +82,16 @@ def create_checkout(pedido, endereco, return_url, notification_url):
         return {
             'redirect_url': pay_link,
             'reference': f'PED-{pedido.id}',
-            'code': data.get('id', ''), # Id do Checkout
+            'code': data.get('id', ''),
         }
     else:
         raise Exception(f'Erro PagSeguro: {response.status_code} - {response.text}')
 
-
-# 2º CORREÇÃO: Prepara a função para ler notificações do novo endpoint
 def get_notification_data(notification_id):
     token, base_url, headers = _get_config()
     if not token:
         raise RuntimeError('PAGSEGURO_TOKEN não configurado')
 
-    # Na API V4, o PagSeguro pode enviar avisos com IDs diferentes. Tratamos todos!
     if notification_id.startswith('CHCK_'):
         endpoint = f'{base_url}/checkouts/{notification_id}'
     elif notification_id.startswith('CHAR_'):
@@ -126,7 +114,7 @@ def get_notification_data(notification_id):
             order = orders[0] if orders else {}
             charges = order.get('charges', [{}])
             charge = charges[0] if charges else {}
-        else: # ORDE_
+        else:
             ref = data.get('reference_id')
             charges = data.get('charges', [{}])
             charge = charges[0] if charges else {}
@@ -144,16 +132,13 @@ def get_notification_data(notification_id):
     return None
 
 def validate_notification(data):
-    # Simplificado porque na API V4 apenas exigimos que tenha as chaves principais
     return bool(data and data.get('reference') and data.get('code'))
 
-# ATUALIZADO PARA API V4
 def refund_transaction(charge_id, amount=None):
     token, base_url, headers = _get_config()
     if not token:
         raise RuntimeError('PAGSEGURO_TOKEN não configurado')
 
-    # API V4 Cancela o CHARGE_ID e não o ORDER_ID
     url = f'{base_url}/charges/{charge_id}/cancel'
     payload = {}
     if amount:
@@ -161,13 +146,9 @@ def refund_transaction(charge_id, amount=None):
 
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=10)
-        # 200, 201 ou 204 representam sucesso
         if response.status_code in (200, 201, 204):
-            logger.info(f'Transação {charge_id} reembolsada com sucesso')
             return True
-        else:
-            logger.error(f'Erro ao reembolsar {charge_id}: {response.text}')
-            return False
+        return False
     except Exception as e:
         logger.error(f'Falha na comunicação PagSeguro reembolso {charge_id}: {str(e)}')
         return False
