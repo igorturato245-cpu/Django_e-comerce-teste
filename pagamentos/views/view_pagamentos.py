@@ -283,7 +283,7 @@ def pagseguro_notification(request):
 @require_api_erp 
 @require_api_payment  
 def checkout(request): 
-    return redirect('produtos:manutencao')
+    #return redirect('produtos:manutencao')
     
     if not request.user.is_authenticated:
         return redirect('cadastro_login:loginuser')
