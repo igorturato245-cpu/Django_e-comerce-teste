@@ -70,9 +70,14 @@ def create_checkout(pedido, endereco, return_url, notification_url):
             {'type': 'PIX'},
         ],
     }
+    
+    print("PAYLOAD ENVIADO:", payload)
 
     response = requests.post(f'{base_url}/checkouts', json=payload, headers=headers, timeout=30)
 
+    print()
+    print("RESPOSTA:", response.text)
+    
     if response.status_code in (200, 201):
         data = response.json()
         links = data.get('links',[])
