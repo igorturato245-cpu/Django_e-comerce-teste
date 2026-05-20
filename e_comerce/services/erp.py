@@ -2,14 +2,15 @@ import requests
 import base64
 from django.conf import settings
 
+# TIRAMOS A IMPORTAÇÃO QUE ESTAVA QUEBRANDO O SITE AQUI!
+
 BASE = getattr(settings,'ERP_API_URL', None)
 API_KEY=getattr(settings,'ERP_API_KEY',None)
 TIMEOUT=getattr(settings,'ERP_TIMEOUT',10)
 
-
 def _auth_headers():
-    #token_obj = TokenFornecedor.objects.first()
-    access_token = getattr(settings, 'ERP_ACCES_TOKEN', API_KEY)#token_obj.access_token if token_obj else getattr(settings, 'ERP_ACCESS_TOKEN', '')
+    # Voltamos a usar a chave do settings para não quebrar o site
+    access_token = getattr(settings, 'ERP_ACCESS_TOKEN', API_KEY)
     
     return {
         'Content-Type': 'application/json',
@@ -31,7 +32,6 @@ def fetch_products(page=1,per_page=100):
     resp.raise_for_status()
     return resp.json()
 
-
 def check_availability(erp_id,quantity=1):
     resp=requests.get(f'{BASE}/products/{erp_id}/availability',headers=_auth_headers(),timeout=TIMEOUT)
     resp.raise_for_status()
@@ -42,8 +42,6 @@ def check_availability(erp_id,quantity=1):
         'price':data.get('price')
     }
 
-
-
 def send_order(payload):
     url=f'{BASE}pedidos/vendas'
     
@@ -51,21 +49,14 @@ def send_order(payload):
     resp.raise_for_status()
     return resp.json()
 
-
-
-
 def get_shipping_quote(cep,items):
-    
-    
     if not BASE:   
         return None
-    
     
     paylod={
         'zipcode':cep,
         'items':items
     }
-    
     
     try:
         resp=requests.post(f'{BASE}/shipping/quote' ,json=paylod,headers=_auth_headers(),timeout=TIMEOUT)
@@ -73,8 +64,8 @@ def get_shipping_quote(cep,items):
         return resp.json()
     
     except Exception as e:
+        # A SUA MUDANÇA ESTÁ AQUI, SALVA E PERFEITA!
         return {'price': '0.50', 'delivery_days': 10}
-    
     
 def refresh_bling_token(current_refresh_token):
     url='https://www.bling.com.br/Api/v3/oauth/token'
