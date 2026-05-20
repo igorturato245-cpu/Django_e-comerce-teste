@@ -1,7 +1,6 @@
 import requests
 import base64
 from django.conf import settings
-from e_comerce.models import TokenFornecedor
 
 BASE = getattr(settings,'ERP_API_URL', None)
 API_KEY=getattr(settings,'ERP_API_KEY',None)
@@ -9,8 +8,8 @@ TIMEOUT=getattr(settings,'ERP_TIMEOUT',10)
 
 
 def _auth_headers():
-    token_obj = TokenFornecedor.objects.first()
-    access_token = token_obj.access_token if token_obj else getattr(settings, 'ERP_ACCESS_TOKEN', '')
+    #token_obj = TokenFornecedor.objects.first()
+    access_token = getattr(settings, 'ERP_ACCES_TOKEN', API_KEY)#token_obj.access_token if token_obj else getattr(settings, 'ERP_ACCESS_TOKEN', '')
     
     return {
         'Content-Type': 'application/json',
