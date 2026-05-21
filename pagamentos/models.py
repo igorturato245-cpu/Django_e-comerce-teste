@@ -48,13 +48,14 @@ class Pedido(models.Model):
     metadata=models.JSONField(null=True,blank=True)
     
     def delete_cart_paid(self):
-        if self.status == 'paid' and self.carrinho:
-            carrinho_id=self.carrinho.pk
-            self.carrinho=None 
-            self.save(update_fields=['carrinho'])
+        if self.status == 'paid' and self.carrinho_id:
+            carr_id=self.carrinho_id
+            self.carrinho_id=None
+            
+            Pedido.objects.filter(pk=self.pk).update(carrinho=None)
             
             from carrinho.models import Carrinho
-            Carrinho.objects.filter(pk=carrinho_id).delete()
+            Carrinho.objects.filter(pk=carr_id).delete()
             return True
         return False
     
