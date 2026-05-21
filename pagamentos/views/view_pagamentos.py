@@ -232,7 +232,7 @@ def pagseguro_notification(request):
         status_string = data.get('status') # Ex: 'PAID', 'WAITING', 'CANCELED'
         
         with transaction.atomic():
-            pedido = Pedido.objects.select_for_update().filter(payment_reference=ref).select_related('carrinho','usuario').first()
+            pedido = Pedido.objects.select_for_update().filter(payment_reference=ref).first()
             
             if not pedido:
                 logger.error(f"Pedido não encontrado para reference: {ref}")
@@ -257,6 +257,7 @@ def pagseguro_notification(request):
             # Atualiza o status
             if pedido.status != new_status:
                 pedido.status = new_status
+                pedido.erp_status = new_status
                 pedido.metadata = pedido.metadata or {}
                 pedido.metadata.update({
                     'pagseguro_status': status_string,
@@ -264,7 +265,7 @@ def pagseguro_notification(request):
                     'pagseguro_transaction_code': data.get('code'),
                     'pagseguro_charge_id': data.get('charge_id'), # Salva para uso futuro no reembolso!
                 })
-                pedido.save(update_fields=['status', 'metadata'])
+                pedido.save(update_fields=['status','erp_status', 'metadata'])
                 
                 logger.info(f"Pedido {pedido.pk} atualizado para status: {new_status}")
                 
@@ -283,7 +284,7 @@ def pagseguro_notification(request):
 @require_api_erp 
 @require_api_payment  
 def checkout(request): 
-    return redirect('produtos:manutencao')
+    #return redirect('produtos:manutencao')
     
     if not request.user.is_authenticated:
         return redirect('cadastro_login:loginuser')
