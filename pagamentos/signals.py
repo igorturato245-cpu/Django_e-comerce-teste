@@ -47,7 +47,7 @@ def disparar_email_apos_mudanca_reembolso(sender,instance,created,**kwargs):
 @receiver(post_save, sender=Pedido)
 def apagar_carrinho_pago(sender,instance,created,**kwargs):
     if instance.status == 'paid':
-        if instance.carrinho:
+        #if instance.carrinho:
             if getattr(instance,'carrinho_id',None):
                 instance.delete_cart_paid()
             
