@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST
 from e_comerce.models import Produto,Avaliacao_produto
 from pagamentos.utils import require_api_erp,require_api_payment
 from django.conf import settings
+from utils.google_sheets import enviar_pedido_para_sheet
 
 logger = logging.getLogger(__name__)
 
@@ -266,6 +267,11 @@ def pagseguro_notification(request):
                     'pagseguro_charge_id': data.get('charge_id'), # Salva para uso futuro no reembolso!
                 })
                 pedido.save(update_fields=['status','erp_status', 'metadata'])
+                
+                try:
+                    enviar_pedido_para_sheet(pedido)
+                except Exception as e:
+                    logger.error(f"Erro ao enviar dados para Google Sheets: {e}")
                 
                 logger.info(f"Pedido {pedido.pk} atualizado para status: {new_status}")
                 
