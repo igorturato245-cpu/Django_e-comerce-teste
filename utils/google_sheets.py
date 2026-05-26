@@ -5,7 +5,7 @@ WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxYKskdIU9vjRJuXFwXy1rKwG
 
 
 def enviar_pedido_para_sheet(pedido):
-    primeiro_item=pedido.pedidoitem_stet.first()
+    primeiro_item=pedido.pedidoitem_set.first()
     
     if primeiro_item:
         nome_produto=primeiro_item.produto_name or "Produto Desconhecido"
