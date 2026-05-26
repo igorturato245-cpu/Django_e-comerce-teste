@@ -28,6 +28,12 @@ PAGSEGURO_LOG_IN_MODEL = getattr(local_settings, 'PAGSEGURO_LOG_IN_MODEL', False
 # ERP
 ERP_API_URL = getattr(local_settings, 'ERP_API_URL', None)
 ERP_API_KEY = getattr(local_settings, 'ERP_API_KEY', None)
+ERP_CLIENT_ID = getattr(local_settings, 'ERP_CLIENT_ID', None)
+ERP_CLIENT_SECRET = getattr(local_settings, 'ERP_CLIENT_SECRET', None)
+ERP_REFRESH_TOKEN = getattr(local_settings, 'ERP_REFRESH_TOKEN', None)
+
+URL_GOOGLE_SHEETS=getattr(local_settings,'URL_GOOGLE_SHEETS', None)
+
 
 # Application definition
 INSTALLED_APPS = [
