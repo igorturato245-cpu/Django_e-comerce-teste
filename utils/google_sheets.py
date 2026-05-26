@@ -5,25 +5,35 @@ WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbxYKskdIU9vjRJuXFwXy1rKwG
 
 
 def enviar_pedido_para_sheet(pedido):
+    primeiro_item=pedido.pedidoitem_stet.first()
+    
+    if primeiro_item:
+        nome_produto=primeiro_item.produto_name or "Produto Desconhecido"
+        
+        sku_produto=primeiro_item.produto.sku if hasattr(primeiro_item.produto, 'sku') else ''
+    else:
+        nome_produto='Sem item'
+        sku_produto=''
+        
+    nome_cliente='Cliente não identificado'
+    
+    if pedido.usuario:
+        nome_cliente=f'{pedido.usuario.first_name} {pedido.usuario.last_name}'.strip()
+        if not nome_cliente:
+            nome_cliente=pedido.usuario.username
 
     data = {
 
         'id_pedido': pedido.id,
-        'data': str(pedido.data),
-        'cliente': pedido.cliente.nome,
-        'produto': pedido.produto.nome,
-        'sku': pedido.produto.sku,
-        'fornecedor': pedido.produto.fornecedor,
-        'valor_produto': float(pedido.valor_produto),
-        'frete_cobrado': float(pedido.frete),
-        'custo_produto': float(pedido.custo_produto),
-        'frete_fornecedor': float(pedido.frete_fornecedor),
-        'taxa_gateway': float(pedido.taxa_gateway),
-        'taxa_parcelamento': float(pedido.taxa_parcelamento),
-        'custo_anuncio': float(pedido.custo_anuncio),
-        'imposto': float(pedido.imposto),
+        'data': str(pedido.created_at),
+        'cliente': nome_cliente,
+        'produto': nome_produto,
+        'sku': sku_produto,
+        'valor_produto': float(pedido.total),
+        'frete_cobrado': float(pedido.valor_frete),
+        'frete_fornecedor': float(pedido.valor_frete),
         'status': pedido.status,
-        'codigo_rastreio': pedido.codigo_rastreio or ''
+        'codigo_rastreio': pedido.tracking_code or ''
     }
 
     response = requests.post(
