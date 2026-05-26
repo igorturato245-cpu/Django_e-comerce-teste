@@ -210,13 +210,23 @@ def pagseguro_notification(request):
     """
     Webhook para notificações do PagSeguro API V4 com Proteção de Concorrência
     """
+    body_utf8 = request.body.decode('utf-8', errors='ignore')
+    
+    if not body_utf8:
+        return HttpResponse('OK')
+    
+    order_id=None
+    
     try:
         # 1. API V4 manda os dados em formato JSON pelo request.body
         payload = json.loads(request.body)
         order_id = payload.get('id')  # ID do pedido, ex: OR_854B1...
     except json.JSONDecodeError:
-        logger.error("Falha ao processar JSON do Webhook do PagSeguro")
-        return HttpResponse(status=400)
+        if 'notificationCode' in request.POST:
+            return HttpResponse('OK')
+        else:
+            logger.error("Falha ao processar JSON do Webhook do PagSeguro")
+            return HttpResponse('OK')
 
     if not order_id:
         return HttpResponse(status=400)
