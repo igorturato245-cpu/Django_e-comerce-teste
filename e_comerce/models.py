@@ -136,3 +136,9 @@ class Avaliacao_produto(models.Model):
     
     def __str__(self) -> str:
         return f'Avaliação de {self.usuario.username} para o produto:{self.produto.name}'
+    
+    
+class TokenFornecedor(models.Model):
+    access_token=models.TextField()
+    refresh_token=models.TextField()
+    update_at=models.DateTimeField(auto_now=True)

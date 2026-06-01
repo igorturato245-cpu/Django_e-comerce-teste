@@ -24,3 +24,7 @@ class Categoryadmin(admin.ModelAdmin):
 @admin.register(Avaliacao_produto)
 class Avaliacao_produto_admin(admin.ModelAdmin):
     list_display='nota_site','nota_produto'
+    
+@admin.register(TokenFornecedor)
+class TokenFornecedorAdmin(admin.ModelAdmin):
+    list_display = 'access_token','refresh_token'
