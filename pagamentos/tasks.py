@@ -12,16 +12,17 @@ def send_order_to_erp_task(self,pedido_id):
     try:
         pedido=Pedido.objects.select_related('usuario').prefetch_related('items').get(id=pedido_id)
         logger.info(f'Iniciando envio do pedido {pedido_id} para ERP')
+        
+        if pedido.erp_order_id and pedido.erp_status == 'sent':
+            logger.warning(f'Pedido {pedido.pk} já foi enviado para o ERP, pulando reenvio')
+            return
 
 
-        pedido.erp_status='sending'
-        pedido.save(update_fields=['erp_status'])
+        Pedido.objects.filter(id=pedido_id).update(erp_status='sending')
 
         resp=erp_integration.send_order(pedido)
 
-        pedido.erp_order_id=resp.get('id') or resp.get('order_id')
-        pedido.erp_status=resp.get('status') or 'sent'
-        pedido.save(update_fields=['erp_order_id', 'erp_status'])
+        Pedido.objects.filter(id=pedido_id).update(erp_order_id=resp.get('id') or resp.get('order_id'), erp_status=resp.get('status') or 'sent')
 
         logger.info(f'Pedido {pedido_id} enviado para ERP. ID:{pedido.erp_order_id}')
 

@@ -2,7 +2,7 @@ from django.db.models.signals import post_save,pre_save
 from django.dispatch import receiver
 from .models import Pedido,Solicitacao_reembolso
 from .utils import enviar_email_status_pedido,enviar_email_status_erp_pedido,enviar_email_status_reembolso,enviar_email_pedido_recebido,enviar_email_cancelamento_direto
-from .tasks import send_order_cancelled_to_erp_task
+from .tasks import send_order_cancelled_to_erp_task,send_order_to_erp_task
 
 @receiver(pre_save,sender=Pedido)
 def capturar_status_anterior(sender,instance,**kwargs):
@@ -37,7 +37,7 @@ def disparar_email_apos_mudanca_status(sender,instance,created,**kwargs):
 
 @receiver(post_save, sender=Pedido)
 def disparar_email_cancelamento_direto(sender,instance,created,**kwargs):
-    if instance.status == 'cancelled' and instance._old_status != 'cancelled':
+    if instance.status == 'cancelled' and getattr(instance,'_old_status',None) != 'cancelled':
         enviar_email_cancelamento_direto(instance)
     
 @receiver(post_save,sender=Solicitacao_reembolso)
@@ -50,7 +50,15 @@ def apagar_carrinho_pago(sender,instance,created,**kwargs):
         #if instance.carrinho:
             if getattr(instance,'carrinho_id',None):
                 instance.delete_cart_paid()
+                
+@receiver(post_save, sender=Pedido)
+def enviar_ordem_erp(sender,instance,created,**kwargs):
+    if not created:
+        if instance.status == 'paid' and getattr(instance,'_old_status',None) != 'paid':
+            send_order_to_erp_task.delay(instance.id) #type:ignore
+            return
             
+
         
             
 @receiver(post_save, sender=Solicitacao_reembolso)

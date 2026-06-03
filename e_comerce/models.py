@@ -34,7 +34,7 @@ class Produto(models.Model):
     image_url=models.URLField('Imagem remota', blank=True,null=True)
     criado=models.DateTimeField('Criado em' ,auto_now_add=True)
     atualizado=models.DateTimeField('Atualizado em' ,auto_now=True)
-
+    sku=models.CharField('SKU', max_length=100, blank=True, null=True)
     erp_id=models.CharField('ERP ID', max_length=128,null=True,blank=True,db_index=True)
     remote_price=models.DecimalField(("Preço remoto"), max_digits=10, decimal_places=2,null=True,blank=True)
     remote_stock=models.IntegerField('Estoque remoto', null=True,blank=True)

@@ -1,6 +1,7 @@
 import requests
 import base64
 from django.conf import settings
+from e_comerce.models import TokenFornecedor
 
 # TIRAMOS A IMPORTAÇÃO QUE ESTAVA QUEBRANDO O SITE AQUI!
 
@@ -9,19 +10,25 @@ API_KEY=getattr(settings,'ERP_API_KEY',None)
 TIMEOUT=getattr(settings,'ERP_TIMEOUT',10)
 
 def _auth_headers():
-    # Voltamos a usar a chave do settings para não quebrar o site
-    access_token = getattr(settings, 'ERP_ACCESS_TOKEN', API_KEY)
-    
-    return {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {access_token}'
+    try:
+        token_obj=TokenFornecedor.objects.first()
+        if token_obj and token_obj.access_token:
+            access_token=token_obj.access_token
+        else:
+            access_token=getattr(settings,'ERP_ACCESS_TOKEN',None)
+    except Exception:
+        access_token=getattr(settings,'ERP_ACCES_TOKEN',None)
+        
+    return{
+        'Content-Type':'application/json',
+        'Authorization':f'Bearer {access_token}'
     }
 
 def fetch_products(page=1,per_page=100):
     if not BASE:
         raise RuntimeError('ERP_API_URL not configured')
     
-    url=f'{BASE}produtos'
+    url=f'{BASE}/produtos'
     params={'pagina':page,'limite':per_page}
     
     resp=requests.get(url, params=params,headers=_auth_headers(),timeout=TIMEOUT)
@@ -33,7 +40,7 @@ def fetch_products(page=1,per_page=100):
     return resp.json()
 
 def check_availability(erp_id,quantity=1):
-    resp=requests.get(f'{BASE}/products/{erp_id}/availability',headers=_auth_headers(),timeout=TIMEOUT)
+    resp=requests.get(f'{BASE}/produtos/{erp_id}/disponibilidade',headers=_auth_headers(),timeout=TIMEOUT)
     resp.raise_for_status()
     data=resp.json()
     return{
@@ -43,7 +50,7 @@ def check_availability(erp_id,quantity=1):
     }
 
 def send_order(payload):
-    url=f'{BASE}pedidos/vendas'
+    url=f'{BASE}/pedidos/vendas'
     
     resp=requests.post(url,json=payload,headers=_auth_headers(),timeout=TIMEOUT)
     resp.raise_for_status()
@@ -64,7 +71,6 @@ def get_shipping_quote(cep,items):
         return resp.json()
     
     except Exception as e:
-        # A SUA MUDANÇA ESTÁ AQUI, SALVA E PERFEITA!
         return {'price': '0.50', 'delivery_days': 10}
     
 def refresh_bling_token(current_refresh_token):

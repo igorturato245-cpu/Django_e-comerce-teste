@@ -7,6 +7,7 @@ from e_comerce.models import Produto,Category
 from e_comerce.services import erp as erp_service
 from e_comerce.models import TokenFornecedor
 from django.conf import settings
+from django.utils.text import slugify
 
 
 class Command(BaseCommand):
@@ -53,6 +54,7 @@ class Command(BaseCommand):
                     
                 for item in items:
                     erp_id=str(item.get('id'))
+                    codigo_produto=str(item.get('codigo'))
                     name=item.get('nome','---')
 
                     cat_name='Geral'
@@ -66,10 +68,12 @@ class Command(BaseCommand):
                     stock=item.get('estoque',{}).get('saldoVirtual',0)
                     price=Decimal(str(item.get('preco') or 0))
                     
-                    defaults={
+                    defaults_dict={
+                            'sku':codigo_produto,
+                            'slug':slugify(f'{name}-{erp_id}'),
                             'category': category,
                             'name': name,
-                            'descricao':item.get('description',''),
+                            'descricao':item.get('descriçãoComplementar',''),
                             'preco': price,
                             'remote_price': price,
                             'remote_stock':stock,
@@ -81,12 +85,8 @@ class Command(BaseCommand):
 
                     produto,created=Produto.objects.update_or_create(
                         erp_id=erp_id,
-                        defaults={'slug':slugify(f'{name}-{erp_id}')}
+                        defaults=defaults_dict
                     )
-                    
-                    for key, value in defaults.items():
-                        setattr(produto,key,value)
-                    produto.save()
                     
                     action="Criado" if created else "Atualizado"
                     self.stdout.write(f"{action}:{name} (ERP ID:{erp_id})")
