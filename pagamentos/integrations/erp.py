@@ -107,6 +107,9 @@ def build_order_payload(pedido, contato_id,endereco_obj):
     nome_cliente = pedido.usuario.get_full_name() or pedido.usuario.username
 
     payload = {
+        'loja':{
+            'id': int(settings.ERP_LOJA_ID)
+        },
         'numero': str(pedido.id),
         'data': timezone.localdate(pedido.created_at).strftime('%Y-%m-%d'),
         'contato': {

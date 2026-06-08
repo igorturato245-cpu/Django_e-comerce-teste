@@ -31,6 +31,7 @@ ERP_API_KEY = getattr(local_settings, 'ERP_API_KEY', None)
 ERP_CLIENT_ID = getattr(local_settings, 'ERP_CLIENT_ID', None)
 ERP_CLIENT_SECRET = getattr(local_settings, 'ERP_CLIENT_SECRET', None)
 ERP_REFRESH_TOKEN = getattr(local_settings, 'ERP_REFRESH_TOKEN', None)
+ERP_LOJA_ID =  getattr(local_settings, 'ERP_LOJA_ID', None)
 
 URL_GOOGLE_SHEETS=getattr(local_settings,'URL_GOOGLE_SHEETS', None)
 
