@@ -70,7 +70,7 @@
 
 <!-- SEÇÕES DINÂMICAS (Mantendo suas classes de CSS: bg-gray, bg-dark, bg-light) -->
 {% for categoria in categorias %}
-<section id="{{ categoria.slug }}" class="secao-produtos {% cycle 'bg-gray' 'bg-dark' 'bg-light' %}">
+<section id="{{ categoria.slug }}" class="secao-produtos {% cycle 'bg-light' 'bg-dark' %}">
     <div class="produtos-container">
         <h2 class="produtos-titulo">{{ categoria.name }}</h2>
 
@@ -84,7 +84,7 @@
             <li class="produto-card">
                 <div class="produto-img">
                     <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img src="{{produto.imagem.url}}"alt="{{ produto.imagem }}">
+                        <img src="{{produto.imagem.url}}" alt="{{ produto.imagem }}">
                     </a>
                 </div>
                 <div class="produto-info-index">
