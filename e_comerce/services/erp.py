@@ -71,7 +71,7 @@ def get_shipping_quote(cep,items):
         return resp.json()
     
     except Exception as e:
-        return {'price': '35.00', 'delivery_days': 10}
+        return {'price': '0.50', 'delivery_days': 10}
     
 def refresh_bling_token(current_refresh_token):
     url='https://www.bling.com.br/Api/v3/oauth/token'
