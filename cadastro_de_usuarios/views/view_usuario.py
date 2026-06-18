@@ -243,7 +243,7 @@ class Criarend(enderecoview,LoginRequiredMixin):
             self.request,'Sucesso ao criar endereço.'
         )
         
-        return redirect('carrinho:carrinho')
+        return redirect('pagamentos:checkout')
     
 class Atualizarend(enderecoview,LoginRequiredMixin):
     def post(self,*args, **kwargs):

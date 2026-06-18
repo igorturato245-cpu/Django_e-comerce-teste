@@ -72,7 +72,8 @@ def start_payment(request):
                 valor_frete=total_com_frete['valor_frete'],
                 total=total_com_frete['total_produtos'],
                 total_com_frete=total_com_frete['total_com_frete'],
-                status='pending'
+                status='pending',
+                erp_status='pending'
             )
             for it in items:
                 PedidoItem.objects.create(
