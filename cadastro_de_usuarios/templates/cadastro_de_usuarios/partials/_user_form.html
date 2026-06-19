@@ -34,25 +34,49 @@
 
 {% block extra_scripts %}
 <script>
-    // 1. Limpeza Automática de CPF (Garante que só números cheguem ao backend se desejar)
-    // Ou apenas permite que o usuário digite a máscara sem erro.
-    const cpfInput = document.querySelector('input[name="cpf"]');
-    if (cpfInput) {
-        cpfInput.addEventListener('blur', function() {
-            // Remove tudo que não for número antes de enviar
-            // Isso ajuda se você quiser manter o campo estritamente com 11 no banco
-            // this.value = this.value.replace(/\D/g, ''); 
-        });
+    // Funções de Máscara
+    const mCPF = (value) => {
+        return value
+            .replace(/\D/g, '') // Remove tudo o que não é dígito
+            .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto após os 3 primeiros dígitos
+            .replace(/(\d{3})(\d)/, '$1.$2') // Coloca ponto após os 6 primeiros dígitos
+            .replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca hífen antes dos últimos 2 dígitos
     }
 
-    // 2. Melhoria do Botão Voltar
-    // O fallback url_home continua lá, mas o history.back() é mais inteligente
-    function goBack() {
-        if (window.history.length > 1) {
-            window.history.back();
-        } else {
-            window.location.href = "/";
+    const mTelefone = (value) => {
+        return value
+            .replace(/\D/g, '')
+            .replace(/^(\d{2})(\d)/g, '($1) $2') // Coloca parênteses no DDD
+            .replace(/(\d{5})(\d)/, '$1-$2') // Coloca hífen no número (formato 99999-9999)
+            .replace(/(-\d{4})\d+?$/, '$1'); // Limita a quantidade de números
+    }
+
+    const mData = (value) => {
+        return value
+            .replace(/\D/g, '')
+            .replace(/(\d{2})(\d)/, '$1/$2') // Coloca barra após o dia
+            .replace(/(\d{2})(\d)/, '$1/$2') // Coloca barra após o mês
+            .replace(/(\/\d{4})\d+?$/, '$1'); // Limita a 4 dígitos no ano
+    }
+
+    // Função genérica para aplicar a máscara
+    function applyMask(inputName, maskFunction) {
+        // Seleciona o input pelo atributo 'name' (o Django gera name="cpf", name="telefone", etc)
+        const input = document.querySelector(`input[name="${inputName}"]`);
+        
+        if (input) {
+            input.addEventListener('input', (e) => {
+                e.target.value = maskFunction(e.target.value);
+            }, false);
         }
     }
+
+    // Executa as máscaras ao carregar o DOM
+    document.addEventListener('DOMContentLoaded', () => {
+        // Ajuste os nomes abaixo conforme os nomes dos campos no seu models.py/forms.py
+        applyMask('cpf', mCPF);
+        applyMask('telefone', mTelefone);
+        applyMask('data_de_nascimento', mData); // ou 'nascimento', 'data', verifique no seu model Perfil
+    });
 </script>
 {% endblock extra_scripts %}

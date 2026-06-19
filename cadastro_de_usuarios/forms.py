@@ -12,6 +12,11 @@ class PerfilForm(forms.ModelForm):
     class Meta:
         model=Perfil
         exclude=('usuario',)
+        widgets = {
+            'cpf': forms.TextInput(attrs={'maxlength': '14', 'placeholder': '000.000.000-00'}),
+            'telefone': forms.TextInput(attrs={'maxlength': '15', 'placeholder': '(00) 00000-0000'}),
+            'data_de_nascimento': forms.TextInput(attrs={'maxlength': '10', 'placeholder': 'DD/MM/AAAA'}),
+        }
 
 class CadastroForm(forms.ModelForm):
 

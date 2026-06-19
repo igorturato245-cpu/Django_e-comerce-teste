@@ -10,7 +10,7 @@ class Perfil(models.Model):
     usuario=models.ForeignKey(User, null=True,on_delete=models.CASCADE)
     idade=models.IntegerField()
     data_de_nascimento=models.DateField()
-    telefone=models.CharField(max_length=13)
+    telefone=models.CharField(max_length=15)
     cpf=models.CharField(max_length=14)
 
     def __str__(self):
