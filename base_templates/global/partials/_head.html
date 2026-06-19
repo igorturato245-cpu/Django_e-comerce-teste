@@ -45,3 +45,10 @@
   gtag('config', 'AW-18248049220');
 </script>
 {% endif %}
+
+{% if not debug %}
+<!-- Event snippet for Adicionar ao carrinho (1) conversion page -->
+<script>
+  gtag('event', 'conversion', {'send_to': 'AW-18248049220/HogbCNiwiMIcEMTErP1D'});
+</script>
+{% endif %}
