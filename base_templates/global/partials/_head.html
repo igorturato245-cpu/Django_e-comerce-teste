@@ -33,3 +33,15 @@
       gtag('config', 'G-2F1H1PE41S');
     </script>
 {% endif %}
+
+{% if not debug %}
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18248049220"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'AW-18248049220');
+</script>
+{% endif %}
