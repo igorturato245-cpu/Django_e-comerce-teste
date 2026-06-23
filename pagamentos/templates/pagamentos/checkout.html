@@ -108,8 +108,6 @@
     <h2 class="carrinho-vazio">Carrinho está vazio.</h2>
 {% endif %}
 
-
-
 <!-- Google tag (gtag.js)
 <script async src="https://www.googletagmanager.com/gtag/js?id={{Tag_id}}"></script>
 <script>
@@ -119,8 +117,8 @@
 
   gtag('config', '{{Tag_id}}');
 </script>-->
-{% if not debug %}
 <!-- Event snippet for Compra conversion page -->
+
 <script>
   gtag('event', 'conversion', {
       'send_to': '{{Tag_checkout}}',
@@ -130,8 +128,4 @@
       // 'new_customer': true /* calculate dynamically, populate with true/false */,
   });
 </script>
-{% endif %}
-
-
-</div>
 {% endblock content %}

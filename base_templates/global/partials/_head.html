@@ -23,7 +23,6 @@
 
 
 <!-- Se estiver em produção, carrega os scripts de rastreio -->
-{% if not debug %}
     <!-- Google tag (gtag.js) único para Analytics e Ads -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{Analytics_id}}"></script>
     <script>
@@ -38,4 +37,3 @@
       // para que os eventos de conversão funcionem corretamente depois.
       gtag('config', '{{Tag_id}}');
     </script>
-{% endif %}
