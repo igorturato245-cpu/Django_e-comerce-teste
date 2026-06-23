@@ -24,24 +24,18 @@
 
 <!-- Se estiver em produção, carrega os scripts de rastreio -->
 {% if not debug %}
-    <!-- Exemplo: Google Analytics -->
+    <!-- Google tag (gtag.js) único para Analytics e Ads -->
     <script async src="https://www.googletagmanager.com/gtag/js?id={{Analytics_id}}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config','{{Analytics_id}}');
+
+      // Configura o Analytics
+      gtag('config', '{{Analytics_id}}');
+      
+      // CONFIGURAÇÃO ESSENCIAL: Você precisa disparar o 'config' do Google Ads aqui também
+      // para que os eventos de conversão funcionem corretamente depois.
+      gtag('config', '{{Tag_id}}');
     </script>
-{% endif %}
-
-{% if not debug %}
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id={{Tag_id}}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config','{{Tag_id}}');
-</script>
 {% endif %}
