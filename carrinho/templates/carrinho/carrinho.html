@@ -187,4 +187,11 @@
       })
     })
   </script>
+
+  {% if not debug %}
+  <!-- Event snippet for Adicionar ao carrinho (1) conversion page -->
+  <script>
+    gtag('event', 'conversion', {'send_to': '{{Tag_carrinho}}'});
+  </script>
+  {% endif %}
 {% endblock %}

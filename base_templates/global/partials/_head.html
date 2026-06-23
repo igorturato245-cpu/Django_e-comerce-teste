@@ -25,30 +25,23 @@
 <!-- Se estiver em produção, carrega os scripts de rastreio -->
 {% if not debug %}
     <!-- Exemplo: Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2F1H1PE41S"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{Analytics_id}}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-2F1H1PE41S');
+      gtag('config','{{Analytics_id}}');
     </script>
 {% endif %}
 
 {% if not debug %}
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18248049220"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id={{Tag_id}}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
 
-  gtag('config', 'AW-18248049220');
-</script>
-{% endif %}
-
-{% if not debug %}
-<!-- Event snippet for Adicionar ao carrinho (1) conversion page -->
-<script>
-  gtag('event', 'conversion', {'send_to': 'AW-18248049220/HogbCNiwiMIcEMTErP1D'});
+  gtag('config','{{Tag_id}}');
 </script>
 {% endif %}

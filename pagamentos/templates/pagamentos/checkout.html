@@ -108,5 +108,19 @@
     <h2 class="carrinho-vazio">Carrinho está vazio.</h2>
 {% endif %}
 
+{% if not debug %}
+<!-- Event snippet for Compra conversion page -->
+<script>
+  gtag('event', 'conversion', {
+      'send_to': '{{Tag_checkout}}',
+      'value': 1.0,
+      'currency': 'BRL',
+      'transaction_id': ''
+      // 'new_customer': true /* calculate dynamically, populate with true/false */,
+  });
+</script>
+{% endif %}
+
+
 </div>
 {% endblock content %}

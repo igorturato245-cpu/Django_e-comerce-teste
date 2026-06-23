@@ -74,6 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'e_comerce.views.context_processors.google_ads_ids',
                 # CORREÇÃO: Garante que a variável 'debug' chegue nos templates
                 'django.template.context_processors.debug', 
             ],
@@ -155,6 +156,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 7 # 1 semana
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+GOOGLE_ANALYTICS_ID=getattr(local_settings,'GOOGLE_ANALYTICS_ID',"")
+GOOGLE_TAG_ID=getattr(local_settings,'GOOGLE_TAG_ID',"")
+CODIGO_ENVIO_GOOGLE_TAG_CARRINHO=getattr(local_settings,'CODIGO_ENVIO_GOOGLE_TAG_CARRINHO',"")
+CODIGO_ENVIO_GOOGLE_TAG_CHECKOUT=getattr(local_settings,'CODIGO_ENVIO_GOOGLE_TAG_CHECKOUT',"")
 
 # --- SEGURANÇA DE PRODUÇÃO (HTTPS) ---
 if not DEBUG:
