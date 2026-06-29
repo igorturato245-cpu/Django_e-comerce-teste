@@ -123,6 +123,14 @@ class Produto(models.Model):
         
         super().save(*args, **kwargs)
         
+        
+class ProdutoImagens(models.Model):
+    produto=models.ForeignKey(Produto,on_delete=models.CASCADE,related_name='carrosel')    
+    foto=models.ImageField('Imagens',upload_to='produtos/%Y/%m/%d/',blank=True,null=True)
+    
+    def __str__(self) -> str:
+        return f'Cassosel de fotos do produto:{self.produto.name}'
+        
 
 class Avaliacao_produto(models.Model):
     usuario=models.ForeignKey(User,on_delete=models.CASCADE)

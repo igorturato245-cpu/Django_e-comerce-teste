@@ -38,7 +38,13 @@
             <div class="produto-card">
                 <picture class="produto-img">
                     <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img src="{{produto.imagem.url}}" alt="{{ produto.imagem }}">
+                        {% if produto.imagem %}
+                            <img src="{{produto.imagem.url}}" alt="{{ produto.name }}">
+                        {% elif produto.carrosel.first %}
+                            <img src="{{produto.carrosel.first.foto.url}}" alt="{{ produto.name }}">
+                        {% else %}
+                            <img src="" alt="Produto sem imagem">
+                        {% endif %}
                     </a>
                 </picture>
                 <div class="produto-info-index">
@@ -84,7 +90,13 @@
             <li class="produto-card">
                 <div class="produto-img">
                     <a href="{% url 'produtos:produto' produto.category.slug produto.slug %}">
-                        <img src="{{produto.imagem.url}}" alt="{{ produto.imagem }}">
+                        {% if produto.imagem %} 
+                            <img src="{{produto.imagem.url}}" alt="{{ produto.name}}">
+                        {% elif produto.carrosel.first %}
+                            <img src="{{produto.carrosel.foto.url}}" alt="{{ produto.name}}">
+                        {% else %}
+                            <img src="" alt="Produto sem imagem">
+                        {% endif %}
                     </a>
                 </div>
                 <div class="produto-info-index">

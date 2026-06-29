@@ -1,6 +1,10 @@
 from django.contrib import admin
 from e_comerce.models import *
 
+class CarroselImagens(admin.TabularInline):
+    model=ProdutoImagens
+    extra=1
+
 @admin.register(Produto)
 class Produtoadmin(admin.ModelAdmin):
     list_display=('category','name','preco','preco_promocional','disponivel','ofertas_do_dia',)
@@ -10,6 +14,9 @@ class Produtoadmin(admin.ModelAdmin):
     list_max_show_all=200
     list_display_links=('name',)
     prepopulated_fields = {'slug': ('name',)}
+    inlines=[
+        CarroselImagens,
+    ]
     
     def exibir_preco(self,obj):
         return f'{obj.get_preco()}'

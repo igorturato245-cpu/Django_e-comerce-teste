@@ -9,7 +9,11 @@
     <div class="detalhe-container">
       <!-- FOTO -->
       <div class="detalhe-foto-box">
-        <img src="{{produto.imagem.url}}" alt="{{ produto.imagem }}" />
+        <button class="seta-img seta-img-esquerda" id="botaoesquerdoimg">‹</button>
+        {% for foto in produto.carrosel.all %}
+          <img src="{{foto.foto.url}}" alt="{{produto.name}}" class="carrossel-img {% if forloop.first %}ativo{% endif %}">
+        {% endfor %}
+        <button class="seta-img seta-img-direita" id="botaodireitoimg">›</button>
       </div>
 
       <!-- INFO PRINCIPAL (Grid) -->
@@ -111,27 +115,75 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-            const numEl = document.querySelector(".quantidade-num");
-            const inputQtds = document.querySelectorAll("#quantidade-input");
-            const btns = document.querySelectorAll(".quantidade-btn");
+    // ==========================================
+    // 1. CÓDIGO DA QUANTIDADE (Que você já tinha)
+    // ==========================================
+    const numEl = document.querySelector(".quantidade-num");
+    const inputQtds = document.querySelectorAll("#quantidade-input");
+    const btns = document.querySelectorAll(".quantidade-btn");
+    let quantidade = 1;
 
-            let quantidade = 1;
+    btns.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const acao = btn.dataset.acao;
+            if (acao === "mais" && quantidade < 99) quantidade++;
+            if (acao === "menos" && quantidade > 1) quantidade--;
 
-            btns.forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const acao = btn.dataset.acao;
+            if (numEl) numEl.textContent = quantidade;
 
-                    if (acao === "mais" && quantidade < 99) quantidade++;
-                    if (acao === "menos" && quantidade > 1) quantidade--;
-
-                    numEl.textContent = quantidade;
-
-                    inputQtds.forEach(input => {
-                        input.value = quantidade;
-                    });
-                });
+            inputQtds.forEach(input => {
+                input.value = quantidade;
             });
-
         });
+    });
+
+    // ==========================================
+    // 2. CÓDIGO DO CARROSSEL (Novo)
+    // ==========================================
+    const imagens = document.querySelectorAll(".carrossel-img");
+    const btnEsquerda = document.getElementById("botaoesquerdoimg");
+    const btnDireita = document.getElementById("botaodireitoimg");
+    
+    let indexAtual = 0; // Começa na primeira foto (índice 0)
+
+    // Se o produto tiver 1 foto ou nenhuma, esconde as setas para não ficarem inúteis
+    if (imagens.length <= 1) {
+        if(btnEsquerda) btnEsquerda.style.display = 'none';
+        if(btnDireita) btnDireita.style.display = 'none';
+        return; 
+    }
+
+    // Função que mostra a imagem baseada no número (index)
+    function mostrarImagem(index) {
+        // Primeiro, tira a classe 'ativo' de TODAS as fotos
+        imagens.forEach(img => img.classList.remove("ativo"));
+        
+        // Depois, coloca a classe 'ativo' SÓ na foto do momento
+        imagens[index].classList.add("ativo");
+    }
+
+    // Clicar na seta Direita
+    btnDireita.addEventListener("click", function() {
+        indexAtual++; // Soma 1
+        
+        // Se passar da última foto, volta pra primeira (0)
+        if (indexAtual >= imagens.length) {
+            indexAtual = 0; 
+        }
+        mostrarImagem(indexAtual);
+    });
+
+    // Clicar na seta Esquerda
+    btnEsquerda.addEventListener("click", function() {
+        indexAtual--; // Subtrai 1
+        
+        // Se tentar voltar antes da primeira foto, vai lá pra última
+        if (indexAtual < 0) {
+            indexAtual = imagens.length - 1; 
+        }
+        mostrarImagem(indexAtual);
+    });
+
+});
 </script>
 {% endblock extra_scripts %}
