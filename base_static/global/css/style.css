@@ -4302,3 +4302,9 @@ h2.devolucao-reembolsar-container {
 .carrossel-img.ativo {
       display: block; 
   }
+
+@media(max-width:480px){
+    .carrossel-img.ativo {
+      display: block; 
+  }
+}
