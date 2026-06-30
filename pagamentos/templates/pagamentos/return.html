@@ -35,3 +35,18 @@
     <a href="{% url 'pagamentos:meus_pedidos' %}" class="btn-action">Acompanhar meu pedido</a>
 </div>
 {% endblock %}
+
+
+{% block extra_scripts %}
+<!-- Event snippet for Compra (1) conversion page -->
+<script>
+  gtag('event', 'conversion', {
+      'send_to': '{{Tag_pagamento}}',
+      'value': 1.0,
+      'currency': 'BRL',
+      'transaction_id': ''
+      // 'new_customer': true /* calculate dynamically, populate with true/false */,
+  });
+</script>
+
+{% endblock extra_scripts %}

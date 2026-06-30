@@ -154,4 +154,14 @@
         {% endfor %}
     });
 </script>
+
+<!-- Event snippet for Visualização de página conversion page -->
+<script>
+  gtag('event', 'conversion', {
+      'send_to': '{{Tag_index}}',
+      'value': 1.0,
+      'currency': 'BRL'
+  });
+</script>
+
 {% endblock extra_scripts %}
